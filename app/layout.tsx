@@ -7,11 +7,15 @@ import {
   ScrollRestoration,
   Outlet,
 } from '@remix-run/react';
+
 import resetStyles from '~/styles/reset.css?url';
+// Supports weights 100-900
+import '@fontsource-variable/inter';
 import appStyles from '~/styles/app.css?url';
 import tailwindCss from './styles/tailwind.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {RootLoader} from './root';
+
 
 export default function Layout() {
   const nonce = useNonce();

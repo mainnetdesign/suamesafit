@@ -34,6 +34,9 @@ export default defineConfig({
     // withtout inlining assets as base64:
     assetsInlineLimit: 0,
   },
+  server: {
+    allowedHosts: ['helping-merely-fish.ngrok-free.app'],
+  },
   ssr: {
     optimizeDeps: {
       /**

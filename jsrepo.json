@@ -6,7 +6,7 @@
   "formatter": "prettier",
   "configFiles": {},
   "paths": {
-    "*": "./app/components/react-bits/ui",
+    "*": "./app/components/react-bits",
     "Animations": "./app/components/react-bits/animations",
     "Backgrounds": "./app/components/react-bits/backgrounds",
     "Components": "./app/components/react-bits/ui",

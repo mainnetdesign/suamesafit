@@ -6,7 +6,8 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
-import { DatepickerRangeDemo } from '~/components/daterange';
+import {DatepickerRangeDemo} from '~/components/daterange';
+import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -60,7 +61,7 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home bg-primary-base">
-      <DatepickerRangeDemo/>
+      <DatepickerRangeDemo />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -84,7 +85,7 @@ function FeaturedCollection({
           <Image data={image} sizes="100vw" />
         </div>
       )}
-      <h1 className=''>{collection.title}</h1>
+      <h1 className="">{collection.title}</h1>
     </Link>
   );
 }
@@ -101,8 +102,9 @@ function RecommendedProducts({
         <Await resolve={products}>
           {(response) => (
             <div className="recommended-products-grid">
-              {response
-                ? response.products.nodes.map((product) => (
+              {response ? (
+                <Carousel baseWidth={400} loop autoplay>
+                  {response.products.nodes.map((product) => (
                     <Link
                       key={product.id}
                       className="recommended-product"
@@ -113,13 +115,16 @@ function RecommendedProducts({
                         aspectRatio="1/1"
                         sizes="(min-width: 45em) 20vw, 50vw"
                       />
-                      <h4>{product.title}</h4>
-                      <small>
-                        <Money data={product.priceRange.minVariantPrice} />
-                      </small>
+                      <div className="p-1">
+                        <h4 className="text-white">{product.title}</h4>
+                        <small className="text-white">
+                          <Money data={product.priceRange.minVariantPrice} />
+                        </small>
+                      </div>
                     </Link>
-                  ))
-                : null}
+                  ))}
+                </Carousel>
+              ) : null}
             </div>
           )}
         </Await>

@@ -257,7 +257,6 @@ export const borderRadii = {
 } as unknown as Record<string, string>;
 
 const config = {
-  safelist: ['.dark'],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',

@@ -1,4 +1,4 @@
-import type { Config } from 'tailwindcss';
+import type {Config} from 'tailwindcss';
 import defaultTheme from 'tailwindcss/defaultTheme';
 import tailwindcssAnimate from 'tailwindcss-animate';
 
@@ -257,6 +257,7 @@ export const borderRadii = {
 } as unknown as Record<string, string>;
 
 const config = {
+  safelist: ['.dark'],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -589,7 +590,7 @@ const config = {
     },
     extend: {
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--font-sans)', 'Inter', ...defaultTheme.fontFamily.sans],
       },
       borderRadius: {
         ...borderRadii,

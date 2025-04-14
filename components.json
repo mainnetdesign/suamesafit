@@ -11,11 +11,11 @@
     "prefix": ""
   },
   "aliases": {
-    "components": "@/components/shad-cn",
-    "utils": "@/lib/utils",
-    "ui": "@/components/shad-cn/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "components": "~/components/shad-cn",
+    "utils": "~/lib/utils",
+    "ui": "~/components/shad-cn/ui",
+    "lib": "~/lib",
+    "hooks": "~/hooks"
   },
   "iconLibrary": "lucide"
 }

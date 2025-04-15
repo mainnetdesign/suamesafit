@@ -104,10 +104,12 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery | null>;
 }) {
   return (
-    <div className="recommended-products bg-green-700 py-28 gap-12 flex flex-col text-text-white-0">
-      <div className="max-w-full w-full px-8 mx-auto">
-        <div className="align-center mx-auto"></div>
-        <h2>Recommended Products</h2>
+    <div className="recommended-products bg-green-700 py-[7.2rem] gap-[5.6rem] flex flex-col text-text-white-0 box-border">
+      <div className="max-w-full w-full px-8 mx-auto box-border">
+        <div className="align-center mx-auto text-center flex items-center flex-col">
+          <div className='uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words	max-w-2xl	'>Features</div>
+          <h2 className='my-7 mx-auto inline-block max-w-2xl m-0 break-words text-title-h1'>Sustainable sips with real benefits</h2> 
+        </div>
       </div>
 
       <Suspense fallback={<div>Loading...</div>}>

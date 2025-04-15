@@ -7,7 +7,16 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {DatepickerRangeDemo} from '~/components/daterange';
-import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
+// import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
+
+// import { Card, CardContent } from "~/components/shad-cn/ui/card"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '~/components/shad-cn/ui/carousel';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -60,8 +69,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
-    <div className="home bg-primary-base">
-      <DatepickerRangeDemo />
+    <div className="home">
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -96,37 +104,51 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery | null>;
 }) {
   return (
-    <div className="recommended-products">
-      <h2>Recommended Products</h2>
+    <div className="recommended-products bg-green-700 py-28 gap-12 flex flex-col text-text-white-0">
+      <div className="max-w-full w-full px-8 mx-auto">
+        <div className="align-center mx-auto"></div>
+        <h2>Recommended Products</h2>
+      </div>
+
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={products}>
-          {(response) => (
-            <div className="recommended-products-grid">
-              {response ? (
-                <Carousel baseWidth={400} loop autoplay>
-                  {response.products.nodes.map((product) => (
-                    <Link
-                      key={product.id}
-                      className="recommended-product"
-                      to={`/products/${product.handle}`}
-                    >
-                      <Image
-                        data={product.images.nodes[0]}
-                        aspectRatio="1/1"
-                        sizes="(min-width: 45em) 20vw, 50vw"
-                      />
-                      <div className="p-1">
-                        <h4 className="text-white">{product.title}</h4>
-                        <small className="text-white">
-                          <Money data={product.priceRange.minVariantPrice} />
-                        </small>
-                      </div>
-                    </Link>
-                  ))}
+          {(response) =>
+            response ? (
+              <div className="relative">
+                <Carousel className="w-full max-w-xs mx-auto">
+                  <CarouselContent>
+                    {response.products.nodes.map((product) => (
+                      <CarouselItem key={product.id}>
+                        <div className="p-1">
+                          <Link
+                            key={product.id}
+                            className="recommended-product"
+                            to={`/products/${product.handle}`}
+                          >
+                            <Image
+                              data={product.images.nodes[0]}
+                              aspectRatio="1/1"
+                              sizes="(min-width: 45em) 20vw, 50vw"
+                            />
+                            <div className="p-1">
+                              <h4 className="text-white">{product.title}</h4>
+                              <small className="text-white">
+                                <Money
+                                  data={product.priceRange.minVariantPrice}
+                                />
+                              </small>
+                            </div>
+                          </Link>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
                 </Carousel>
-              ) : null}
-            </div>
-          )}
+              </div>
+            ) : null
+          }
         </Await>
       </Suspense>
       <br />

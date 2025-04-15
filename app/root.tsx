@@ -10,8 +10,6 @@ import type {LinksFunction} from '@remix-run/node';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 
-import stylesheet from '~/styles/tailwind.css?url';
-
 export type RootLoader = typeof loader;
 
 /**
@@ -57,17 +55,6 @@ export const links: LinksFunction = () => {
       href: 'https://shop.app',
     },
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
-    {rel: 'preconnect', href: 'https://fonts.googleapis.com'},
-    {
-      rel: 'preconnect',
-      href: 'https://fonts.gstatic.com',
-      crossOrigin: 'anonymous',
-    },
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
-    },
-    {rel: 'stylesheet', href: stylesheet},
   ];
 }
 

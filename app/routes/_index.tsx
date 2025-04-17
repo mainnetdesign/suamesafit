@@ -66,10 +66,25 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   };
 }
 
+function HomeBanner() {
+  return <div className='items-center grow flex relative'>
+    <div className='flex text-center items-center flex-col w-full relative mx-auto px-8 box-border z-[3] gap-[1.6rem]'>
+      <div className='gap-10 flex flex-col items-center box-border'>
+        <div className='break-words	m-0 block text-center'>Enjoy refreshing, natural drinks made from the finest ingredients.</div>
+        <a href=".">Shop now</a>
+      </div>
+    </div>
+    <div className=''>
+
+    </div>
+  </div>
+}
+
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      <HomeBanner/>
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>

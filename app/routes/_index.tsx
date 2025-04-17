@@ -67,24 +67,29 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 function HomeBanner() {
-  return <div className='items-center grow flex relative'>
-    <div className='flex text-center items-center flex-col w-full relative mx-auto px-8 box-border z-[3] gap-[1.6rem]'>
-      <div className='gap-10 flex flex-col items-center box-border'>
-        <div className='break-words	m-0 block text-center'>Enjoy refreshing, natural drinks made from the finest ingredients.</div>
-        <a href=".">Shop now</a>
+  return (
+    <div className="items-center grow flex relative">
+      <div className="flex text-center items-center flex-col w-full relative mx-auto px-8 box-border z-[3] gap-[1.6rem]">
+        <div className="gap-10 flex flex-col items-center box-border">
+          <div className="break-words	m-0 block text-center">
+            Enjoy refreshing, natural drinks made from the finest ingredients.
+          </div>
+          <a href=".">Shop now</a>
+        </div>
+      </div>
+      <div className="">
+        {/* <img src="../assets/tearo-pink.webp" alt="img1" />
+        <img src="" alt="" /> */}
       </div>
     </div>
-    <div className=''>
-
-    </div>
-  </div>
+  );
 }
 
 export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      <HomeBanner/>
+      <HomeBanner />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -122,8 +127,12 @@ function RecommendedProducts({
     <div className="recommended-products bg-green-700 py-[7.2rem] gap-[5.6rem] flex flex-col text-text-white-0 box-border">
       <div className="max-w-full w-full px-8 mx-auto box-border">
         <div className="align-center mx-auto text-center flex items-center flex-col">
-          <div className='uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words	max-w-2xl	'>Features</div>
-          <h2 className='my-7 mx-auto inline-block max-w-2xl m-0 break-words text-title-h1'>Sustainable sips with real benefits</h2> 
+          <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words	max-w-2xl	">
+            Features
+          </div>
+          <h2 className="my-7 mx-auto inline-block max-w-2xl m-0 break-words text-title-h1">
+            Sustainable sips with real benefits
+          </h2>
         </div>
       </div>
 

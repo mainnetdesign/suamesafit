@@ -8,8 +8,10 @@ import type {
 } from 'storefrontapi.generated';
 import {DatepickerRangeDemo} from '~/components/daterange';
 // import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
-
+import {InteractiveHoverButton} from '~/components/magic-ui/button';
+// import {InteractiveHoverButton2} from '@/components/magicui/interactive-hover-button2';
 // import { Card, CardContent } from "~/components/shad-cn/ui/card"
+
 import {
   Carousel,
   CarouselContent,
@@ -17,6 +19,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '~/components/shad-cn/ui/carousel';
+import Android from '@/components/magicui/android';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -70,6 +73,7 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      <InteractiveHoverButton>Shop now</InteractiveHoverButton>
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>

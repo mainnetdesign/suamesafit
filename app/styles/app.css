@@ -951,12 +951,12 @@ html.no-js .no-js-hidden {
   overflow: hidden !important;
 }
 
-@media screen and (min-width: 990px) {
+/* @media screen and (min-width: 990px) {
   .overflow-hidden,
   .overflow-hidden-drawer {
     padding-right: var(--scrollbar-width);
   }
-}
+} */
 
 summary {
   cursor: pointer;

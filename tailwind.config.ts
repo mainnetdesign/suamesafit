@@ -480,6 +480,7 @@ const config = {
         dark: 'var(--primary-dark)',
         darker: 'var(--primary-darker)',
         base: 'var(--primary-base)',
+        'base-hover': 'var(--primary-base-hover)',
         'alpha-24': 'var(--primary-alpha-24)',
         'alpha-16': 'var(--primary-alpha-16)',
         'alpha-10': 'var(--primary-alpha-10)',

@@ -8,8 +8,10 @@ import type {
 } from 'storefrontapi.generated';
 import {DatepickerRangeDemo} from '~/components/daterange';
 // import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
-
+import {InteractiveHoverButton} from '~/components/magic-ui/button';
+// import {InteractiveHoverButton2} from '@/components/magicui/interactive-hover-button2';
 // import { Card, CardContent } from "~/components/shad-cn/ui/card"
+
 import {
   Carousel,
   CarouselContent,
@@ -70,6 +72,12 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      <div className="flex items-center justify-center mb-6">
+        <InteractiveHoverButton className="bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button">
+          Shop now
+        </InteractiveHoverButton>
+      </div>
+
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -122,7 +130,7 @@ function RecommendedProducts({
                         <div className="p-1">
                           <Link
                             key={product.id}
-                            className="recommended-product"
+                            className="recommended-product w-full"
                             to={`/products/${product.handle}`}
                           >
                             <Image
@@ -130,7 +138,7 @@ function RecommendedProducts({
                               aspectRatio="1/1"
                               sizes="(min-width: 45em) 20vw, 50vw"
                             />
-                            <div className="p-1">
+                            <div className="px-2 bg-gray-700 rouded-br rounded-b-lg">
                               <h4 className="text-white">{product.title}</h4>
                               <small className="text-white">
                                 <Money

@@ -18,6 +18,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  CarouselDots,
 } from '~/components/shad-cn/ui/carousel';
 
 export const meta: MetaFunction = () => {
@@ -45,7 +46,7 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
   ]);
 
   return {
-    featuredCollection: collections.nodes[0],
+    featuredCollections: collections.nodes,
   };
 }
 
@@ -98,33 +99,33 @@ export default function Homepage() {
         </InteractiveHoverButton>
       </div>
 
-      <FeaturedCollection collection={data.featuredCollection} />
+      <FeaturedCollections collections={data.featuredCollections} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
   );
 }
 
-function FeaturedCollection({
-  collection,
-}: {
-  collection: FeaturedCollectionFragment;
-}) {
-  if (!collection) return null;
-  const image = collection?.image;
-  return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <h1 className="">{collection.title}</h1>
-    </Link>
-  );
-}
+// function FeaturedCollection({
+//   collection,
+// }: {
+//   collection: FeaturedCollectionFragment;
+// }) {
+//   if (!collection) return null;
+//   const image = collection?.image;
+//   return (
+//     <Link
+//       className="featured-collection"
+//       to={`/collections/${collection.handle}`}
+//     >
+//       {image && (
+//         <div className="featured-collection-image">
+//           <Image data={image} sizes="100vw" />
+//         </div>
+//       )}
+//       <h1 className="">{collection.title}</h1>
+//     </Link>
+//   );
+// }
 
 function RecommendedProducts({
   products,
@@ -190,28 +191,64 @@ function RecommendedProducts({
   );
 }
 
-const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
-    id
-    title
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    handle
-  }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
-    }
-  }
-` as const;
+function FeaturedCollections({
+  collections,
+}: {
+  collections: FeaturedCollectionFragment[];
+}) {
+  if (!collections?.length) return null;
+  
+  return (
+    <div className="featured-collections bg-[#1B4332] py-[7.2rem] gap-[5.6rem] flex flex-col text-white box-border">
+      <div className="max-w-full w-full px-8 mx-auto box-border">
+        <div className="align-center mx-auto text-center flex items-center flex-col">
+          <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words max-w-2xl">
+            Features
+          </div>
+          <h2 className="my-7 mx-auto inline-block max-w-2xl m-0 break-words text-title-h1">
+            Sustainable sips with real benefits
+          </h2>
+        </div>
+      </div>
+
+      <div className="relative">
+        <Carousel className="w-full max-w-4xl mx-auto">
+          <CarouselContent>
+            {collections.map((collection) => (
+              <CarouselItem key={collection.id} className="md:basis-1/2">
+                <div className="p-1">
+                  <Link
+                    className="featured-collection block bg-white rounded-lg overflow-hidden"
+                    to={`/collections/${collection.handle}`}
+                  >
+                    {collection.image && (
+                      <div className="featured-collection-image aspect-[4/3]">
+                        <Image data={collection.image} sizes="(min-width: 45em) 40vw, 100vw" className="object-cover w-full h-full" />
+                      </div>
+                    )}
+                    <div className="p-6 bg-white text-[#423515]">
+                      <h3 className="text-xl font-medium">{collection.title}</h3>
+                      <p className="mt-2 text-sm text-gray-600">Made with non-GMO ingredients for a drink that&apos;s as close to nature as it gets, delivering clean, pure flavors you can trust.</p>
+                      <button className="mt-4 text-sm font-medium flex items-center gap-2">
+                        Shop now
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </Link>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="bg-white text-[#423515] hover:bg-gray-100" />
+          <CarouselNext className="bg-white text-[#423515] hover:bg-gray-100" />
+          <CarouselDots />
+        </Carousel>
+      </div>
+    </div>
+  );
+}
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
   fragment RecommendedProduct on Product {
@@ -239,6 +276,29 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
     products(first: 4, sortKey: UPDATED_AT, reverse: true) {
       nodes {
         ...RecommendedProduct
+      }
+    }
+  }
+` as const;
+
+const FEATURED_COLLECTION_QUERY = `#graphql
+  fragment FeaturedCollection on Collection {
+    id
+    title
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+    handle
+  }
+  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    collections(first: 4, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...FeaturedCollection
       }
     }
   }

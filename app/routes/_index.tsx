@@ -197,45 +197,60 @@ function FeaturedCollections({
   collections: FeaturedCollectionFragment[];
 }) {
   if (!collections?.length) return null;
-  
+
   return (
-    <div className="featured-collections bg-[#1B4332] py-[7.2rem] gap-[5.6rem] flex flex-col text-white box-border">
+    <div className="featured-collections bg-[#1B4332] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border">
       <div className="max-w-full w-full px-8 mx-auto box-border">
-        <div className="align-center mx-auto text-center flex items-center flex-col">
-          <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words max-w-2xl">
+        <div className="align-center mx-auto text-center flex items-center flex-col ">
+          <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-xs break-words max-w-2xl">
             Features
           </div>
-          <h2 className="my-7 mx-auto inline-block max-w-2xl m-0 break-words text-title-h1">
+          <h4 className="font-serif text-title-h4 max-w-[416px] mt-4 mx-auto inline-block break-words">
             Sustainable sips with real benefits
-          </h2>
+          </h4>
         </div>
       </div>
 
       <div className="relative">
-        <Carousel className="w-full max-w-7xl mx-auto">
-          <CarouselContent>
+        <Carousel className="w-full max-w-[964px] mx-auto">
+          <CarouselContent className="min-h-[524px]">
             {collections.map((collection) => (
               <CarouselItem key={collection.id} className="md:basis-full">
                 <div className="p-1">
-                  <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4">
-                    <div className="flex-1 bg-white rounded-lg p-8 flex flex-col justify-between">
-                      <div>
-                        <h3 className="text-[2.5rem] font-medium text-[#423515] mb-4 font-serif">{collection.title}</h3>
-                        <p className="text-base text-gray-600">Made with non-GMO ingredients for a drink that&apos;s as close to nature as it gets, delivering clean, pure flavors you can trust.</p>
+                  <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
+                    <div className="min-h-[524px] flex-1 max-w-[424px] bg-white rounded-lg p-8 flex flex-col justify-between">
+                      <div className="flex flex-col justify-between items-start h-full">
+                        <h3 className="text-[2.5rem] font-medium text-[#423515] mb-4 font-serif">
+                          {collection.title}
+                        </h3>
+                        <p className="text-base text-gray-600">
+                          Made with non-GMO ingredients for a drink that&apos;s
+                          as close to nature as it gets, delivering clean, pure
+                          flavors you can trust.
+                        </p>
                       </div>
-                      <Link 
+                      <InteractiveHoverButton className="mt-8 bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button w-fit">
+                        <Link to={`/collections/${collection.handle}`}>
+                          Shop now
+                        </Link>
+                      </InteractiveHoverButton>
+                      {/* <Link 
                         to={`/collections/${collection.handle}`}
-                        className="mt-8 text-base font-medium bg-[#FCE762] text-[#423515] px-6 py-3 rounded-full inline-flex items-center gap-2 hover:bg-[#fce762]/90 transition-colors w-fit"
+                        className=" text-base font-medium bg-[#FCE762] text-[#423515] px-6 py-3 rounded-full inline-flex items-center gap-2 hover:bg-[#fce762]/90 transition-colors w-fit"
                       >
                         Shop now
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                           <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                      </Link>
+                      </Link> */}
                     </div>
                     {collection.image && (
-                      <div className="flex-1 featured-collection-image rounded-lg overflow-hidden h-full min-h-[300px] md:min-h-[400px]">
-                        <Image data={collection.image} sizes="(min-width: 768px) 50vw, 100vw" className="object-cover w-full h-full" />
+                      <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
+                        <Image
+                          data={collection.image}
+                          sizes="(min-width: 768px) 50vw, 100vw"
+                          className="object-cover w-full h-full"
+                        />
                       </div>
                     )}
                   </div>
@@ -243,8 +258,14 @@ function FeaturedCollections({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious className="bg-white text-[#423515] hover:bg-gray-100" />
-          <CarouselNext className="bg-white text-[#423515] hover:bg-gray-100" />
+          <CarouselPrevious
+            className="w-left-0 md:-left-16 lg:-left-24 text-white"
+            iconSize={48}
+          />
+          <CarouselNext
+            className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
+            iconSize={48}
+          />
           <CarouselDots />
         </Carousel>
       </div>

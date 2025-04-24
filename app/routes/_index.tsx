@@ -19,7 +19,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '~/components/shad-cn/ui/carousel';
-import Android from '@/components/magicui/android';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -73,7 +72,12 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
-      <InteractiveHoverButton>Shop now</InteractiveHoverButton>
+      <div className="flex items-center justify-center mb-6">
+        <InteractiveHoverButton className="bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button">
+          Shop now
+        </InteractiveHoverButton>
+      </div>
+
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -126,7 +130,7 @@ function RecommendedProducts({
                         <div className="p-1">
                           <Link
                             key={product.id}
-                            className="recommended-product"
+                            className="recommended-product w-full"
                             to={`/products/${product.handle}`}
                           >
                             <Image
@@ -134,7 +138,7 @@ function RecommendedProducts({
                               aspectRatio="1/1"
                               sizes="(min-width: 45em) 20vw, 50vw"
                             />
-                            <div className="p-1">
+                            <div className="px-2 bg-gray-700 rouded-br rounded-b-lg">
                               <h4 className="text-white">{product.title}</h4>
                               <small className="text-white">
                                 <Money

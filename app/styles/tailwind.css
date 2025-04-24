@@ -131,6 +131,8 @@
     --yellow-200: #ffecc0;
     --yellow-100: #ffefcc;
     --yellow-50: #fff4d6;
+    --yellow-primary: #ffe52d;
+    --yellow-primary-hover: #f7dd21;
 
     --yellow-alpha-24: #fbc64b3d;
     --yellow-alpha-16: #fbc64b29;
@@ -223,7 +225,8 @@
 
     --primary-dark: var(--blue-800);
     --primary-darker: var(--blue-700);
-    --primary-base: var(--blue-500);
+    --primary-base: var(--yellow-primary);
+    --primary-base-hover: var(--yellow-primary-hover);
     --primary-alpha-24: var(--blue-alpha-24);
     --primary-alpha-16: var(--blue-alpha-16);
     --primary-alpha-10: var(--blue-alpha-10);
@@ -390,3 +393,9 @@
   transform: scale(0.8996);
   transform-origin: center;
 }
+
+.interactive-hover-button:hover {
+  transition: color .45s cubic-bezier(.165,.84,.44,1);
+}
+
+

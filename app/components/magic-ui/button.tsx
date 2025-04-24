@@ -19,14 +19,22 @@ export const InteractiveHoverButton = React.forwardRef<
       {...props}
     >
       <div className="flex items-center gap-2">
-        <div className="h-2 w-2 rounded-full transition-all duration-300 group-hover:scale-[100.8] bg-bg-strong-950"></div>
-        <span className="inline-block transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
-          {children}
+        {/* <div className="h-2 w-2 rounded-full transition-all duration-300 group-hover:scale-[100.8] bg-bg-strong-950"></div> */}
+        <span className="flex items-center gap-2 overflow-hidden">
+          <span className="inline-block  group-hover:-translate-y-7 duration-300 transition-all   group-hover:opacity-0">
+            {children}
+          </span>
+          <ArrowRight className="group-hover:translate-x-5 group-hover:-translate-y-5 -rotate-45 duration-300 transition-all " />
         </span>
       </div>
-      <div className="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-text-white-0 opacity-0 transition-all duration-300 group-hover:-translate-x-5 group-hover:opacity-100">
-        <span>{children}</span>
-        <ArrowRight />
+      <div className="absolute top-0 z-10 flex h-full translate-y-5 items-center justify-center gap-2 opacity-0 transition-all duration-300 group-hover:opacity-100">
+        {/* <span>{children}</span> */}
+        <span className="flex items-center gap-2">
+          <span className="group-hover:-translate-y-5 duration-300 transition-all   group-hover:opacity-100">
+            {children}
+          </span>
+          <ArrowRight className="group-hover:scale-100 scale-0 group-hover:-translate-y-5 -rotate-45 duration-300 transition-all " />
+        </span>
       </div>
     </button>
   );

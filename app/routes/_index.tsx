@@ -101,14 +101,12 @@ export default function Homepage() {
   const {testimonials} = useLoaderData<typeof loader>();
   const data = useLoaderData<typeof loader>();
 
-  console.log('testimonials', testimonials);
-
   return (
     <div className="home">
       {/* <HomeBanner /> */}
 
       <FeaturedCollections collections={data.featuredCollections} />
-      <RecommendedProducts products={data.recommendedProducts} />
+      {/* <RecommendedProducts products={data.recommendedProducts} /> */}
       
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />

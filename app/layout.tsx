@@ -11,8 +11,9 @@ import {
 import resetStyles from '~/styles/reset.css?url';
 // Supports weights 100-900
 import '@fontsource-variable/inter';
+import '@fontsource-variable/plus-jakarta-sans';
 import appStyles from '~/styles/app.css?url';
-import tailwindCss from './styles/tailwind.css?url';
+import tailwindCss from '~/styles/tailwind.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {RootLoader} from './root';
 
@@ -32,7 +33,7 @@ export default function Layout() {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="relative">
         {data ? (
           <Analytics.Provider
             cart={data.cart}

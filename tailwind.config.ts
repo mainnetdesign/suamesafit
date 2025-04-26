@@ -260,7 +260,7 @@ const config = {
   darkMode: ['class'],
   safelist: ['.dark'],
   fontFamily: {
-    sans: ['Inter', ...defaultTheme.fontFamily.sans],
+    sans: ['Plus Jakarta Sans Variable, sans-serif', ...defaultTheme.fontFamily.sans],
   },
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',

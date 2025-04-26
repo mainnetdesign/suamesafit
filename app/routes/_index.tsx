@@ -20,6 +20,9 @@ import {
   CarouselPrevious,
   CarouselDots,
 } from '~/components/shad-cn/ui/carousel';
+import {TestimonialsSection} from '~/components/Testimonials/TestimonialsSection';
+import type {TestimonialData} from '~/components/Testimonials/TestimonialCard';
+import {FALLBACK_TESTIMONIALS} from '~/data/fallback-testimonials';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -32,7 +35,13 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  const {storefront} = args.context;
+  
+  // Fetch testimonials
+  const {shop} = await storefront.query(SHOP_TESTIMONIALS_QUERY);
+  const testimonials = JSON.parse(shop.testimonials?.value || JSON.stringify(FALLBACK_TESTIMONIALS)) as TestimonialData[];
+  
+  return {...deferredData, ...criticalData, testimonials};
 }
 
 /**
@@ -89,18 +98,21 @@ function HomeBanner() {
 }
 
 export default function Homepage() {
+  const {testimonials} = useLoaderData<typeof loader>();
   const data = useLoaderData<typeof loader>();
+
+  console.log('testimonials', testimonials);
+
   return (
     <div className="home">
       {/* <HomeBanner /> */}
-      <div className="flex items-center justify-center mb-6">
-        <InteractiveHoverButton className="bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button">
-          Shop now
-        </InteractiveHoverButton>
-      </div>
 
       <FeaturedCollections collections={data.featuredCollections} />
       <RecommendedProducts products={data.recommendedProducts} />
+      
+      {testimonials.length > 0 && (
+        <TestimonialsSection testimonials={testimonials} />
+      )}
     </div>
   );
 }
@@ -326,3 +338,13 @@ const FEATURED_COLLECTION_QUERY = `#graphql
     }
   }
 ` as const;
+
+const SHOP_TESTIMONIALS_QUERY = `#graphql
+  query GetTestimonials {
+    shop {
+      testimonials: metafield(namespace: "custom", key: "testimonials") {
+        value
+      }
+    }
+  }
+`;

@@ -8,9 +8,11 @@ import type {
 } from 'storefrontapi.generated';
 import {DatepickerRangeDemo} from '~/components/daterange';
 // import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
-import {InteractiveHoverButton} from '~/components/magic-ui/button';
+import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 // import {InteractiveHoverButton2} from '@/components/magicui/interactive-hover-button2';
 // import { Card, CardContent } from "~/components/shad-cn/ui/card"
+
+import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
 
 import {
   Carousel,
@@ -23,6 +25,7 @@ import {
 import {TestimonialsSection} from '~/components/Testimonials/TestimonialsSection';
 import type {TestimonialData} from '~/components/Testimonials/TestimonialCard';
 import {FALLBACK_TESTIMONIALS} from '~/data/fallback-testimonials';
+import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -36,11 +39,13 @@ export async function loader(args: LoaderFunctionArgs) {
   const criticalData = await loadCriticalData(args);
 
   const {storefront} = args.context;
-  
+
   // Fetch testimonials
   const {shop} = await storefront.query(SHOP_TESTIMONIALS_QUERY);
-  const testimonials = JSON.parse(shop.testimonials?.value || JSON.stringify(FALLBACK_TESTIMONIALS)) as TestimonialData[];
-  
+  const testimonials = JSON.parse(
+    shop.testimonials?.value || JSON.stringify(FALLBACK_TESTIMONIALS),
+  ) as TestimonialData[];
+
   return {...deferredData, ...criticalData, testimonials};
 }
 
@@ -104,13 +109,20 @@ export default function Homepage() {
   return (
     <div className="home">
       {/* <HomeBanner /> */}
-
       <FeaturedCollections collections={data.featuredCollections} />
       {/* <RecommendedProducts products={data.recommendedProducts} /> */}
-      
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
+      
+      <LimitedTimeOffer
+        title="oferta por tempo limitado"
+        description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
+        buttonText="peça agora"
+        buttonLink="/collections/limited-offer"
+        imageUrl={limitedTimeOfferImage}
+        deadline="2025-05-01T23:59:59"
+      />
     </div>
   );
 }

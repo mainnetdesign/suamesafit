@@ -4,6 +4,9 @@ import useEmblaCarousel, {
 } from "embla-carousel-react"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 
+import { RiArrowLeftLine, RiArrowRightLine } from "react-icons/ri"
+import { renderToString } from "react-dom/server"
+
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/shad-cn/ui/button"
 
@@ -172,7 +175,7 @@ const CarouselContent = React.forwardRef<
   const { carouselRef, orientation } = useCarousel()
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div ref={carouselRef} className="overflow-hidden rounded-lg">
       <div
         ref={ref}
         className={cn(
@@ -267,6 +270,190 @@ const CarouselNext = React.forwardRef<
 })
 CarouselNext.displayName = "CarouselNext"
 
+function mergeRefs<T = any>(
+  refs: Array<React.MutableRefObject<T> | React.LegacyRef<T>>
+): React.RefCallback<T> {
+  return (value) => {
+    refs.forEach((ref) => {
+      if (typeof ref === "function") {
+        ref(value);
+      } else if (ref != null) {
+        (ref as React.MutableRefObject<T | null>).current = value;
+      }
+    });
+  };
+}
+
+interface CursorPosition {
+  x: number;
+  y: number;
+}
+
+interface CarouselCursorTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  direction: 'prev' | 'next';
+  cursorIcon?: React.ReactElement;
+  cursorColor?: string;
+  cursorSize?: number;
+  children: React.ReactNode;
+}
+
+const CarouselCursorTrigger = React.forwardRef<
+  HTMLButtonElement,
+  CarouselCursorTriggerProps
+>(({ 
+  direction, 
+  cursorIcon,
+  cursorColor = 'white',
+  cursorSize = 24,
+  children,
+  className,
+  style,
+  ...props 
+}, ref) => {
+  const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } = useCarousel();
+  const [isHovering, setIsHovering] = React.useState(false);
+  const [cursorPos, setCursorPos] = React.useState<CursorPosition>({ x: 0, y: 0 });
+  const containerRef = React.useRef<HTMLButtonElement>(null);
+
+  const handleClick = () => {
+    if (direction === 'prev') {
+      scrollPrev();
+    } else {
+      scrollNext();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleClick();
+    }
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    setCursorPos({
+      x: e.nativeEvent.offsetX,
+      y: e.nativeEvent.offsetY,
+    });
+  };
+
+  const handleMouseEnter = () => setIsHovering(true);
+  const handleMouseLeave = () => setIsHovering(false);
+
+  const isDisabled = direction === 'prev' ? !canScrollPrev : !canScrollNext;
+  const DefaultIcon = direction === 'prev' ? RiArrowLeftLine : RiArrowRightLine;
+  const Icon = cursorIcon || <DefaultIcon />;
+
+  // Combine refs
+  React.useEffect(() => {
+    if (!ref || !containerRef.current) return;
+    
+    if (typeof ref === 'function') {
+      ref(containerRef.current);
+    } else {
+      ref.current = containerRef.current;
+    }
+  }, [ref]);
+
+  return (
+    <button
+      ref={containerRef}
+      className={cn(
+        "relative focus:outline-none text-left transition-opacity cursor-none overflow-hidden",
+        isDisabled && "pointer-events-none opacity-50",
+        className
+      )}
+      style={style}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      aria-label={`${direction === 'prev' ? 'Previous' : 'Next'} slide`}
+      disabled={isDisabled}
+      {...props}
+    >
+      {children}
+      {isHovering && (
+        <div
+          className="pointer-events-none absolute z-50 transition-transform duration-100"
+          style={{
+            left: `${cursorPos.x}px`,
+            top: `${cursorPos.y}px`,
+            width: cursorSize,
+            height: cursorSize,
+            transform: `translate(-50%, -50%)`,
+          }}
+        >
+          {React.cloneElement(Icon, {
+            color: cursorColor,
+            size: cursorSize,
+            style: {
+              color: cursorColor,
+              width: cursorSize,
+              height: cursorSize,
+              ...Icon.props.style,
+            },
+          })}
+        </div>
+      )}
+    </button>
+  );
+});
+CarouselCursorTrigger.displayName = "CarouselCursorTrigger";
+
+interface CarouselCursorNavigationProps {
+  prevIcon?: React.ReactElement;
+  nextIcon?: React.ReactElement;
+  cursorColor?: string;
+  cursorSize?: number;
+  children: React.ReactNode;
+}
+
+const CarouselCursorNavigation = React.forwardRef<
+  HTMLDivElement,
+  CarouselCursorNavigationProps & React.HTMLAttributes<HTMLDivElement>
+>(({ 
+  prevIcon,
+  nextIcon,
+  cursorColor = 'white',
+  cursorSize = 24,
+  children,
+  className,
+  ...props 
+}, ref) => {
+  const childrenArray = React.Children.toArray(children);
+  const [leftContent, rightContent] = childrenArray;
+
+  return (
+    <div
+      ref={ref}
+      className={cn("flex gap-8 md:gap-16 items-center", className)}
+      {...props}
+    >
+      <CarouselCursorTrigger
+        direction="prev"
+        cursorIcon={prevIcon}
+        cursorColor={cursorColor}
+        cursorSize={cursorSize}
+        className="w-full md:w-1/2 hover:opacity-80"
+      >
+        {leftContent}
+      </CarouselCursorTrigger>
+      
+      <CarouselCursorTrigger
+        direction="next"
+        cursorIcon={nextIcon}
+        cursorColor={cursorColor}
+        cursorSize={cursorSize}
+        className="w-full md:w-1/2 hover:opacity-80"
+      >
+        {rightContent}
+      </CarouselCursorTrigger>
+    </div>
+  );
+});
+CarouselCursorNavigation.displayName = "CarouselCursorNavigation";
+
 const CarouselDots = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -305,4 +492,6 @@ export {
   CarouselPrevious,
   CarouselNext,
   CarouselDots,
+  CarouselCursorTrigger,
+  CarouselCursorNavigation,
 }

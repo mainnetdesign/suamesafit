@@ -259,15 +259,15 @@ export const borderRadii = {
 const config = {
   darkMode: ['class'],
   safelist: ['.dark'],
-  fontFamily: {
-    sans: ['Plus Jakarta Sans Variable, sans-serif', ...defaultTheme.fontFamily.sans],
-  },
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './utils/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    fontFamily: {
+      sans: ['Plus Jakarta Sans Variable', ...defaultTheme.fontFamily.sans],
+    },
     colors: {
       gray: {
         '0': 'var(--gray-0)',

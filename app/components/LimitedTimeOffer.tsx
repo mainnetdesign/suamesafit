@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import Countdown from 'react-countdown';
 import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
+import { InteractiveHoverButton } from './magic-ui/ui/button';
 
 interface LimitedTimeOfferProps {
   title: string;
@@ -109,31 +110,34 @@ export function LimitedTimeOffer({
                   </p>
                 </div>
 
-                <a
-                  href={buttonLink}
-                  className="h-[30.46px] p-[8.46px] bg-[#e8c273] rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors"
-                  aria-label={`${buttonText} - Limited time offer`}
-                >
-                  <div className="px-[3.38px] flex justify-center items-center">
-                    <span className="justify-center text-white text-xs font-medium font-sans leading-[16.92px]">
-                      {buttonText}
-                    </span>
-                  </div>
-                  <div className="relative">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M11.4207 6.99732L5.86824 12.5498L4.95605 11.6376L10.5078 6.08514H5.61471V4.79492H12.7109V11.8911H11.4207V6.99732V6.99732Z"
-                        fill="white"
-                      />
-                    </svg>
-                  </div>
-                </a>
+                <InteractiveHoverButton className="text-white h-[30.46px] p-[8.46px] bg-[#e8c273] rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors" style={{ textDecoration: 'none' }}>
+                  <a
+                    href={buttonLink}
+                    aria-label={`${buttonText} - Limited time offer`}
+                    className="flex items-center gap-[3.38px]"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div className="px-[3.38px] flex justify-center items-center">
+                      <span className="justify-center text-white text-xs font-medium font-sans leading-[16.92px]">
+                        {buttonText}
+                      </span>
+                    </div>
+                    {/* <div className="relative">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 18 18"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M11.4207 6.99732L5.86824 12.5498L4.95605 11.6376L10.5078 6.08514H5.61471V4.79492H12.7109V11.8911H11.4207V6.99732V6.99732Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </div> */}
+                  </a>
+                </InteractiveHoverButton>
               </div>
             </div>
           </div>

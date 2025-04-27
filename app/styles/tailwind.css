@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    font-family: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  }
+  
   /*#region Colors */
   :root {
     --gray-950: #171717;

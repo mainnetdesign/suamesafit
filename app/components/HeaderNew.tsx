@@ -1,9 +1,49 @@
+import React, { useEffect, useRef, useState } from 'react';
+
 const HeaderNew = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+            setCollapsed(true); // scrolling down
+          } else {
+            setCollapsed(false); // scrolling up
+          }
+          lastScrollY.current = currentScrollY;
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px]">
-      <div className="w-full h-24 relative">
-        <div className="w-full max-w-[calc(100vw-152px)] px-5 py-4 left-0 top-[20.28px] absolute bg-[#e8c273] rounded-[40px] inline-flex flex-col justify-start items-start gap-2.5">
-          <div className="w-full inline-flex justify-between items-center">
+    <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px] z-50">
+      <div className="w-full h-24 relative flex items-center justify-center">
+        {/* Animated yellow bar, centered and collapses from center */}
+        <div
+          className={`absolute top-[20.28px] left-1/2 -translate-x-1/2 mx-auto flex flex-col justify-center items-center transition-all duration-1000 ease-in-out bg-[#e8c273] rounded-[40px] z-10
+            ${collapsed ? 'w-24 px-5 py-4' : 'w-full max-w-[calc(100vw-152px)] px-5 py-4'}
+          `}
+          style={{
+            minWidth: collapsed ? '96px' : '320px', // fallback min width
+          }}
+        >
+          {/* Menu and icons fade/scale out when collapsed */}
+          <div
+            className={`w-full inline-flex justify-between items-center transition-all duration-1000
+              ${collapsed ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
+            `}
+            style={{transitionProperty: 'opacity, transform'}}
+          >
             <div className="flex justify-start items-center gap-4">
               <div className="justify-start text-[#363880] text-sm font-semibold font-sans leading-tight">
                 pratos
@@ -70,7 +110,8 @@ const HeaderNew = () => {
             </div>
           </div>
         </div>
-        <div className="w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-[#e8c273] rounded-[100px]">
+        {/* Center logo always visible, above the bar */}
+        <div className="w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-[#e8c273] rounded-[100px] flex items-center justify-center z-20">
           <div
             data-svg-wrapper
             className="left-[11.50px] top-[55.33px] absolute"

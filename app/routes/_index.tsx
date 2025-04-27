@@ -26,6 +26,7 @@ import {TestimonialsSection} from '~/components/Testimonials/TestimonialsSection
 import type {TestimonialData} from '~/components/Testimonials/TestimonialCard';
 import {FALLBACK_TESTIMONIALS} from '~/data/fallback-testimonials';
 import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
+import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -218,10 +219,15 @@ function FeaturedCollections({
 }: {
   collections: FeaturedCollectionFragment[];
 }) {
+  const { setColor, setBorderColor } = useCursorColor();
   if (!collections?.length) return null;
 
   return (
-    <div className="featured-collections bg-[#1B4332] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border">
+    <div
+      className="featured-collections bg-[#1B4332] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border"
+      onMouseEnter={() => { setColor('#1B4332'); setBorderColor('white'); }}
+      onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
+    >
       <div className="max-w-full w-full px-8 mx-auto box-border">
         <div className="align-center mx-auto text-center flex items-center flex-col ">
           <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-xs break-words max-w-2xl">

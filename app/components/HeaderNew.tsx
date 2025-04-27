@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const HeaderNew = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [collapsedFully, setCollapsedFully] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
 
@@ -25,16 +26,28 @@ const HeaderNew = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (collapsed) {
+      timeout = setTimeout(() => setCollapsedFully(true), 500);
+    } else {
+      setCollapsedFully(false);
+    }
+    return () => clearTimeout(timeout);
+  }, [collapsed]);
+
   return (
     <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px] z-50">
       <div className="w-full h-24 relative flex items-center justify-center">
-        {/* Animated yellow bar, centered and collapses from center */}
+        {/* Animated yellow bar, centered and collapses from center, then translates up/fades */}
         <div
-          className={`absolute top-[20.28px] left-1/2 -translate-x-1/2 mx-auto flex flex-col justify-center items-center transition-all duration-1000 ease-in-out bg-[#e8c273] rounded-[40px] z-10
+          className={`absolute top-[20.28px] left-1/2 -translate-x-1/2 mx-auto flex flex-col justify-center items-center transition-all duration-500 ease-out bg-[#e8c273] rounded-[40px] z-10
             ${collapsed ? 'w-24 px-5 py-4' : 'w-full max-w-[calc(100vw-152px)] px-5 py-4'}
+            ${collapsedFully ? '-translate-y-5 opacity-80' : 'translate-y-0 opacity-100'}
           `}
           style={{
-            minWidth: collapsed ? '96px' : '320px', // fallback min width
+            minWidth: collapsed ? '96px' : '320px',
+            transitionProperty: 'opacity, transform, width, max-width, padding',
           }}
         >
           {/* Menu and icons fade/scale out when collapsed */}
@@ -110,8 +123,13 @@ const HeaderNew = () => {
             </div>
           </div>
         </div>
-        {/* Center logo always visible, above the bar */}
-        <div className="w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-[#e8c273] rounded-[100px] flex items-center justify-center z-20">
+        {/* Center logo always visible, above the bar, translates/fades with bar */}
+        <div
+          className={`w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-[#e8c273] rounded-[100px] flex items-center justify-center z-20 transition-all duration-500 ease-out
+            ${collapsedFully ? 'opacity-80 -translate-y-5' : 'opacity-100 translate-y-0'}
+          `}
+          style={{ transitionProperty: 'opacity, transform' }}
+        >
           <div
             data-svg-wrapper
             className="left-[11.50px] top-[55.33px] absolute"

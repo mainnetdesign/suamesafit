@@ -13,6 +13,7 @@ import {
 import {useEffect, useState} from 'react';
 import {cn} from '~/lib/utils';
 import {TextAnimate} from '~/components/magic-ui/ui/text-animate';
+import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
 // import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 
 interface TestimonialsSectionProps {
@@ -26,6 +27,7 @@ export function TestimonialsSection({
 }: TestimonialsSectionProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const { setColor, setBorderColor } = useCursorColor();
 
   useEffect(() => {
     if (!api) return;
@@ -36,7 +38,11 @@ export function TestimonialsSection({
   }, [api]);
 
   return (
-    <section className={`bg-[#E69250] py-14 flex justify-center items-center ${className}`}>
+    <section
+      className={`bg-[#E69250] py-14 flex justify-center items-center ${className}`}
+      onMouseEnter={() => { setColor('#E69250'); setBorderColor('white'); }}
+      onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
+    >
       <div className="w-full !max-w-[1024px]">
         <Carousel
           opts={{

@@ -8,7 +8,7 @@ export const FALLBACK_TESTIMONIALS: TestimonialData[] = [
   {
     id: '1',
     rating: 5,
-    text: "This brand has nailed it! Great taste, eco-friendly packaging, and healthy ingredients all in one. It's rare to find a drink that feels this good to enjoy.",
+    text: "eu e meu marido trabalhamos o dia todo e, com as marmitas, ganhamos tempo e continuamos comendo bem. Não trocamos por nada!",
     authorName: 'Dana K.',
     image: testimonial1,
     productLink: {

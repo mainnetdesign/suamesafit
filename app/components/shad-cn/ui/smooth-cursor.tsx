@@ -8,34 +8,30 @@ interface Position {
   y: number;
 }
 
-export interface SmoothCursorProps {
-  cursor?: JSX.Element;
-  springConfig?: {
-    damping: number;
-    stiffness: number;
-    mass: number;
-    restDelta: number;
-  };
+interface DefaultCursorSVGProps {
+  size?: number;
+  color?: string;
+  borderColor?: string;
 }
 
-const DefaultCursorSVG: FC = () => {
+const DefaultCursorSVG: FC<DefaultCursorSVGProps> = ({ size = 50, color = "black", borderColor = "white" }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width={50}
-      height={54}
+      width={size}
+      height={(size * 54) / 50}
       viewBox="0 0 50 54"
       fill="none"
-      style={{ scale: 0.5 }}
+      style={{ scale: size / 50 }}
     >
       <g filter="url(#filter0_d_91_7928)">
         <path
           d="M42.6817 41.1495L27.5103 6.79925C26.7269 5.02557 24.2082 5.02558 23.3927 6.79925L7.59814 41.1495C6.75833 42.9759 8.52712 44.8902 10.4125 44.1954L24.3757 39.0496C24.8829 38.8627 25.4385 38.8627 25.9422 39.0496L39.8121 44.1954C41.6849 44.8902 43.4884 42.9759 42.6817 41.1495Z"
-          fill="black"
+          fill={color}
         />
         <path
           d="M43.7146 40.6933L28.5431 6.34306C27.3556 3.65428 23.5772 3.69516 22.3668 6.32755L6.57226 40.6778C5.3134 43.4156 7.97238 46.298 10.803 45.2549L24.7662 40.109C25.0221 40.0147 25.2999 40.0156 25.5494 40.1082L39.4193 45.254C42.2261 46.2953 44.9254 43.4347 43.7146 40.6933Z"
-          stroke="white"
+          stroke={borderColor}
           strokeWidth={2.25825}
         />
       </g>
@@ -80,14 +76,30 @@ const DefaultCursorSVG: FC = () => {
   );
 };
 
+export interface SmoothCursorProps {
+  cursor?: JSX.Element;
+  springConfig?: {
+    damping: number;
+    stiffness: number;
+    mass: number;
+    restDelta: number;
+  };
+  size?: number;
+  color?: string;
+  borderColor?: string;
+}
+
 export function SmoothCursor({
-  cursor = <DefaultCursorSVG />,
+  cursor,
   springConfig = {
     damping: 45,
     stiffness: 400,
     mass: 1,
     restDelta: 0.001,
   },
+  size = 30,
+  color = "black",
+  borderColor = "white",
 }: SmoothCursorProps) {
   const [isMoving, setIsMoving] = useState(false);
   const lastMousePos = useRef<Position>({ x: 0, y: 0 });
@@ -189,7 +201,7 @@ export function SmoothCursor({
         translateX: "-50%",
         translateY: "-50%",
         rotate: rotation,
-        scale: scale,
+        scale,
         zIndex: 100,
         pointerEvents: "none",
         willChange: "transform",
@@ -202,7 +214,7 @@ export function SmoothCursor({
         damping: 30,
       }}
     >
-      {cursor}
+      {cursor ? cursor : <DefaultCursorSVG size={size} color={color} borderColor={borderColor} />}
     </motion.div>
   );
 }

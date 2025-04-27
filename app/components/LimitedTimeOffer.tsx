@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import Countdown from 'react-countdown';
+import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
 
 interface LimitedTimeOfferProps {
   title: string;
@@ -40,6 +41,7 @@ export function LimitedTimeOffer({
 }: LimitedTimeOfferProps) {
   const [isClient, setIsClient] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
+  const { setColor, setBorderColor } = useCursorColor();
 
   useEffect(() => {
     setIsClient(true);
@@ -70,7 +72,11 @@ export function LimitedTimeOffer({
   }
 
   return (
-    <div className="w-full h-[722px] relative">
+    <div
+      className="w-full h-[722px] relative"
+      onMouseEnter={() => { setColor('#f9f6ec'); setBorderColor('#303172'); }}
+      onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
+    >
       <div className="w-full h-[722px] px-[78px] py-14 bg-[#f9f6ec] inline-flex flex-col justify-center items-center gap-2.5">
         <div className="inline-flex w-full max-w-[1024px] justify-center items-center gap-[15.23px]">
           <div className="flex w-full justify-center items-center gap-[13.54px]">

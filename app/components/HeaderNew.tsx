@@ -1,8 +1,8 @@
 const HeaderNew = () => {
   return (
-    <header className="w-full h-24 fixed top-[20.28px]">
+    <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px]">
       <div className="w-full h-24 relative">
-        <div className="w-full max-w-[calc(100vw-152px)] mx-[76px] px-5 py-4 left-0 top-[20.28px] absolute bg-[#e8c273] rounded-[40px] inline-flex flex-col justify-start items-start gap-2.5">
+        <div className="w-full max-w-[calc(100vw-152px)] px-5 py-4 left-0 top-[20.28px] absolute bg-[#e8c273] rounded-[40px] inline-flex flex-col justify-start items-start gap-2.5">
           <div className="w-full inline-flex justify-between items-center">
             <div className="flex justify-start items-center gap-4">
               <div className="justify-start text-[#363880] text-sm font-semibold font-sans leading-tight">

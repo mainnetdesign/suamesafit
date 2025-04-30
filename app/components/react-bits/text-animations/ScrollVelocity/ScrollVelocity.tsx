@@ -167,7 +167,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
   }
 
   return (
-    <section className="absolute top-1/2 -translate-y-[30%]">
+    <section className="">
       {texts.map((text: string, index: number) => (
         <VelocityText
           key={index}

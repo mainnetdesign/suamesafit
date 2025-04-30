@@ -16,6 +16,8 @@ interface SplitTextProps {
   rootMargin?: string;
   textAlign?: 'left' | 'right' | 'center' | 'justify' | 'start' | 'end';
   onLetterAnimationComplete?: () => void;
+  repeat?: number;
+  repeatDelay?: number;
 }
 
 const SplitText: React.FC<SplitTextProps> = ({
@@ -29,9 +31,11 @@ const SplitText: React.FC<SplitTextProps> = ({
   rootMargin = '-100px',
   textAlign = 'center',
   onLetterAnimationComplete,
+  repeat = 1,
+  repeatDelay = 150,
 }) => {
-  const words = text.split(' ').map((word) => word.split(''));
-  const letters = words.flat();
+  const repeatedTexts = Array.from({ length: repeat }, () => text);
+  const wordsArray = repeatedTexts.map((t) => t.split(' '));
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
   const animatedCount = useRef(0);
@@ -57,8 +61,8 @@ const SplitText: React.FC<SplitTextProps> = ({
   }, [threshold, rootMargin]);
 
   const springs = useSprings(
-    letters.length,
-    letters.map((_, i) => ({
+    wordsArray.length,
+    wordsArray.map((_, i) => ({
       from: animationFrom,
       to: inView
         ? async (
@@ -70,14 +74,14 @@ const SplitText: React.FC<SplitTextProps> = ({
             await next(animationTo);
             animatedCount.current += 1;
             if (
-              animatedCount.current === letters.length &&
+              animatedCount.current === wordsArray.length &&
               onLetterAnimationComplete
             ) {
               onLetterAnimationComplete();
             }
           }
         : animationFrom,
-      delay: i * delay,
+      delay: i * repeatDelay + delay,
       config: {easing},
     })),
   );
@@ -88,26 +92,17 @@ const SplitText: React.FC<SplitTextProps> = ({
       className={`split-parent overflow-hidden inline ${className}`}
       style={{textAlign, whiteSpace: 'normal', wordWrap: 'break-word'}}
     >
-      {words.map((word, wordIndex) => (
+      {wordsArray.map((words, repeatIndex) => (
         <span
-          key={wordIndex}
+          key={repeatIndex}
           style={{display: 'inline-block', whiteSpace: 'nowrap'}}
         >
-          {word.map((letter, letterIndex) => {
-            const index =
-              words.slice(0, wordIndex).reduce((acc, w) => acc + w.length, 0) +
-              letterIndex;
-
-            return (
-              <animated.span
-                key={index}
-                style={springs[index] as unknown as React.CSSProperties}
-                className="inline-block transform transition-opacity will-change-transform"
-              >
-                {letter}
-              </animated.span>
-            );
-          })}
+          <animated.span
+            style={springs[repeatIndex] as unknown as React.CSSProperties}
+            className="text-title-h1 inline-block transform transition-opacity will-change-transform"
+          >
+            {words.join(' ')}
+          </animated.span>
           <span style={{display: 'inline-block', width: '0.3em'}}>&nbsp;</span>
         </span>
       ))}

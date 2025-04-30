@@ -7,8 +7,10 @@ import {
   ScrollRestoration,
   Outlet,
 } from '@remix-run/react';
-import { useState } from "react";
-import { CursorColorContext } from "~/components/shad-cn/ui/CursorContext";
+import {MutableRefObject, useRef, useState} from 'react';
+import {CursorColorContext} from '~/components/shad-cn/ui/CursorContext';
+import {StickyRefProvider} from '~/components/custom/sticky-ref-context';
+import {StickyCursorColorProvider} from '~/components/custom/sticky-cursor-color-context';
 
 import resetStyles from '~/styles/reset.css?url';
 // Supports weights 100-900
@@ -18,14 +20,18 @@ import appStyles from '~/styles/app.css?url';
 import tailwindCss from '~/styles/tailwind.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {RootLoader} from './root';
-import { SmoothCursor } from "~/components/shad-cn/ui/smooth-cursor";
-
+// import { SmoothCursor } from "~/components/shad-cn/ui/smooth-cursor";
+import BlobCursor from '~/components/react-bits/animations/BlobCursor/BlobCursor';
+import {BlobCursorProvider, useBlobCursorProximity} from '~/components/react-bits/animations/BlobCursor/BlobCursorContext';
+// import StickyCursor from '~/components/custom/sticky-cursor';
 
 export default function Layout() {
   const nonce = useNonce();
   const data = useRouteLoaderData<RootLoader>('root');
-  const [cursorColor, setCursorColor] = useState("black");
-  const [borderColor, setBorderColor] = useState("#303172");
+  // const stickyElementRef = useRef<HTMLElement | null>(null);
+  // const [stickyElement, setStickyElement] = useState<MutableRefObject<HTMLElement | null>>(stickyElementRef);
+  const [cursorColor, setCursorColor] = useState('#00FFFF');
+  const [borderColor, setBorderColor] = useState('#303172');
 
   return (
     <html lang="en">
@@ -39,24 +45,40 @@ export default function Layout() {
         <Links />
       </head>
       <body className="relative">
-        <CursorColorContext.Provider value={{ color: cursorColor, setColor: setCursorColor, borderColor, setBorderColor }}>
-          <SmoothCursor color={cursorColor} size={24} borderColor={borderColor} />
-          {data ? (
-            <Analytics.Provider
-              cart={data.cart}
-              shop={data.shop}
-              consent={data.consent}
-            >
-              <PageLayout {...data}>
-                <Outlet />
-              </PageLayout>
-            </Analytics.Provider>
-          ) : (
-            <Outlet />
-          )}
-          <ScrollRestoration nonce={nonce} />
-          <Scripts nonce={nonce} />
+        <StickyCursorColorProvider>
+        <StickyRefProvider>
+        <CursorColorContext.Provider
+          value={{
+            color: cursorColor,
+            setColor: setCursorColor,
+            borderColor,
+            setBorderColor,
+          }}
+        >
+          <BlobCursorProvider>
+            {/* <BlobCursor fillColor={cursorColor} /> */}
+            {/* <StickyCursor /> */}
+            {/* <StickyCursor stickyElement={stickyElement} /> */}
+
+            {data ? (
+              <Analytics.Provider
+                cart={data.cart}
+                shop={data.shop}
+                consent={data.consent}
+              >
+                <PageLayout {...data}>
+                  <Outlet />
+                </PageLayout>
+              </Analytics.Provider>
+            ) : (
+              <Outlet />
+            )}
+            <ScrollRestoration nonce={nonce} />
+            <Scripts nonce={nonce} />
+          </BlobCursorProvider>
         </CursorColorContext.Provider>
+        </StickyRefProvider>
+        </StickyCursorColorProvider>
       </body>
     </html>
   );

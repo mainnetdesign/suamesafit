@@ -2,6 +2,12 @@ import {useEffect, useState} from 'react';
 import Countdown from 'react-countdown';
 import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
 import { InteractiveHoverButton } from './magic-ui/ui/button';
+import Magnet from '~/components/react-bits/animations/Magnet/Magnet';
+import Magnetic from './custom/magnect';
+// import MagneticWrapper from './custom/magnect-wrapper';
+import { useBlobCursorProximity } from './react-bits/animations/BlobCursor/BlobCursorContext';
+import { useStickyRef } from './custom/sticky-ref-context';
+import StickyCursor from './custom/sticky-cursor';
 
 interface LimitedTimeOfferProps {
   title: string;
@@ -40,6 +46,7 @@ export function LimitedTimeOffer({
   imageUrl,
   deadline,
 }: LimitedTimeOfferProps) {
+  const stickyRef = useStickyRef();
   const [isClient, setIsClient] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
   const { setColor, setBorderColor } = useCursorColor();
@@ -75,9 +82,19 @@ export function LimitedTimeOffer({
   return (
     <div
       className="w-full h-[722px] relative"
-      onMouseEnter={() => { setColor('#f9f6ec'); setBorderColor('#303172'); }}
-      onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
+      onMouseEnter={() => {
+        setColor('#f9f6ec');
+        console.log('setColor', '#f9f6ec');
+        // setBorderColor('#303172');
+      }}
+      onMouseLeave={() => {
+        setColor('black');
+        console.log('setColor', 'black');
+        // setBorderColor('#303172');
+      }}
     >
+      <StickyCursor />
+
       <div className="w-full h-[722px] px-[78px] py-14 bg-[#f9f6ec] inline-flex flex-col justify-center items-center gap-2.5">
         <div className="inline-flex w-full max-w-[1024px] justify-center items-center gap-[15.23px]">
           <div className="flex w-full justify-center items-center gap-[13.54px]">
@@ -100,7 +117,6 @@ export function LimitedTimeOffer({
                     onComplete={() => setIsExpired(true)}
                   />
                 )}
-
                 <div className="self-stretch flex flex-col justify-start items-center gap-[18.61px]">
                   <h2 className="self-stretch h-[22.84px] text-center justify-center text-white text-[27.29px] font-semibold font-sans leading-[52.22px]">
                     {title}
@@ -109,13 +125,17 @@ export function LimitedTimeOffer({
                     {description}
                   </p>
                 </div>
-
-                <InteractiveHoverButton className="text-white h-[30.46px] p-[8.46px] bg-[#e8c273] rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors" style={{ textDecoration: 'none' }}>
+                {/* <MagneticWrapper ref={stickyElement}> */}
+                <InteractiveHoverButton
+                  ref={stickyRef as React.RefObject<HTMLButtonElement>}
+                  className="text-white h-[30.46px] p-[8.46px] bg-[#e8c273] rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors"
+                  style={{textDecoration: 'none'}}
+                >
                   <a
                     href={buttonLink}
                     aria-label={`${buttonText} - Limited time offer`}
                     className="flex items-center gap-[3.38px]"
-                    style={{ textDecoration: 'none' }}
+                    style={{textDecoration: 'none'}}
                   >
                     <div className="px-[3.38px] flex justify-center items-center">
                       <span className="justify-center text-white text-xs font-medium font-sans leading-[16.92px]">
@@ -138,6 +158,41 @@ export function LimitedTimeOffer({
                     </div> */}
                   </a>
                 </InteractiveHoverButton>
+                {/* </MagneticWrapper> */}
+                <Magnetic>
+                  <InteractiveHoverButton
+                    // ref={stickyRef as React.RefObject<HTMLButtonElement>}
+                    className="text-white h-[30.46px] p-[8.46px] bg-[#e8c273] rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors"
+                    style={{textDecoration: 'none'}}
+                  >
+                    <a
+                      href={buttonLink}
+                      aria-label={`${buttonText} - Limited time offer`}
+                      className="flex items-center gap-[3.38px]"
+                      style={{textDecoration: 'none'}}
+                    >
+                      <div className="px-[3.38px] flex justify-center items-center">
+                        <span className="justify-center text-white text-xs font-medium font-sans leading-[16.92px]">
+                          {buttonText}
+                        </span>
+                      </div>
+                      {/* <div className="relative">
+                        <svg
+                          width="18"
+                          height="18"
+                          viewBox="0 0 18 18"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11.4207 6.99732L5.86824 12.5498L4.95605 11.6376L10.5078 6.08514H5.61471V4.79492H12.7109V11.8911H11.4207V6.99732V6.99732Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div> */}
+                    </a>
+                  </InteractiveHoverButton>
+                </Magnetic>
               </div>
             </div>
           </div>

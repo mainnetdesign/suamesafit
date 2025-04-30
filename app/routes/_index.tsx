@@ -11,6 +11,7 @@ import {DatepickerRangeDemo} from '~/components/daterange';
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 // import {InteractiveHoverButton2} from '@/components/magicui/interactive-hover-button2';
 // import { Card, CardContent } from "~/components/shad-cn/ui/card"
+import Magnet from '~/components/react-bits/animations/Magnet/Magnet';
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
 
@@ -257,11 +258,13 @@ function FeaturedCollections({
                           flavors you can trust.
                         </p>
                       </div>
-                      <InteractiveHoverButton className="mt-8 bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button w-fit">
-                        <Link to={`/collections/${collection.handle}`}>
-                          Shop now
-                        </Link>
-                      </InteractiveHoverButton>
+                      <Magnet padding={200} disabled={false} magnetStrength={2}>
+                        <InteractiveHoverButton className="mt-8 bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button w-fit">
+                          <Link to={`/collections/${collection.handle}`}>
+                            Shop now
+                          </Link>
+                        </InteractiveHoverButton>
+                      </Magnet>
                       {/* <Link 
                         to={`/collections/${collection.handle}`}
                         className=" text-base font-medium bg-[#FCE762] text-[#423515] px-6 py-3 rounded-full inline-flex items-center gap-2 hover:bg-[#fce762]/90 transition-colors w-fit"

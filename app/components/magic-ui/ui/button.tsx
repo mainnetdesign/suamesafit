@@ -1,6 +1,7 @@
 import React from 'react';
 import {ArrowRight} from 'lucide-react';
 import {cn} from '~/lib/utils';
+import { useStickyCursorColor } from '~/components/custom/sticky-cursor-color-context';
 
 interface InteractiveHoverButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
@@ -9,6 +10,11 @@ export const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
   InteractiveHoverButtonProps
 >(({children, className, ...props}, ref) => {
+  const { setColor } = useStickyCursorColor();
+  // Define your hover color and default color
+  const hoverColor = '#fbbf24'; // amber-400
+  const defaultColor = '#00ffea';
+
   return (
     <button
       ref={ref}
@@ -17,6 +23,14 @@ export const InteractiveHoverButton = React.forwardRef<
         className,
       )}
       {...props}
+      onMouseEnter={e => {
+        setColor(hoverColor);
+        props.onMouseEnter?.(e);
+      }}
+      onMouseLeave={e => {
+        setColor(defaultColor);
+        props.onMouseLeave?.(e);
+      }}
     >
       <div className="flex items-center gap-2">
         {/* <div className="h-2 w-2 rounded-full transition-all duration-300 group-hover:scale-[100.8] bg-bg-strong-950"></div> */}

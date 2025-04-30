@@ -27,6 +27,7 @@ import type {TestimonialData} from '~/components/Testimonials/TestimonialCard';
 import {FALLBACK_TESTIMONIALS} from '~/data/fallback-testimonials';
 import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
 import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
+import { AboutUs } from '~/components/custom/AboutUs';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -115,7 +116,8 @@ export default function Homepage() {
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
-      
+      <AboutUs />
+
       <LimitedTimeOffer
         title="oferta por tempo limitado"
         description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."

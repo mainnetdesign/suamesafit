@@ -3,10 +3,23 @@ import SplitText from '~/components/react-bits/text-animations/SplitText/SplitTe
 import {ScrollVelocity} from '~/components/react-bits/text-animations/ScrollVelocity/ScrollVelocity';
 import {Link} from '@remix-run/react';
 import pratoImage from '~/assets/about-us/1-NASUAMARMITA-THIAGOFARIAS-43.png';
+import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 
 export function AboutUs() {
+  const {setColor, setBorderColor} = useCursorColor();
+
   return (
-    <section className="relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F7F8F2] overflow-hidden">
+    <section
+      className="relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F9F6EC] overflow-hidden"
+      onMouseEnter={() => {
+        setColor('#DF5627');
+        setBorderColor('#303172');
+      }}
+      onMouseLeave={() => {
+        setColor('black');
+        setBorderColor('#303172');
+      }}
+    >
       {/* Ornamentos laterais (simples, pode ser SVG ou divs absolutas se necessário) */}
       <div className="block absolute left-0 top-1/4 z-0">
         {/* Ornamento esquerdo */}
@@ -49,7 +62,7 @@ export function AboutUs() {
                   text="sabores leves que nutrem sua rotina"
                   repeat={2}
                   repeatDelay={150}
-                  className="text-3xl font-bold"
+                  className="text-3xl font-bold text-[#DF5627]"
                 />
               ) as unknown as string,
             ]}

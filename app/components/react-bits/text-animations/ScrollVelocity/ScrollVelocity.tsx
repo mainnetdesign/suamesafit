@@ -2,7 +2,7 @@
 	Installed from https://reactbits.dev/ts/tailwind/
 */
 
-import React, {useRef, useLayoutEffect, useState} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {
   motion,
   useScroll,
@@ -51,7 +51,7 @@ interface ScrollVelocityProps {
 function useElementWidth(ref: React.RefObject<HTMLElement>): number {
   const [width, setWidth] = useState(0);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     function updateWidth() {
       if (ref.current) {
         setWidth(ref.current.offsetWidth);
@@ -93,6 +93,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
     parallaxStyle,
     scrollerStyle,
   }: VelocityTextProps) {
+    
     const baseX = useMotionValue(0);
     const scrollOptions = scrollContainerRef
       ? {container: scrollContainerRef}
@@ -152,10 +153,7 @@ export const ScrollVelocity: React.FC<ScrollVelocityProps> = ({
     }
 
     return (
-      <div
-        className={`${parallaxClassName} relative`}
-        style={parallaxStyle}
-      >
+      <div className={`${parallaxClassName} relative`} style={parallaxStyle}>
         <motion.div
           className={`${scrollerClassName} flex whitespace-nowrap text-center font-sans text-4xl font-bold tracking-[-0.02em] drop-shadow md:text-[5rem] md:leading-[5rem]`}
           style={{x, ...scrollerStyle}}

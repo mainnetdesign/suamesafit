@@ -99,7 +99,7 @@ const SplitText: React.FC<SplitTextProps> = ({
         >
           <animated.span
             style={springs[repeatIndex] as unknown as React.CSSProperties}
-            className="text-title-h1 inline-block transform transition-opacity will-change-transform"
+            className="text-title-h1 !text-[51px] tracking-[-0.51px] inline-block transform transition-opacity will-change-transform text-center"
           >
             {words.join(' ')}
           </animated.span>

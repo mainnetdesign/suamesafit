@@ -113,10 +113,10 @@ export default function Homepage() {
       {/* <HomeBanner /> */}
       <FeaturedCollections collections={data.featuredCollections} />
       {/* <RecommendedProducts products={data.recommendedProducts} /> */}
+      <AboutUs />
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
-      <AboutUs />
 
       <LimitedTimeOffer
         title="oferta por tempo limitado"

@@ -38,6 +38,7 @@ export default defineConfig({
     allowedHosts: [
       'helping-merely-fish.ngrok-free.app',
       'concrete-willingly-alien.ngrok-free.app',
+      'subtly-intense-toucan.ngrok-free.app',
     ],
   },
   ssr: {

@@ -26,8 +26,8 @@ import {TestimonialsSection} from '~/components/Testimonials/TestimonialsSection
 import type {TestimonialData} from '~/components/Testimonials/TestimonialCard';
 import {FALLBACK_TESTIMONIALS} from '~/data/fallback-testimonials';
 import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
-import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
-import { AboutUs } from '~/components/custom/AboutUs';
+import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
+import {AboutUs} from '~/components/custom/AboutUs';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -221,15 +221,38 @@ function FeaturedCollections({
 }: {
   collections: FeaturedCollectionFragment[];
 }) {
-  const { setColor, setBorderColor } = useCursorColor();
+  const {setColor, setBorderColor} = useCursorColor();
   if (!collections?.length) return null;
 
   return (
     <div
       className="featured-collections bg-[#1B4332] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border"
-      onMouseEnter={() => { setColor('#1B4332'); setBorderColor('white'); }}
-      onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
+      onMouseEnter={() => {
+        setColor('#1B4332');
+        setBorderColor('white');
+      }}
+      onMouseLeave={() => {
+        setColor('black');
+        setBorderColor('#303172');
+      }}
     >
+      <div className="w-full flex justify-center items-center">
+        <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
+          <img
+            className="z-10 absolute left-0 top-[461px] w-[461px] h-[1200px] origin-top-left -rotate-90 object-cover"
+            src="public/images/hero1.png"
+          />
+          <div className="z-20 self-stretch h-[461px] p-8 bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
+            <div className="max-w-[416px] text-text-white-0 text-title-h4 ">
+              refeições saudáveis, frescas e deliciosas.
+            </div>
+            <div className="max-w-[416px] text-text-white-0 text-body-sm leading-normal">
+              Monte seu cardápio ou escolha um plano semanal. Receba refeições
+              equilibradas, práticas e deliciosas onde estiver.
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="max-w-full w-full px-8 mx-auto box-border">
         <div className="align-center mx-auto text-center flex items-center flex-col ">
           <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-xs break-words max-w-2xl">

@@ -168,7 +168,10 @@ export default function Homepage() {
   return (
     <div className="home">
       {/* <HomeBanner /> */}
-      <FeaturedCollections collections={data.featuredCollections} summerProducts={data.summerProducts} />
+      <FeaturedCollections
+        collections={data.featuredCollections}
+        summerProducts={data.summerProducts}
+      />
       <RecommendedProducts products={data.recommendedProducts} />
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
@@ -341,81 +344,70 @@ function FeaturedCollections({
               abrir pratos
             </Button.Root>
           </div>
-          
         </div>
         <SummerProductsGallery products={summerProducts} />
       </div>
 
-      <div className="max-w-full w-full px-8 gap-8 flex flex-col mx-auto box-border">
-        <div className="align-center mx-auto text-center flex items-center flex-col ">
-          <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-xs break-words max-w-2xl">
-            Features
+      <div className="w-full flex flex-col justify-center items-center">
+        <div className="bg-green-700 max-w-[1200px] w-full p-8 gap-8 flex flex-col mx-auto rounded-3xl">
+          <div className="align-center text-center flex items-center flex-col ">
+            <div className="text-label-lg">
+              categorias
+            </div>
+            <h4 className="text-title-h4">
+              encontre sua refeição ideal
+            </h4>
           </div>
-          <h4 className="font-serif text-title-h4 max-w-[416px] mt-4 mx-auto inline-block break-words">
-            Sustainable sips with real benefits
-          </h4>
-        </div>
-        <div className="relative">
-          <Carousel className="w-full max-w-[964px] mx-auto">
-            <CarouselContent className="min-h-[524px]">
-              {collections.map((collection) => (
-                <CarouselItem key={collection.id} className="md:basis-full">
-                  <div className="p-1">
-                    <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
-                      <div className="min-h-[524px] flex-1 max-w-[424px] bg-white rounded-lg p-8 flex flex-col justify-between">
-                        <div className="flex flex-col justify-between items-start h-full">
-                          <h3 className="text-[2.5rem] font-medium text-[#423515] mb-4 font-serif">
-                            {collection.title}
-                          </h3>
-                          <p className="text-base text-gray-600">
-                            Made with non-GMO ingredients for a drink
-                            that&apos;s as close to nature as it gets,
-                            delivering clean, pure flavors you can trust.
-                          </p>
+          <div className="relative">
+            <Carousel className="w-full max-w-[964px] mx-auto">
+              <CarouselContent className="min-h-[524px]">
+                {collections.map((collection) => (
+                  <CarouselItem key={collection.id} className="md:basis-full">
+                    <div className="p-1">
+                      <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
+                        <div className="min-h-[524px] flex-1 max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
+                          <div className="flex flex-col justify-between items-start h-full">
+                            <h3 className="text-[2.5rem] font-medium text-text-sub-600 mb-4 font-serif">
+                              {collection.title}
+                            </h3>
+                            <p className="text-base text-gray-600">
+                            {collection.description}
+                            </p>
+                          </div>
+                          <InteractiveHoverButton className="mt-8 bg-green-700 hover:bg-green-600 text-text-white-0 interactive-hover-button w-fit">
+                            <Link to={`/collections/${collection.handle}`}>
+                              ver opções
+                            </Link>
+                          </InteractiveHoverButton>
+                          
                         </div>
-                        <InteractiveHoverButton className="mt-8 bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button w-fit">
-                          <Link to={`/collections/${collection.handle}`}>
-                            Shop now
-                          </Link>
-                        </InteractiveHoverButton>
-                        {/* <Link 
-                        to={`/collections/${collection.handle}`}
-                        className=" text-base font-medium bg-[#FCE762] text-[#423515] px-6 py-3 rounded-full inline-flex items-center gap-2 hover:bg-[#fce762]/90 transition-colors w-fit"
-                      >
-                        Shop now
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                          <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                      </Link> */}
+                        {collection.image && (
+                          <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
+                            <Image
+                              data={collection.image}
+                              sizes="(min-width: 768px) 50vw, 100vw"
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                        )}
                       </div>
-                      {collection.image && (
-                        <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
-                          <Image
-                            data={collection.image}
-                            sizes="(min-width: 768px) 50vw, 100vw"
-                            className="object-cover w-full h-full"
-                          />
-                        </div>
-                      )}
                     </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious
-              className="w-left-0 md:-left-16 lg:-left-24 text-white"
-              iconSize={48}
-            />
-            <CarouselNext
-              className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
-              iconSize={48}
-            />
-            <CarouselDots />
-          </Carousel>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious
+                className="w-left-0 md:-left-16 lg:-left-24 text-white"
+                iconSize={48}
+              />
+              <CarouselNext
+                className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
+                iconSize={48}
+              />
+              <CarouselDots />
+            </Carousel>
+          </div>
         </div>
       </div>
-
-      
     </div>
   );
 }
@@ -455,6 +447,7 @@ const FEATURED_COLLECTION_QUERY = `#graphql
   fragment FeaturedCollection on Collection {
     id
     title
+    description
     image {
       id
       url

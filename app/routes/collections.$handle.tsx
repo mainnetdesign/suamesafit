@@ -73,6 +73,8 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
 
+
+
   return (
     <div className="collection">
       <h1>{collection.title}</h1>
@@ -97,6 +99,7 @@ export default function Collection() {
           },
         }}
       />
+      
     </div>
   );
 }

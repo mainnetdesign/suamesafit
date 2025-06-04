@@ -28,10 +28,57 @@ import {FALLBACK_TESTIMONIALS} from '~/data/fallback-testimonials';
 import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import {AboutUs} from '~/components/custom/AboutUs';
+import * as Button from '~/components/align-ui/ui/button';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
 };
+
+// Fragmento e query para buscar produtos da coleção
+const PRODUCT_ITEM_FRAGMENT = `#graphql
+  fragment MoneyProductItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+  fragment ProductItem on Product {
+    id
+    handle
+    title
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+      maxVariantPrice {
+        ...MoneyProductItem
+      }
+    }
+  }
+` as const;
+
+const COLLECTION_PRODUCTS_QUERY = `#graphql
+  ${PRODUCT_ITEM_FRAGMENT}
+  query CollectionProducts(
+    $handle: String!
+    $first: Int
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {
+      products(first: $first) {
+        nodes {
+          ...ProductItem
+        }
+      }
+    }
+  }
+` as const;
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -42,13 +89,23 @@ export async function loader(args: LoaderFunctionArgs) {
 
   const {storefront} = args.context;
 
+  // Buscar os produtos da coleção Summer Collection
+  const summerCollection = await storefront.query(COLLECTION_PRODUCTS_QUERY, {
+    variables: {handle: 'summer-collection', first: 4},
+  });
+
   // Fetch testimonials
   const {shop} = await storefront.query(SHOP_TESTIMONIALS_QUERY);
   const testimonials = JSON.parse(
     shop.testimonials?.value || JSON.stringify(FALLBACK_TESTIMONIALS),
   ) as TestimonialData[];
 
-  return {...deferredData, ...criticalData, testimonials};
+  return {
+    ...deferredData,
+    ...criticalData,
+    testimonials,
+    summerProducts: summerCollection.collection?.products?.nodes ?? [],
+  };
 }
 
 /**
@@ -111,12 +168,12 @@ export default function Homepage() {
   return (
     <div className="home">
       {/* <HomeBanner /> */}
-      <FeaturedCollections collections={data.featuredCollections} />
-      {/* <RecommendedProducts products={data.recommendedProducts} /> */}
-      <AboutUs />
+      <FeaturedCollections collections={data.featuredCollections} summerProducts={data.summerProducts} />
+      <RecommendedProducts products={data.recommendedProducts} />
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
+      <AboutUs />
 
       <LimitedTimeOffer
         title="oferta por tempo limitado"
@@ -126,6 +183,23 @@ export default function Homepage() {
         imageUrl={limitedTimeOfferImage}
         deadline="2025-05-01T23:59:59"
       />
+
+      <div className="w-full flex justify-center items-center">
+        <div className="max-w-[1200px] w-full flex justify-center items-center">
+          <div className="w-full flex justify-between items-center gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <h3 className="text-title-h4 text-text-sub-600">
+                pratos em destaque
+              </h3>
+            </div>
+            <Button.Root variant="primary" mode="filled" size="medium">
+              abrir pratos
+            </Button.Root>
+          </div>
+        </div>
+      </div>
+
+      <SummerProductsGallery products={data.summerProducts} />
     </div>
   );
 }
@@ -218,15 +292,17 @@ function RecommendedProducts({
 
 function FeaturedCollections({
   collections,
+  summerProducts,
 }: {
   collections: FeaturedCollectionFragment[];
+  summerProducts: any[];
 }) {
   const {setColor, setBorderColor} = useCursorColor();
   if (!collections?.length) return null;
 
   return (
     <div
-      className="featured-collections bg-[#1B4332] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border"
+      className="featured-collections bg-[#FAF6EC] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border"
       onMouseEnter={() => {
         setColor('#1B4332');
         setBorderColor('white');
@@ -239,11 +315,11 @@ function FeaturedCollections({
       <div className="w-full flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img
-            className="z-10 absolute left-0 top-[461px] w-[461px] h-[1200px] origin-top-left -rotate-90 object-cover"
+            className="z-10 absolute  object-cover w-full h-full"
             src="public/images/hero1.png"
           />
           <div className="z-20 self-stretch h-[461px] p-8 bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
-            <div className="max-w-[416px] text-text-white-0 text-title-h4 ">
+            <div className="max-w-[416px] text-text-white-0 text-title-h3">
               refeições saudáveis, frescas e deliciosas.
             </div>
             <div className="max-w-[416px] text-text-white-0 text-body-sm leading-normal">
@@ -253,7 +329,24 @@ function FeaturedCollections({
           </div>
         </div>
       </div>
-      <div className="max-w-full w-full px-8 mx-auto box-border">
+      <div className="w-full flex flex-col justify-center items-center">
+        <div className="max-w-[1200px] w-full flex justify-center items-center">
+          <div className="w-full flex justify-between items-center gap-4">
+            <div className="flex flex-col items-center gap-4">
+              <h3 className="text-title-h4 text-text-sub-600">
+                pratos em destaque
+              </h3>
+            </div>
+            <Button.Root variant="primary" mode="filled" size="medium">
+              abrir pratos
+            </Button.Root>
+          </div>
+          
+        </div>
+        <SummerProductsGallery products={summerProducts} />
+      </div>
+
+      <div className="max-w-full w-full px-8 gap-8 flex flex-col mx-auto box-border">
         <div className="align-center mx-auto text-center flex items-center flex-col ">
           <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-xs break-words max-w-2xl">
             Features
@@ -262,32 +355,30 @@ function FeaturedCollections({
             Sustainable sips with real benefits
           </h4>
         </div>
-      </div>
-
-      <div className="relative">
-        <Carousel className="w-full max-w-[964px] mx-auto">
-          <CarouselContent className="min-h-[524px]">
-            {collections.map((collection) => (
-              <CarouselItem key={collection.id} className="md:basis-full">
-                <div className="p-1">
-                  <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
-                    <div className="min-h-[524px] flex-1 max-w-[424px] bg-white rounded-lg p-8 flex flex-col justify-between">
-                      <div className="flex flex-col justify-between items-start h-full">
-                        <h3 className="text-[2.5rem] font-medium text-[#423515] mb-4 font-serif">
-                          {collection.title}
-                        </h3>
-                        <p className="text-base text-gray-600">
-                          Made with non-GMO ingredients for a drink that&apos;s
-                          as close to nature as it gets, delivering clean, pure
-                          flavors you can trust.
-                        </p>
-                      </div>
-                      <InteractiveHoverButton className="mt-8 bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button w-fit">
-                        <Link to={`/collections/${collection.handle}`}>
-                          Shop now
-                        </Link>
-                      </InteractiveHoverButton>
-                      {/* <Link 
+        <div className="relative">
+          <Carousel className="w-full max-w-[964px] mx-auto">
+            <CarouselContent className="min-h-[524px]">
+              {collections.map((collection) => (
+                <CarouselItem key={collection.id} className="md:basis-full">
+                  <div className="p-1">
+                    <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
+                      <div className="min-h-[524px] flex-1 max-w-[424px] bg-white rounded-lg p-8 flex flex-col justify-between">
+                        <div className="flex flex-col justify-between items-start h-full">
+                          <h3 className="text-[2.5rem] font-medium text-[#423515] mb-4 font-serif">
+                            {collection.title}
+                          </h3>
+                          <p className="text-base text-gray-600">
+                            Made with non-GMO ingredients for a drink
+                            that&apos;s as close to nature as it gets,
+                            delivering clean, pure flavors you can trust.
+                          </p>
+                        </div>
+                        <InteractiveHoverButton className="mt-8 bg-primary-base hover:bg-primary-base-hover text-[#423515] interactive-hover-button w-fit">
+                          <Link to={`/collections/${collection.handle}`}>
+                            Shop now
+                          </Link>
+                        </InteractiveHoverButton>
+                        {/* <Link 
                         to={`/collections/${collection.handle}`}
                         className=" text-base font-medium bg-[#FCE762] text-[#423515] px-6 py-3 rounded-full inline-flex items-center gap-2 hover:bg-[#fce762]/90 transition-colors w-fit"
                       >
@@ -296,32 +387,35 @@ function FeaturedCollections({
                           <path d="M6 12L10 8L6 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                       </Link> */}
-                    </div>
-                    {collection.image && (
-                      <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
-                        <Image
-                          data={collection.image}
-                          sizes="(min-width: 768px) 50vw, 100vw"
-                          className="object-cover w-full h-full"
-                        />
                       </div>
-                    )}
+                      {collection.image && (
+                        <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
+                          <Image
+                            data={collection.image}
+                            sizes="(min-width: 768px) 50vw, 100vw"
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious
-            className="w-left-0 md:-left-16 lg:-left-24 text-white"
-            iconSize={48}
-          />
-          <CarouselNext
-            className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
-            iconSize={48}
-          />
-          <CarouselDots />
-        </Carousel>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious
+              className="w-left-0 md:-left-16 lg:-left-24 text-white"
+              iconSize={48}
+            />
+            <CarouselNext
+              className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
+              iconSize={48}
+            />
+            <CarouselDots />
+          </Carousel>
+        </div>
       </div>
+
+      
     </div>
   );
 }
@@ -389,3 +483,42 @@ const SHOP_TESTIMONIALS_QUERY = `#graphql
     }
   }
 `;
+
+// Componente para galeria de produtos da Summer Collection
+function SummerProductsGallery({products}: {products: any[]}) {
+  if (!products?.length) return null;
+  return (
+    <div className="max-w-[1200px] w-full px-8 mx-auto mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {products.map((product) => (
+          <Link
+            key={product.id}
+            className="product-item bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            to={`/products/${product.handle}`}
+          >
+            {product.featuredImage && (
+              <div className="aspect-square">
+                <Image
+                  alt={product.featuredImage.altText || product.title}
+                  aspectRatio="1/1"
+                  data={product.featuredImage}
+                  loading="lazy"
+                  sizes="(min-width: 45em) 400px, 100vw"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <div className="p-4">
+              <h4 className="text-text-sub-600 font-medium mb-2">
+                {product.title}
+              </h4>
+              <small>
+                <Money data={product.priceRange.minVariantPrice} />
+              </small>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}

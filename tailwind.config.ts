@@ -23,7 +23,7 @@ export const texts = {
     '2.5rem',
     {
       lineHeight: '3rem',
-      letterSpacing: '-0.01em',
+      letterSpacing: '-0.05em',
       fontWeight: '500',
     },
   ],

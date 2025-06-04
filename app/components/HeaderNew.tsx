@@ -30,7 +30,7 @@ const HeaderNew = () => {
       <div className="w-full h-24 relative flex items-center justify-center">
         {/* Animated yellow bar, centered and collapses from center */}
         <div
-          className={`absolute top-[20.28px] left-1/2 -translate-x-1/2 mx-auto flex flex-col justify-center items-center transition-all duration-1000 ease-in-out bg-[#e8c273] rounded-[40px] z-10
+          className={`absolute top-[20.28px] left-1/2 -translate-x-1/2 mx-auto flex flex-col justify-center items-center transition-all duration-1000 ease-in-out bg-yellow-500 rounded-[40px] z-10
             ${collapsed ? 'w-24 px-5 py-4' : 'w-full max-w-[calc(100vw-152px)] px-5 py-4'}
           `}
           style={{
@@ -111,7 +111,7 @@ const HeaderNew = () => {
           </div>
         </div>
         {/* Center logo always visible, above the bar */}
-        <div className="w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-[#e8c273] rounded-[100px] flex items-center justify-center z-20">
+        <div className="w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-yellow-500 rounded-[100px] flex items-center justify-center z-20">
           <div
             data-svg-wrapper
             className="left-[11.50px] top-[55.33px] absolute"

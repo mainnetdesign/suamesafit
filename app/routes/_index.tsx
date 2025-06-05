@@ -178,14 +178,7 @@ export default function Homepage() {
       )}
       <AboutUs />
 
-      <LimitedTimeOffer
-        title="oferta por tempo limitado"
-        description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
-        buttonText="peça agora"
-        buttonLink="/collections/limited-offer"
-        imageUrl={limitedTimeOfferImage}
-        deadline="2025-05-01T23:59:59"
-      />
+      
 
       <div className="w-full flex justify-center items-center">
         <div className="max-w-[1200px] w-full flex justify-center items-center">
@@ -349,7 +342,7 @@ function FeaturedCollections({
       </div>
 
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="bg-green-700 max-w-[1200px] w-full p-8 gap-8 flex flex-col mx-auto rounded-3xl">
+        <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
           <div className="align-center text-center flex items-center flex-col ">
             <div className="text-label-lg">
               categorias
@@ -406,7 +399,17 @@ function FeaturedCollections({
               <CarouselDots />
             </Carousel>
           </div>
+
+          
         </div>
+        <LimitedTimeOffer
+        title="oferta por tempo limitado"
+        description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
+        buttonText="peça agora"
+        buttonLink="/collections/limited-offer"
+        imageUrl={limitedTimeOfferImage}
+        deadline="2025-06-30T23:59:59"
+      />
       </div>
     </div>
   );

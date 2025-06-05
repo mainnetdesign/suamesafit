@@ -91,8 +91,8 @@ export function LimitedTimeOffer({
             </div>
 
             {/* Right column - Content */}
-            <div className="w-[512.68px] h-[379px] px-[46.53px] py-[69.37px] bg-[#e48890] rounded-2xl inline-flex flex-col justify-center items-center gap-[8.46px]">
-              <div className="w-[349.39px] flex flex-col justify-start items-center gap-[30.46px]">
+            <div className="w-[600px] h-[379px] p-8 bg-[#e48890] rounded-2xl inline-flex flex-col justify-center items-center gap-[8.46px]">
+              <div className=" flex flex-col justify-start items-center gap-[30.46px]">
                 {isClient && (
                   <Countdown
                     date={new Date(deadline)}
@@ -101,41 +101,28 @@ export function LimitedTimeOffer({
                   />
                 )}
 
-                <div className="self-stretch flex flex-col justify-start items-center gap-[18.61px]">
-                  <h2 className="self-stretch h-[22.84px] text-center justify-center text-white text-[27.29px] font-semibold font-sans leading-[52.22px]">
+                <div className="self-stretch flex flex-col justify-start items-center gap-2">
+                  <h2 className="text-title-h4 text-text-white-0">
                     {title}
                   </h2>
-                  <p className="self-stretch h-[22.84px] text-center justify-center text-white text-[10.15px] font-semibold font-sans">
+                  <p className="text-text-white-0 text-pragraph-sm text-center">
                     {description}
                   </p>
                 </div>
 
-                <InteractiveHoverButton className="text-white h-[30.46px] p-[8.46px] bg-[#e8c273] rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors" style={{ textDecoration: 'none' }}>
+                <InteractiveHoverButton className="text-text-white-0 p-2 bg-yellow-600 rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors border-0 outline-none" style={{ textDecoration: 'none', border: 'none', outline: 'none' }}>
                   <a
                     href={buttonLink}
                     aria-label={`${buttonText} - Limited time offer`}
-                    className="flex items-center gap-[3.38px]"
-                    style={{ textDecoration: 'none' }}
+                    className="flex items-center gap-[3.38px] border-0 outline-none focus:outline-none"
+                    style={{ textDecoration: 'none', border: 'none', outline: 'none' }}
                   >
                     <div className="px-[3.38px] flex justify-center items-center">
-                      <span className="justify-center text-white text-xs font-medium font-sans leading-[16.92px]">
+                      <span className="justify-center text-xs font-medium font-sans leading-[16.92px]">
                         {buttonText}
                       </span>
                     </div>
-                    {/* <div className="relative">
-                      <svg
-                        width="18"
-                        height="18"
-                        viewBox="0 0 18 18"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11.4207 6.99732L5.86824 12.5498L4.95605 11.6376L10.5078 6.08514H5.61471V4.79492H12.7109V11.8911H11.4207V6.99732V6.99732Z"
-                          fill="white"
-                        />
-                      </svg>
-                    </div> */}
+                    
                   </a>
                 </InteractiveHoverButton>
               </div>

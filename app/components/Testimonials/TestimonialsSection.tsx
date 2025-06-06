@@ -78,12 +78,10 @@ export function TestimonialsSection({
             <div className="flex flex-col items-start gap-[20.28px]">
               <div className="flex flex-col items-start gap-[5.46px] self-stretch">
                 <div className="text-white flex w-full justify-between">
-                  <p className="text-label-md font-sans capitalize">
-                    Testemunhas
+                  <p className="text-title-h4">
+                    avaliações
                   </p>
-                  <p className="text-label-md font-sans">
-                    4,5 de 5 estrelas com mais de 325 avaliações
-                  </p>
+                  
                 </div>
 
                 <Divider className="w-full" />

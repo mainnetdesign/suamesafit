@@ -4,13 +4,14 @@ import {ScrollVelocity} from '~/components/react-bits/text-animations/ScrollVelo
 import {Link} from '@remix-run/react';
 import pratoImage from '~/assets/about-us/1-NASUAMARMITA-THIAGOFARIAS-43.png';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
+import * as Button from '~/components/align-ui/ui/button';
 
 export function AboutUs() {
   const {setColor, setBorderColor} = useCursorColor();
 
   return (
     <section
-      className="relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F9F6EC] overflow-hidden"
+      className="gap-8   relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F9F6EC] overflow-hidden"
       onMouseEnter={() => {
         setColor('#DF5627');
         setBorderColor('#303172');
@@ -53,7 +54,10 @@ export function AboutUs() {
           />
         </svg>
       </div>
-      <div className="relative z-10 flex flex-col items-center w-full max-w-5xl mx-auto px-4 gap-5">
+      <span className="text-title-h3 text-primary-base ">
+          quem somos nós?
+        </span>
+      <div className="bg-orange-100 p-16 rounded-3xl relative z-10 flex flex-col items-center w-full max-w-5xl mx-auto gap-5">
         <div className="w-full flex flex-col items-center absolute top-1/2 -translate-y-[45%]">
           <ScrollVelocity
             texts={[
@@ -62,45 +66,34 @@ export function AboutUs() {
                   text="sabores leves que nutrem sua rotina"
                   repeat={2}
                   repeatDelay={150}
-                  className="text-3xl font-bold text-[#DF5627]"
+                  className="text-title-h1 text-primary-base"
                 />
               ) as unknown as string,
             ]}
             velocity={60}
-            className="!text-[2.2rem] md:!text-[2.8rem] font-semibold text-[#D96B2B] leading-tight text-center"
+            className="text-title-h1 text-primary-base text-center"
             numCopies={2}
             parallaxClassName="mb-4"
           />
         </div>
-        <span className="self-stretch text-center justify-start text-black text-[26px] font-normal font-sans leading-[18px]">
-          who we are
-        </span>
+        
 
-        <div className="w-[296px] h-[326.475px] overflow-hidden shadow-lg ">
+        <div className="w-full overflow-hidden shadow-lg ">
           <img
-            src={pratoImage}
+            src={"images/equipe.png"}
             alt="Prato saudável"
-            className="object-cover w-full h-full rounded-lg  aspect-[296.00/326.47]"
+            className="object-cover w-full h-full rounded-lg  aspect-[492/326.47]"
             loading="lazy"
           />
         </div>
-        <p className="w-[296px] text-center justify-start text-[#303172] text-base font-medium font-sans leading-[19px]">
-          experimente refeições saudáveis, práticas e saborosas, preparadas com
-          ingredientes naturais e pensadas para facilitar o seu dia a dia. Cada
-          marmita é criada para elevar seu bem-estar, trazendo equilíbrio e
-          praticidade para sua alimentação.
-        </p>
-        <Link
-          to="/collections/limited-offer"
-          className="bg-[#df5627] h-[30px] hover:bg-[#b95a22] text-white rounded-[10px] p-2.5 text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#D96B2B] focus:ring-offset-2 inline-flex justify-center items-center gap-1 overflow-hidden"
-        >
-          <div className="px-1 flex justify-center items-center">
-            <div className="justify-center text-white text-sm font-medium font-sans leading-tight">
-              ver opções
-            </div>
-          </div>
-        </Link>
+        
       </div>
+      <p className="w-[296px] text-paragraph-lg text-center justify-start text-text-sub-600">
+        Janaina e Erika são duas profissionais apaixonadas que se uniram em um projeto incrível: a criação de marmitas fitness saudáveis e saborosas
+        </p>
+        <Button.Root>
+          saber mais
+        </Button.Root>
     </section>
   );
 }

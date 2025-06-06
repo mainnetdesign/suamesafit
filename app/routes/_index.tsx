@@ -7,10 +7,8 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {DatepickerRangeDemo} from '~/components/daterange';
-// import Carousel from '~/components/react-bits/ui/Carousel/Carousel';
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
-// import {InteractiveHoverButton2} from '@/components/magicui/interactive-hover-button2';
-// import { Card, CardContent } from "~/components/shad-cn/ui/card"
+
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
 
@@ -228,8 +226,8 @@ function RecommendedProducts({
   products: Promise<RecommendedProductsQuery | null>;
 }) {
   return (
-    <div className="recommended-products bg-green-700 py-[7.2rem] gap-[5.6rem] flex flex-col text-text-white-0 box-border">
-      <div className="max-w-full w-full px-8 mx-auto box-border">
+    <div>
+      {/* <div className="max-w-full w-full px-8 mx-auto box-border">
         <div className="align-center mx-auto text-center flex items-center flex-col">
           <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words	max-w-2xl	">
             Features
@@ -281,7 +279,7 @@ function RecommendedProducts({
           }
         </Await>
       </Suspense>
-      <br />
+      <br /> */}
     </div>
   );
 }
@@ -411,6 +409,8 @@ function FeaturedCollections({
         deadline="2025-06-30T23:59:59"
       />
       </div>
+
+      
     </div>
   );
 }

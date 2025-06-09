@@ -1,14 +1,13 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {Suspense} from 'react';
-import {Image, Money} from '@shopify/hydrogen';
+import {Image, Money, CartForm} from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import {DatepickerRangeDemo} from '~/components/daterange';
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
-
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
 
@@ -27,6 +26,8 @@ import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import {AboutUs} from '~/components/custom/AboutUs';
 import * as Button from '~/components/align-ui/ui/button';
+import * as Input from '~/components/align-ui/ui/input';
+import * as Accordion from '~/components/align-ui/ui/accordion';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -78,6 +79,37 @@ const COLLECTION_PRODUCTS_QUERY = `#graphql
   }
 ` as const;
 
+const HOMEPAGE_PRODUCTS_QUERY = `#graphql
+  fragment MoneyProductItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+  fragment HomeProductItem on Product {
+    id
+    handle
+    title
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    priceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+    }
+  }
+  query HomepageProducts($first: Int = 8) {
+    products(first: $first, sortKey: TITLE) {
+      nodes {
+        ...HomeProductItem
+      }
+    }
+  }
+` as const;
+
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -92,6 +124,11 @@ export async function loader(args: LoaderFunctionArgs) {
     variables: {handle: 'summer-collection', first: 4},
   });
 
+  // Buscar 8 produtos em ordem alfabética
+  const homepageProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
+    variables: { first: 8 },
+  });
+
   // Fetch testimonials
   const {shop} = await storefront.query(SHOP_TESTIMONIALS_QUERY);
   const testimonials = JSON.parse(
@@ -103,6 +140,7 @@ export async function loader(args: LoaderFunctionArgs) {
     ...criticalData,
     testimonials,
     summerProducts: summerCollection.collection?.products?.nodes ?? [],
+    homepageProducts: homepageProducts.products.nodes,
   };
 }
 
@@ -140,172 +178,12 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   };
 }
 
-function HomeBanner() {
-  return (
-    <div className="items-center grow flex relative">
-      <div className="flex text-center items-center flex-col w-full relative mx-auto px-8 box-border z-[3] gap-[1.6rem]">
-        <div className="gap-10 flex flex-col items-center box-border">
-          <div className="break-words	m-0 block text-center">
-            Enjoy refreshing, natural drinks made from the finest ingredients.
-          </div>
-          <a href=".">Shop now</a>
-        </div>
-      </div>
-      <div className="">
-        {/* <img src="../assets/tearo-pink.webp" alt="img1" />
-        <img src="" alt="" /> */}
-      </div>
-    </div>
-  );
-}
-
 export default function Homepage() {
   const {testimonials} = useLoaderData<typeof loader>();
   const data = useLoaderData<typeof loader>();
 
   return (
-    <div className="home">
-      {/* <HomeBanner /> */}
-      <FeaturedCollections
-        collections={data.featuredCollections}
-        summerProducts={data.summerProducts}
-      />
-      <RecommendedProducts products={data.recommendedProducts} />
-      {testimonials.length > 0 && (
-        <TestimonialsSection testimonials={testimonials} />
-      )}
-      <AboutUs />
-
-      
-
-      <div className="w-full flex justify-center items-center">
-        <div className="max-w-[1200px] w-full flex justify-center items-center">
-          <div className="w-full flex justify-between items-center gap-4">
-            <div className="flex flex-col items-center gap-4">
-              <h3 className="text-title-h4 text-text-sub-600">
-                pratos em destaque
-              </h3>
-            </div>
-            <Button.Root variant="primary" mode="filled" size="medium">
-              abrir pratos
-            </Button.Root>
-          </div>
-        </div>
-      </div>
-
-      <SummerProductsGallery products={data.summerProducts} />
-    </div>
-  );
-}
-
-// function FeaturedCollection({
-//   collection,
-// }: {
-//   collection: FeaturedCollectionFragment;
-// }) {
-//   if (!collection) return null;
-//   const image = collection?.image;
-//   return (
-//     <Link
-//       className="featured-collection"
-//       to={`/collections/${collection.handle}`}
-//     >
-//       {image && (
-//         <div className="featured-collection-image">
-//           <Image data={image} sizes="100vw" />
-//         </div>
-//       )}
-//       <h1 className="">{collection.title}</h1>
-//     </Link>
-//   );
-// }
-
-function RecommendedProducts({
-  products,
-}: {
-  products: Promise<RecommendedProductsQuery | null>;
-}) {
-  return (
-    <div>
-      {/* <div className="max-w-full w-full px-8 mx-auto box-border">
-        <div className="align-center mx-auto text-center flex items-center flex-col">
-          <div className="uppercase mx-auto font-medium tracking-[0.08em] text-label-lg break-words	max-w-2xl	">
-            Features
-          </div>
-          <h2 className="my-7 mx-auto inline-block max-w-2xl m-0 break-words text-title-h1">
-            Sustainable sips with real benefits
-          </h2>
-        </div>
-      </div>
-
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {(response) =>
-            response ? (
-              <div className="relative">
-                <Carousel className="w-full max-w-xs mx-auto">
-                  <CarouselContent>
-                    {response.products.nodes.map((product) => (
-                      <CarouselItem key={product.id}>
-                        <div className="p-1">
-                          <Link
-                            key={product.id}
-                            className="recommended-product w-full"
-                            to={`/products/${product.handle}`}
-                          >
-                            <Image
-                              data={product.images.nodes[0]}
-                              aspectRatio="1/1"
-                              sizes="(min-width: 45em) 20vw, 50vw"
-                            />
-                            <div className="px-2 bg-gray-700 rouded-br rounded-b-lg">
-                              <h4 className="text-white">{product.title}</h4>
-                              <small className="text-white">
-                                <Money
-                                  data={product.priceRange.minVariantPrice}
-                                />
-                              </small>
-                            </div>
-                          </Link>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
-              </div>
-            ) : null
-          }
-        </Await>
-      </Suspense>
-      <br /> */}
-    </div>
-  );
-}
-
-function FeaturedCollections({
-  collections,
-  summerProducts,
-}: {
-  collections: FeaturedCollectionFragment[];
-  summerProducts: any[];
-}) {
-  const {setColor, setBorderColor} = useCursorColor();
-  if (!collections?.length) return null;
-
-  return (
-    <div
-      className="featured-collections bg-[#FAF6EC] py-[72px] gap-10 md:gap-12 lg:gap-20 flex flex-col text-white box-border"
-      onMouseEnter={() => {
-        setColor('#1B4332');
-        setBorderColor('white');
-      }}
-      onMouseLeave={() => {
-        setColor('black');
-        setBorderColor('#303172');
-      }}
-    >
+    <div className="home bg-[#FAF6EC] py-[72px] gap-10 flex flex-col text-white box-border">
       <div className="w-full flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img
@@ -323,8 +201,9 @@ function FeaturedCollections({
           </div>
         </div>
       </div>
+
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="max-w-[1200px] w-full flex justify-center items-center">
+        <div className="max-w-[1200px] w-full flex flex-col gap-8 justify-center items-center">
           <div className="w-full flex justify-between items-center gap-4">
             <div className="flex flex-col items-center gap-4">
               <h3 className="text-title-h4 text-text-sub-600">
@@ -335,19 +214,138 @@ function FeaturedCollections({
               abrir pratos
             </Button.Root>
           </div>
+          
+        
+          <HomepageProductsGrid products={data.homepageProducts} />
         </div>
-        <SummerProductsGallery products={summerProducts} />
+        
       </div>
+
+      <FeaturedCollections
+        collections={data.featuredCollections}
+        summerProducts={data.summerProducts}
+      />
+      
+      {testimonials.length > 0 && (
+        <TestimonialsSection testimonials={testimonials} />
+      )}
+
+      <AboutUs />
+
+      {/* Seja um Parceiro */}
+      {/* <div className="w-full flex flex-col justify-center items-center">
+        <div className="max-w-[1200px] p-16 bg-green-700 rounded-3xl w-full flex flex-col justify-center items-center">
+          <div className="w-full flex flex-col justify-center items-start">
+            <h2 className="text-title-h2">seja um parceiro</h2>
+            <p className="text-paragraph-lg text-text-white-0 mt-4">
+              trabalhe conosco e ofereça marmitas personalizadas, saudáveis e
+              saborosas para seus clientes.
+            </p>
+          </div>
+        </div>
+      </div> */}
+
+      <div className="w-full flex flex-col justify-center items-center">
+        <div className="max-w-[1200px] w-full flex gap-4 justify-center items-start">
+          <div className="w-full flex flex-col justify-center items-start">
+          <div className="text-label-lg bg-primary-base px-8 py-2 rounded-full">faq</div>
+            <h2 className="text-title-h2 text-text-sub-600">perguntas frequentes</h2>
+          </div>
+          <div className="bg-orange-100 rounded-3xl w-full">
+          <Accordion.Root type="single" collapsible className="">
+            <Accordion.Item value="restricoes">
+              <Accordion.Trigger>
+                <Accordion.Arrow />
+                Vocês atendem restrições alimentares e alergias?
+              </Accordion.Trigger>
+              <Accordion.Content className="pl-[30px]">
+                Sim! Nossas marmitas são preparadas com atenção especial às restrições alimentares e alergias. 
+                Oferecemos opções vegetarianas, veganas, sem glúten, sem lactose e outras adaptações conforme sua necessidade.
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item value="personalizacao">
+              <Accordion.Trigger>
+                <Accordion.Arrow />
+                Posso personalizar minha marmita?
+              </Accordion.Trigger>
+              <Accordion.Content className="pl-[30px]">
+                Sim! Você pode personalizar sua marmita escolhendo entre diferentes opções de proteínas, 
+                acompanhamentos e guarnições. Também oferecemos a possibilidade de montar seu próprio cardápio semanal.
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item value="frescas">
+              <Accordion.Trigger>
+                <Accordion.Arrow />
+                As marmitas chegam frescas ou congeladas?
+              </Accordion.Trigger>
+              <Accordion.Content className="pl-[30px]">
+                Nossas marmitas são entregues frescas, preparadas no mesmo dia da entrega. 
+                Elas são embaladas em recipientes térmicos para manter a temperatura ideal até chegarem em você.
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item value="durabilidade">
+              <Accordion.Trigger>
+                <Accordion.Arrow />
+                Quanto tempo as marmitas duram no freezer?
+              </Accordion.Trigger>
+              <Accordion.Content className="pl-[30px]">
+                Nossas marmitas podem ser conservadas no freezer por até 30 dias, mantendo todo o sabor e qualidade. 
+                Recomendamos consumir em até 3 dias quando mantidas na geladeira.
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item value="conservantes">
+              <Accordion.Trigger>
+                <Accordion.Arrow />
+                As marmitas contêm conservantes ou aditivos?
+              </Accordion.Trigger>
+              <Accordion.Content className="pl-[30px]">
+                Não! Nossas marmitas são 100% naturais, sem conservantes ou aditivos químicos. 
+                Utilizamos apenas ingredientes frescos e naturais para garantir uma alimentação saudável e saborosa.
+              </Accordion.Content>
+            </Accordion.Item>
+            <Accordion.Item value="regioes">
+              <Accordion.Trigger>
+                <Accordion.Arrow />
+                Para quais regiões vocês entregam?
+              </Accordion.Trigger>
+              <Accordion.Content className="pl-[30px]">
+                Atualmente atendemos toda a região metropolitana de São Paulo, incluindo Zona Sul, 
+                Zona Norte, Zona Leste, Zona Oeste e Grande São Paulo. Entre em contato para verificar 
+                a disponibilidade na sua região.
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion.Root>
+          </div>
+          
+        </div>
+      </div>
+
+      
+    </div>
+  );
+}
+
+
+
+function FeaturedCollections({
+  collections,
+  summerProducts,
+}: {
+  collections: FeaturedCollectionFragment[];
+  summerProducts: any[];
+}) {
+  const {setColor, setBorderColor} = useCursorColor();
+  if (!collections?.length) return null;
+
+  return (
+    <div className="featured-collections flex flex-col gap-10">
+      
 
       <div className="w-full flex flex-col justify-center items-center">
         <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
           <div className="align-center text-center flex items-center flex-col ">
-            <div className="text-label-lg">
-              categorias
-            </div>
-            <h4 className="text-title-h4">
-              encontre sua refeição ideal
-            </h4>
+            <div className="text-label-lg">categorias</div>
+            <h4 className="text-title-h4">encontre sua refeição ideal</h4>
           </div>
           <div className="relative">
             <Carousel className="w-full max-w-[964px] mx-auto">
@@ -358,11 +356,11 @@ function FeaturedCollections({
                       <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
                         <div className="min-h-[524px] flex-1 max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
                           <div className="flex flex-col justify-between items-start h-full">
-                            <h3 className="text-[2.5rem] font-medium text-text-sub-600 mb-4 font-serif">
+                            <h3 className="text-[2.5rem] lowercase font-medium text-text-sub-600 mb-4 font-serif">
                               {collection.title}
                             </h3>
                             <p className="text-base text-gray-600">
-                            {collection.description}
+                              {collection.description}
                             </p>
                           </div>
                           <InteractiveHoverButton className="mt-8 bg-green-700 hover:bg-green-600 text-text-white-0 interactive-hover-button w-fit">
@@ -370,7 +368,6 @@ function FeaturedCollections({
                               ver opções
                             </Link>
                           </InteractiveHoverButton>
-                          
                         </div>
                         {collection.image && (
                           <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
@@ -397,20 +394,16 @@ function FeaturedCollections({
               <CarouselDots />
             </Carousel>
           </div>
-
-          
         </div>
         <LimitedTimeOffer
-        title="oferta por tempo limitado"
-        description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
-        buttonText="peça agora"
-        buttonLink="/collections/limited-offer"
-        imageUrl={limitedTimeOfferImage}
-        deadline="2025-06-30T23:59:59"
-      />
+          title="oferta por tempo limitado"
+          description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
+          buttonText="peça agora"
+          buttonLink="/collections/limited-offer"
+          imageUrl={limitedTimeOfferImage}
+          deadline="2025-06-30T23:59:59"
+        />
       </div>
-
-      
     </div>
   );
 }
@@ -462,7 +455,7 @@ const FEATURED_COLLECTION_QUERY = `#graphql
   }
   query FeaturedCollection($country: CountryCode, $language: LanguageCode)
     @inContext(country: $country, language: $language) {
-    collections(first: 4, sortKey: UPDATED_AT, reverse: true) {
+    collections(first: 7, sortKey: UPDATED_AT, reverse: true) {
       nodes {
         ...FeaturedCollection
       }
@@ -480,39 +473,68 @@ const SHOP_TESTIMONIALS_QUERY = `#graphql
   }
 `;
 
-// Componente para galeria de produtos da Summer Collection
-function SummerProductsGallery({products}: {products: any[]}) {
+// Componente para grid de produtos na home
+function HomepageProductsGrid({ products }: { products: any[] }) {
   if (!products?.length) return null;
   return (
-    <div className="max-w-[1200px] w-full px-8 mx-auto mt-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {products.map((product) => (
-          <Link
-            key={product.id}
-            className="product-item bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
-            to={`/products/${product.handle}`}
-          >
-            {product.featuredImage && (
-              <div className="aspect-square">
-                <Image
-                  alt={product.featuredImage.altText || product.title}
-                  aspectRatio="1/1"
-                  data={product.featuredImage}
-                  loading="lazy"
-                  sizes="(min-width: 45em) 400px, 100vw"
-                  className="w-full h-full object-cover"
-                />
+          <div key={product.id} className="product-item rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+            <Link
+              className="block"
+              to={`/products/${product.handle}`}
+            >
+              {product.featuredImage && (
+                <div className="aspect-square">
+                  <Image
+                    alt={product.featuredImage.altText || product.title}
+                    aspectRatio="1/1"
+                    data={product.featuredImage}
+                    loading="lazy"
+                    sizes="(min-width: 45em) 400px, 100vw"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="p-4">
+                <h4 className="text-text-sub-600 text-label-lg mb-2">
+                  {product.title}
+                </h4>
+                {product.priceRange?.minVariantPrice && (
+                  <small className="text-paragraph-md text-text-sub-600">
+                    <Money data={product.priceRange.minVariantPrice} />
+                  </small>
+                )}
               </div>
-            )}
-            <div className="p-4">
-              <h4 className="text-text-sub-600 font-medium mb-2">
-                {product.title}
-              </h4>
-              <small>
-                <Money data={product.priceRange.minVariantPrice} />
-              </small>
+            </Link>
+            <div className="p-4 pt-0">
+              <CartForm
+                route="/cart"
+                inputs={{
+                  lines: [
+                    {
+                      merchandiseId: product.variants.nodes[0].id,
+                      quantity: 1,
+                    },
+                  ],
+                }}
+                action="add"
+              >
+                {(fetcher) => (
+                  <Button.Root
+                    variant="primary"
+                    mode="filled"
+                    size="medium"
+                    className="w-full bg-primary-base hover:bg-primary-dark"
+                    disabled={fetcher.state !== 'idle'}
+                  >
+                    {fetcher.state !== 'idle' ? 'Adicionando...' : 'Adicionar ao Carrinho'}
+                  </Button.Root>
+                )}
+              </CartForm>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </div>

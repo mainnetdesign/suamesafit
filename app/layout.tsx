@@ -17,6 +17,7 @@ import appStyles from '~/styles/app.css?url';
 import tailwindCss from '~/styles/tailwind.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {RootLoader} from './root';
+import {Footer} from '~/components/Footer';
 
 export default function Layout() {
   const nonce = useNonce();
@@ -47,6 +48,7 @@ export default function Layout() {
         ) : (
           <Outlet />
         )}
+        <Footer />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

@@ -27,14 +27,14 @@ const AccordionItem = React.forwardRef<
       className={cn(
         // base
         'group/accordion',
-        'rounded-10 bg-bg-white-0 p-3.5 ring-1 ring-inset ring-stroke-soft-200',
+        'rounded-10 p-3.5',
         'transition duration-200 ease-out',
         // hover
-        'hover:bg-bg-weak-50 hover:ring-transparent',
+        'hover:bg-orange-300 hover:ring-transparent',
         // has-focus-visible
-        'has-[:focus-visible]:bg-bg-weak-50 has-[:focus-visible]:ring-transparent',
+        'has-[:focus-visible]:bg-orange-300 has-[:focus-visible]:ring-transparent',
         // open
-        'data-[state=open]:bg-bg-weak-50 data-[state=open]:ring-transparent',
+        'data-[state=open]:bg-orange-300 data-[state=open]:ring-transparent',
         className,
       )}
       {...rest}
@@ -52,7 +52,7 @@ const AccordionTrigger = React.forwardRef<
       ref={forwardedRef}
       className={cn(
         // base
-        'w-[calc(100%+theme(space.7))] text-left text-label-sm text-text-strong-950',
+        'w-[calc(100%+theme(space.7))] text-left text-label-md text-text-sub-600',
         'grid auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-2.5',
         '-m-3.5 p-3.5 outline-none',
         // focus
@@ -99,7 +99,7 @@ function AccordionArrow({
     <>
       <OpenIcon
         className={cn(
-          'size-5 text-text-soft-400',
+          'size-5 text-text-sub-600',
           'transition duration-200 ease-out',
           // hover
           'group-hover/accordion:text-text-sub-600',

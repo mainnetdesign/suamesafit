@@ -91,11 +91,12 @@ export function AboutUs() {
       <p className="w-[296px] text-paragraph-lg text-center justify-start text-text-sub-600">
         Janaina e Erika são duas profissionais apaixonadas que se uniram em um projeto incrível: a criação de marmitas fitness saudáveis e saborosas
         </p>
-        <Button.Root>
+        {/* <Button.Root>
           saber mais
-        </Button.Root>
+        </Button.Root> */}
     </section>
   );
 }
 
 export default AboutUs;
+  

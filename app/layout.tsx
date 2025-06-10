@@ -48,7 +48,7 @@ export default function Layout() {
         ) : (
           <Outlet />
         )}
-        <Footer />
+        <Footer collections={data?.featuredCollections} />
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

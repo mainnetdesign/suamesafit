@@ -28,6 +28,7 @@ import {AboutUs} from '~/components/custom/AboutUs';
 import * as Button from '~/components/align-ui/ui/button';
 import * as Input from '~/components/align-ui/ui/input';
 import * as Accordion from '~/components/align-ui/ui/accordion';
+import {Product} from '~/components/Product';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -95,13 +96,19 @@ const HOMEPAGE_PRODUCTS_QUERY = `#graphql
       width
       height
     }
+    variants(first: 1) {
+      nodes {
+        id
+        availableForSale
+      }
+    }
     priceRange {
       minVariantPrice {
         ...MoneyProductItem
       }
     }
   }
-  query HomepageProducts($first: Int = 8) {
+  query HomepageProducts($first: Int = 4) {
     products(first: $first, sortKey: TITLE) {
       nodes {
         ...HomeProductItem
@@ -126,7 +133,7 @@ export async function loader(args: LoaderFunctionArgs) {
 
   // Buscar 8 produtos em ordem alfabética
   const homepageProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
-    variables: { first: 8 },
+    variables: { first: 4 },
   });
 
   // Fetch testimonials
@@ -480,61 +487,7 @@ function HomepageProductsGrid({ products }: { products: any[] }) {
     <div className="">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {products.map((product) => (
-          <div key={product.id} className="product-item rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-            <Link
-              className="block"
-              to={`/products/${product.handle}`}
-            >
-              {product.featuredImage && (
-                <div className="aspect-square">
-                  <Image
-                    alt={product.featuredImage.altText || product.title}
-                    aspectRatio="1/1"
-                    data={product.featuredImage}
-                    loading="lazy"
-                    sizes="(min-width: 45em) 400px, 100vw"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="p-4">
-                <h4 className="text-text-sub-600 text-label-lg mb-2">
-                  {product.title}
-                </h4>
-                {product.priceRange?.minVariantPrice && (
-                  <small className="text-paragraph-md text-text-sub-600">
-                    <Money data={product.priceRange.minVariantPrice} />
-                  </small>
-                )}
-              </div>
-            </Link>
-            <div className="p-4 pt-0">
-              <CartForm
-                route="/cart"
-                inputs={{
-                  lines: [
-                    {
-                      merchandiseId: product.variants.nodes[0].id,
-                      quantity: 1,
-                    },
-                  ],
-                }}
-                action="add"
-              >
-                {(fetcher) => (
-                  <Button.Root
-                    variant="primary"
-                    mode="filled"
-                    size="medium"
-                    className="w-full bg-primary-base hover:bg-primary-dark"
-                    disabled={fetcher.state !== 'idle'}
-                  >
-                    {fetcher.state !== 'idle' ? 'Adicionando...' : 'Adicionar ao Carrinho'}
-                  </Button.Root>
-                )}
-              </CartForm>
-            </div>
-          </div>
+          <Product key={product.id} product={product} />
         ))}
       </div>
     </div>

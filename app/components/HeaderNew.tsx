@@ -45,16 +45,16 @@ const HeaderNew = () => {
             style={{transitionProperty: 'opacity, transform'}}
           >
             <div className="flex justify-start items-center gap-4">
-              <div className="justify-start text-[#363880] text-sm font-semibold font-sans leading-tight">
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
                 pratos
               </div>
-              <div className="justify-start text-[#363880] text-sm font-semibold font-sans leading-tight">
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                 parcerias
               </div>
-              <div className="justify-start text-[#363880] text-sm font-semibold font-sans leading-tight">
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                 blog
               </div>
-              <div className="justify-start text-[#363880] text-sm font-semibold font-sans leading-tight">
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                 sobre
               </div>
             </div>
@@ -112,6 +112,7 @@ const HeaderNew = () => {
         </div>
         {/* Center logo always visible, above the bar */}
         <div className="w-24 h-24 left-1/2 -translate-x-1/2 top-0 absolute bg-yellow-500 rounded-[100px] flex items-center justify-center z-20">
+          <a href="/" className="flex items-center justify-center" >
           <div
             data-svg-wrapper
             className="left-[11.50px] top-[55.33px] absolute"
@@ -248,6 +249,7 @@ const HeaderNew = () => {
               />
             </svg>
           </div>
+          </a>
         </div>
       </div>
     </header>

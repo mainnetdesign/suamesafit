@@ -74,7 +74,7 @@ export default function Collection() {
         image={collectionsImage}
       />
 
-      <div className="w-full items-center justify-center px-4">
+      <div className="w-full max-w-[1200px] items-center justify-center">
         <CollectionTab categories={collections.nodes} />
       </div>
 

@@ -14,8 +14,8 @@ export function CollectionTab({ categories }: CollectionTabProps) {
   const currentPath = location.pathname;
 
   return (
-    <div className="max-w-[1200px] w-full items-center justify-between flex gap-2 overflow-x-auto pb-4">
-      <div className="gap-2flex items-center">
+    <div className="w-full items-center justify-between flex gap-2 overflow-x-auto py-8">
+      <div className="gap-2 flex items-center">
       <Button
         asChild
         mode={currentPath === '/collections/all' ? 'filled' : 'lighter'}

@@ -45,7 +45,7 @@ export function PageLayout({
           publicStoreDomain={publicStoreDomain}
         />
       )}
-      <main>{children}</main>
+      <main className="bg-[#FAF6EC] py-[32px] gap-10 flex flex-col">{children}</main>
       
     </Aside.Provider>
   );

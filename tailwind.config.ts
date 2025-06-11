@@ -14,7 +14,7 @@ export const texts = {
   'title-h2': [
     '3rem',
     {
-      lineHeight: '3.5rem',
+      lineHeight: '1.5rem',
       letterSpacing: '-0.01em',
       fontWeight: '500',
     },
@@ -22,7 +22,7 @@ export const texts = {
   'title-h3': [
     '2.5rem',
     {
-      lineHeight: '3rem',
+      lineHeight: '1.5rem',
       letterSpacing: '-0.05em',
       fontWeight: '500',
     },
@@ -30,7 +30,7 @@ export const texts = {
   'title-h4': [
     '2rem',
     {
-      lineHeight: '2.5rem',
+      lineHeight: '1.5rem',
       letterSpacing: '-0.005em',
       fontWeight: '500',
     },
@@ -38,7 +38,7 @@ export const texts = {
   'title-h5': [
     '1.5rem',
     {
-      lineHeight: '2rem',
+      lineHeight: '1.5rem',
       letterSpacing: '0em',
       fontWeight: '500',
     },
@@ -46,7 +46,7 @@ export const texts = {
   'title-h6': [
     '1.25rem',
     {
-      lineHeight: '1.75rem',
+      lineHeight: '1.5rem',
       letterSpacing: '0em',
       fontWeight: '500',
     },

@@ -10,6 +10,7 @@ import {DatepickerRangeDemo} from '~/components/daterange';
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
+import hero1Image from '~/assets/home/hero1.png';
 
 import {
   Carousel,
@@ -190,12 +191,12 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
 
   return (
-    <div className="home bg-[#FAF6EC] py-[72px] gap-10 flex flex-col text-white box-border">
+    <div className="home bg-[#FAF6EC] py-[72px] gap-10 flex flex-col box-border">
       <div className="w-full flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img
             className="z-10 absolute  object-cover w-full h-full"
-            src="public/images/hero1.png"
+            src={hero1Image}
           />
           <div className="z-20 self-stretch h-[461px] p-8 bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
             <div className="max-w-[416px] text-text-white-0 text-title-h3">

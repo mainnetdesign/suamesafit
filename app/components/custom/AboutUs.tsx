@@ -5,6 +5,7 @@ import {Link} from '@remix-run/react';
 import pratoImage from '~/assets/about-us/1-NASUAMARMITA-THIAGOFARIAS-43.png';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import * as Button from '~/components/align-ui/ui/button';
+import equipeImage from '~/assets/home/equipe.png';
 
 export function AboutUs() {
   const {setColor, setBorderColor} = useCursorColor();
@@ -80,10 +81,9 @@ export function AboutUs() {
 
         <div className="w-full overflow-hidden shadow-lg ">
           <img
-            src={"images/equipe.png"}
-            alt="Prato saudável"
-            className="object-cover w-full h-full rounded-lg  aspect-[492/326.47]"
-            loading="lazy"
+            src={equipeImage}
+            alt="Nossa equipe"
+            className="w-full h-full object-cover"
           />
         </div>
         

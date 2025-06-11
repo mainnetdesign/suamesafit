@@ -4,6 +4,8 @@ import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import { CollectionHeader } from '~/components/collections/CollectionHeader';
+import collectionsImage from '~/assets/collections/all.jpg';
 
 export const meta: MetaFunction<typeof loader> = () => {
   return [{title: `Hydrogen | Products`}];
@@ -52,7 +54,14 @@ export default function Collection() {
 
   return (
     <div className="collection">
-      <h1>Products</h1>
+      
+      
+      <CollectionHeader 
+        title="nossos pratos fit" 
+        description="sua próxima refeição saudável está aqui" 
+        image={collectionsImage} 
+      />
+      
       <PaginatedResourceSection
         connection={products}
         resourcesClassName="products-grid"

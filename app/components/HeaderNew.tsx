@@ -45,9 +45,11 @@ const HeaderNew = () => {
             style={{transitionProperty: 'opacity, transform'}}
           >
             <div className="flex justify-start items-center gap-4">
+              <a href="/collections/all">
               <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
                 pratos
               </div>
+              </a>
               <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                 parcerias
               </div>

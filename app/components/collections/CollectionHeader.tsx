@@ -14,7 +14,7 @@ export function CollectionHeader({
   const imageSrc = typeof image === 'string' ? image : image.src;
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center w-full">
       <div className="p-8 w-full flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <Image
@@ -26,11 +26,11 @@ export function CollectionHeader({
             loading="eager"
           />
 
-          <div className="gap-2 z-10 self-stretch h-[361px] p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 flex flex-col justify-end items-start">
-            <h2 className="w-full text-text-white-0 text-center text-title-h2">
+          <div className="items-center  z-10 self-stretch h-[361px] p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 flex flex-col justify-end">
+            <h2 className="lowercase w-full text-text-white-0 text-center text-title-h2">
               {title}
             </h2>
-            <p className="w-full text-text-white-0 text-center text-paragraph-xl">{description}</p>
+            <p className="w-full max-w-[416px] text-text-white-0 text-center text-paragraph-md">{description}</p>
           </div>
         </div>
       </div>

@@ -8,11 +8,11 @@ interface ProductProps {
     handle: string;
     title: string;
     featuredImage?: {
-      altText?: string;
+      altText?: string | null;
       url: string;
-      width: number;
-      height: number;
-    };
+      width?: number | null;
+      height?: number | null;
+    } | null;
     priceRange?: {
       minVariantPrice: MoneyV2;
     };
@@ -21,9 +21,9 @@ interface ProductProps {
 
 export function Product({product}: ProductProps) {
   return (
-    <div className="product-item rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[400px] flex flex-col">
+    <div className="product-item rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[400px]">
       <Link
-        className="flex-1 flex flex-col group no-underline hover:no-underline"
+        className="gap-2 flex-1 flex flex-col group no-underline hover:no-underline"
         to={`/products/${product.handle}`}
       >
         {product.featuredImage && (
@@ -38,7 +38,7 @@ export function Product({product}: ProductProps) {
             />
           </div>
         )}
-        <div className="p-4 flex-1 flex flex-col no-underline">
+        <div className="flex flex-col no-underline">
           <h4 className="text-text-sub-600 text-label-lg mb-2 no-underline">
             {product.title}
           </h4>

@@ -3,6 +3,9 @@ import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import collectionsImage from '~/assets/collections/all.jpg';
+import { CollectionHeader } from '~/components/collections/CollectionHeader';
+
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -47,7 +50,7 @@ export default function Collections() {
 
   return (
     <div className="collections">
-      <h1>Collections</h1>
+      
       <PaginatedResourceSection
         connection={collections}
         resourcesClassName="collections-grid"

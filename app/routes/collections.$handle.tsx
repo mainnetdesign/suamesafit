@@ -9,6 +9,10 @@ import {
 import type {ProductItemFragment} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import { CollectionHeader } from '~/components/collections/CollectionHeader';
+import { CollectionTab } from '~/components/collections/CollectionTab';
+import { Product } from '~/components/Product';
+import collectionsImage from '~/assets/collections/all.jpg';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
@@ -43,11 +47,11 @@ async function loadCriticalData({
     throw redirect('/collections');
   }
 
-  const [{collection}] = await Promise.all([
+  const [{collection}, {collections}] = await Promise.all([
     storefront.query(COLLECTION_QUERY, {
       variables: {handle, ...paginationVariables},
-      // Add other queries here, so that they are loaded in parallel
     }),
+    storefront.query(COLLECTIONS_QUERY),
   ]);
 
   if (!collection) {
@@ -58,6 +62,7 @@ async function loadCriticalData({
 
   return {
     collection,
+    collections,
   };
 }
 
@@ -71,26 +76,45 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
-  const {collection} = useLoaderData<typeof loader>();
-
-
+  const {collection, collections} = useLoaderData<typeof loader>();
 
   return (
     <div className="collection">
-      <h1>{collection.title}</h1>
-      <p className="collection-description">{collection.description}</p>
-      <PaginatedResourceSection
-        connection={collection.products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+      <CollectionHeader 
+        title={collection.title}
+        description={collection.description} 
+        image={collection.image?.url || collectionsImage} 
+      />
+      <div className="w-full items-center justify-center px-4">
+        <CollectionTab categories={collections.nodes} />
+      </div>
+      
+      <div className="max-w-[1200px] w-full items-center justify-center px-4">
+        <PaginatedResourceSection
+          connection={collection.products}
+          resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+        >
+          {({node: product, index}: {node: ProductItemFragment; index: number}) => (
+            <Product
+              key={product.id}
+              product={{
+                id: product.id,
+                handle: product.handle,
+                title: product.title,
+                featuredImage: product.featuredImage ? {
+                  altText: product.featuredImage.altText || undefined,
+                  url: product.featuredImage.url,
+                  width: product.featuredImage.width || 0,
+                  height: product.featuredImage.height || 0,
+                } : undefined,
+                priceRange: product.priceRange ? {
+                  minVariantPrice: product.priceRange.minVariantPrice,
+                } : undefined,
+              }}
+            />
+          )}
+        </PaginatedResourceSection>
+      </div>
       <Analytics.CollectionView
         data={{
           collection: {
@@ -180,6 +204,9 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      image {
+        url
+      }
       products(
         first: $first,
         last: $last,
@@ -195,6 +222,18 @@ const COLLECTION_QUERY = `#graphql
           endCursor
           startCursor
         }
+      }
+    }
+  }
+` as const;
+
+const COLLECTIONS_QUERY = `#graphql
+  query Collections {
+    collections(first: 10) {
+      nodes {
+        id
+        title
+        handle
       }
     }
   }

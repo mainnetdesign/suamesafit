@@ -14,7 +14,7 @@ export const texts = {
   'title-h2': [
     '3rem',
     {
-      lineHeight: '1.5rem',
+      lineHeight: '3.5rem',
       letterSpacing: '-0.01em',
       fontWeight: '500',
     },
@@ -22,7 +22,7 @@ export const texts = {
   'title-h3': [
     '2.5rem',
     {
-      lineHeight: '1.5rem',
+      lineHeight: '2.5rem',
       letterSpacing: '-0.05em',
       fontWeight: '500',
     },

@@ -84,7 +84,7 @@ export function TestimonialsSection({
                   
                 </div>
 
-                <Divider className="w-full" />
+                
               </div>
 
               <div className="relative flex flex-col items-start gap-[8.58px] self-stretch min-h-[300px]">

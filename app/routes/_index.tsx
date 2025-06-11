@@ -351,7 +351,7 @@ function FeaturedCollections({
 
       <div className="w-full flex flex-col justify-center items-center">
         <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
-          <div className="align-center text-center flex items-center flex-col ">
+          <div className="text-text-white-0 align-center text-center flex items-center flex-col ">
             <div className="text-label-lg">categorias</div>
             <h4 className="text-title-h4">encontre sua refeição ideal</h4>
           </div>

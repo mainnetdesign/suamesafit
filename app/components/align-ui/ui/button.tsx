@@ -102,9 +102,9 @@ export const buttonVariants = tv({
           // base
           'bg-primary-alpha-10 text-primary-base ring-transparent',
           // hover
-          'hover:bg-bg-white-0 hover:ring-transparent hover:no-underline',
+          'hover:bg-primary-alpha-24 hover:ring-transparent hover:no-underline',
           // focus
-          'focus-visible:bg-bg-white-0 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
+          'focus-visible:bg-primary-alpha-24 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
         ],
       },
     },

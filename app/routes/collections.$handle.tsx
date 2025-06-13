@@ -40,7 +40,7 @@ async function loadCriticalData({
   const {handle} = params;
   const {storefront} = context;
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 100,
   });
 
   if (!handle) {
@@ -79,22 +79,19 @@ export default function Collection() {
   const {collection, collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
+    <div className="collection items-center justify-start flex flex-col">
       <CollectionHeader 
         title={collection.title}
         description={collection.description} 
         image={collection.image?.url || collectionsImage} 
       />
-      <div className="w-full max-w-[1200px] items-center justify-center px-4">
+      <div className="w-full max-w-[1200px] items-center justify-center">
         <CollectionTab categories={collections.nodes} />
       </div>
       
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
-        <PaginatedResourceSection
-          connection={collection.products}
-          resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        >
-          {({node: product, index}: {node: ProductItemFragment; index: number}) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {collection.products.nodes.map((product: ProductItemFragment) => (
             <Product
               key={product.id}
               product={{
@@ -112,8 +109,8 @@ export default function Collection() {
                 } : undefined,
               }}
             />
-          )}
-        </PaginatedResourceSection>
+          ))}
+        </div>
       </div>
       <Analytics.CollectionView
         data={{

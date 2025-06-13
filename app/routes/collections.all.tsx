@@ -1,7 +1,7 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
-import type {ProductItemFragment} from 'storefrontapi.generated';
+import type {ProductItemFragment, CatalogQueryVariables} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHeader} from '~/components/collections/CollectionHeader';
@@ -37,15 +37,22 @@ async function loadCriticalData({context, request}: LoaderFunctionArgs) {
   const reverse = sortKey.includes('desc');
 
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 100,
   });
+
+  // Função para validar e converter o sortKey
+  function getValidSortKey(key: string): NonNullable<CatalogQueryVariables['sortKey']> {
+    const validKeys = ['TITLE', 'PRICE', 'BEST_SELLING', 'CREATED_AT', 'ID', 'MANUAL', 'RELEVANCE'] as const;
+    const upperKey = key.split('-')[0].toUpperCase();
+    return validKeys.includes(upperKey as any) ? upperKey as NonNullable<CatalogQueryVariables['sortKey']> : 'TITLE';
+  }
 
   const [{products}, {collections}] = await Promise.all([
     storefront.query(CATALOG_QUERY, {
       variables: {
         ...paginationVariables,
         query,
-        sortKey: sortKey.split('-')[0].toUpperCase(),
+        sortKey: getValidSortKey(sortKey),
         reverse,
       },
     }),
@@ -69,7 +76,7 @@ export default function Collection() {
   return (
     <div className="collection items-center justify-start flex flex-col">
       <CollectionHeader
-        title="nossos pratos fit"
+        title="cardápio"
         description="sua próxima refeição saudável está aqui"
         image={collectionsImage}
       />
@@ -79,17 +86,8 @@ export default function Collection() {
       </div>
 
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
-        <PaginatedResourceSection
-          connection={products}
-          resourcesClassName="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-        >
-          {({
-            node: product,
-            index,
-          }: {
-            node: ProductItemFragment;
-            index: number;
-          }) => (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products.nodes.map((product: ProductItemFragment) => (
             <Product
               key={product.id}
               product={{
@@ -111,8 +109,8 @@ export default function Collection() {
                   : undefined,
               }}
             />
-          )}
-        </PaginatedResourceSection>
+          ))}
+        </div>
       </div>
     </div>
   );

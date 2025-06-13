@@ -134,7 +134,7 @@ export async function loader(args: LoaderFunctionArgs) {
 
   // Buscar 8 produtos em ordem alfabética
   const homepageProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
-    variables: { first: 4 },
+    variables: {first: 4},
   });
 
   // Fetch testimonials
@@ -218,22 +218,25 @@ export default function Homepage() {
                 pratos em destaque
               </h3>
             </div>
-            <Button.Root variant="primary" mode="filled" size="medium">
-              abrir pratos
+            <Button.Root
+              variant="primary"
+              mode="filled"
+              size="medium"
+              onClick={() => window.location.href = '/collections/all'}
+            >
+              abrir cardápio
             </Button.Root>
           </div>
-          
-        
+
           <HomepageProductsGrid products={data.homepageProducts} />
         </div>
-        
       </div>
 
       <FeaturedCollections
         collections={data.featuredCollections}
         summerProducts={data.summerProducts}
       />
-      
+
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
@@ -256,84 +259,91 @@ export default function Homepage() {
       <div className="w-full flex flex-col justify-center items-center">
         <div className="max-w-[1200px] w-full flex gap-4 justify-center items-start">
           <div className="w-full flex flex-col justify-center items-start">
-          <div className="text-label-lg bg-primary-base px-8 py-2 rounded-full">faq</div>
-            <h2 className="text-title-h2 text-text-sub-600">perguntas frequentes</h2>
+            <div className="text-label-lg bg-primary-base px-8 py-2 rounded-full">
+              faq
+            </div>
+            <h2 className="text-title-h2 text-text-sub-600">
+              perguntas frequentes
+            </h2>
           </div>
           <div className="bg-orange-100 rounded-3xl w-full">
-          <Accordion.Root type="single" collapsible className="">
-            <Accordion.Item value="restricoes">
-              <Accordion.Trigger>
-                <Accordion.Arrow />
-                Vocês atendem restrições alimentares e alergias?
-              </Accordion.Trigger>
-              <Accordion.Content className="pl-[30px]">
-                Sim! Nossas marmitas são preparadas com atenção especial às restrições alimentares e alergias. 
-                Oferecemos opções vegetarianas, veganas, sem glúten, sem lactose e outras adaptações conforme sua necessidade.
-              </Accordion.Content>
-            </Accordion.Item>
-            <Accordion.Item value="personalizacao">
-              <Accordion.Trigger>
-                <Accordion.Arrow />
-                Posso personalizar minha marmita?
-              </Accordion.Trigger>
-              <Accordion.Content className="pl-[30px]">
-                Sim! Você pode personalizar sua marmita escolhendo entre diferentes opções de proteínas, 
-                acompanhamentos e guarnições. Também oferecemos a possibilidade de montar seu próprio cardápio semanal.
-              </Accordion.Content>
-            </Accordion.Item>
-            <Accordion.Item value="frescas">
-              <Accordion.Trigger>
-                <Accordion.Arrow />
-                As marmitas chegam frescas ou congeladas?
-              </Accordion.Trigger>
-              <Accordion.Content className="pl-[30px]">
-                Nossas marmitas são entregues frescas, preparadas no mesmo dia da entrega. 
-                Elas são embaladas em recipientes térmicos para manter a temperatura ideal até chegarem em você.
-              </Accordion.Content>
-            </Accordion.Item>
-            <Accordion.Item value="durabilidade">
-              <Accordion.Trigger>
-                <Accordion.Arrow />
-                Quanto tempo as marmitas duram no freezer?
-              </Accordion.Trigger>
-              <Accordion.Content className="pl-[30px]">
-                Nossas marmitas podem ser conservadas no freezer por até 30 dias, mantendo todo o sabor e qualidade. 
-                Recomendamos consumir em até 3 dias quando mantidas na geladeira.
-              </Accordion.Content>
-            </Accordion.Item>
-            <Accordion.Item value="conservantes">
-              <Accordion.Trigger>
-                <Accordion.Arrow />
-                As marmitas contêm conservantes ou aditivos?
-              </Accordion.Trigger>
-              <Accordion.Content className="pl-[30px]">
-                Não! Nossas marmitas são 100% naturais, sem conservantes ou aditivos químicos. 
-                Utilizamos apenas ingredientes frescos e naturais para garantir uma alimentação saudável e saborosa.
-              </Accordion.Content>
-            </Accordion.Item>
-            <Accordion.Item value="regioes">
-              <Accordion.Trigger>
-                <Accordion.Arrow />
-                Para quais regiões vocês entregam?
-              </Accordion.Trigger>
-              <Accordion.Content className="pl-[30px]">
-                Atualmente atendemos toda a região metropolitana de São Paulo, incluindo Zona Sul, 
-                Zona Norte, Zona Leste, Zona Oeste e Grande São Paulo. Entre em contato para verificar 
-                a disponibilidade na sua região.
-              </Accordion.Content>
-            </Accordion.Item>
-          </Accordion.Root>
+            <Accordion.Root type="single" collapsible className="">
+              <Accordion.Item value="restricoes">
+                <Accordion.Trigger>
+                  <Accordion.Arrow />
+                  Vocês atendem restrições alimentares e alergias?
+                </Accordion.Trigger>
+                <Accordion.Content className="pl-[30px]">
+                  Sim! Nossas marmitas são preparadas com atenção especial às
+                  restrições alimentares e alergias. Oferecemos opções
+                  vegetarianas, veganas, sem glúten, sem lactose e outras
+                  adaptações conforme sua necessidade.
+                </Accordion.Content>
+              </Accordion.Item>
+              <Accordion.Item value="personalizacao">
+                <Accordion.Trigger>
+                  <Accordion.Arrow />
+                  Posso personalizar minha marmita?
+                </Accordion.Trigger>
+                <Accordion.Content className="pl-[30px]">
+                  Sim! Você pode personalizar sua marmita escolhendo entre
+                  diferentes opções de proteínas, acompanhamentos e guarnições.
+                  Também oferecemos a possibilidade de montar seu próprio
+                  cardápio semanal.
+                </Accordion.Content>
+              </Accordion.Item>
+              <Accordion.Item value="frescas">
+                <Accordion.Trigger>
+                  <Accordion.Arrow />
+                  As marmitas chegam frescas ou congeladas?
+                </Accordion.Trigger>
+                <Accordion.Content className="pl-[30px]">
+                  Nossas marmitas são entregues frescas, preparadas no mesmo dia
+                  da entrega. Elas são embaladas em recipientes térmicos para
+                  manter a temperatura ideal até chegarem em você.
+                </Accordion.Content>
+              </Accordion.Item>
+              <Accordion.Item value="durabilidade">
+                <Accordion.Trigger>
+                  <Accordion.Arrow />
+                  Quanto tempo as marmitas duram no freezer?
+                </Accordion.Trigger>
+                <Accordion.Content className="pl-[30px]">
+                  Nossas marmitas podem ser conservadas no freezer por até 30
+                  dias, mantendo todo o sabor e qualidade. Recomendamos consumir
+                  em até 3 dias quando mantidas na geladeira.
+                </Accordion.Content>
+              </Accordion.Item>
+              <Accordion.Item value="conservantes">
+                <Accordion.Trigger>
+                  <Accordion.Arrow />
+                  As marmitas contêm conservantes ou aditivos?
+                </Accordion.Trigger>
+                <Accordion.Content className="pl-[30px]">
+                  Não! Nossas marmitas são 100% naturais, sem conservantes ou
+                  aditivos químicos. Utilizamos apenas ingredientes frescos e
+                  naturais para garantir uma alimentação saudável e saborosa.
+                </Accordion.Content>
+              </Accordion.Item>
+              <Accordion.Item value="regioes">
+                <Accordion.Trigger>
+                  <Accordion.Arrow />
+                  Para quais regiões vocês entregam?
+                </Accordion.Trigger>
+                <Accordion.Content className="pl-[30px]">
+                  Atualmente atendemos toda a região metropolitana de São Paulo,
+                  incluindo Zona Sul, Zona Norte, Zona Leste, Zona Oeste e
+                  Grande São Paulo. Entre em contato para verificar a
+                  disponibilidade na sua região.
+                </Accordion.Content>
+              </Accordion.Item>
+            </Accordion.Root>
           </div>
-          
         </div>
       </div>
-
-      
     </div>
   );
 }
-
-
 
 function FeaturedCollections({
   collections,
@@ -347,8 +357,6 @@ function FeaturedCollections({
 
   return (
     <div className="featured-collections flex flex-col gap-10">
-      
-
       <div className="w-full flex flex-col justify-center items-center">
         <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
           <div className="text-text-white-0 align-center text-center flex items-center flex-col ">
@@ -482,7 +490,7 @@ const SHOP_TESTIMONIALS_QUERY = `#graphql
 `;
 
 // Componente para grid de produtos na home
-function HomepageProductsGrid({ products }: { products: any[] }) {
+function HomepageProductsGrid({products}: {products: any[]}) {
   if (!products?.length) return null;
   return (
     <div className="">

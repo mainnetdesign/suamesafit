@@ -5,42 +5,42 @@
 import * as React from 'react';
 import * as SelectPrimitives from '@radix-ui/react-select';
 import * as ScrollAreaPrimitives from '@radix-ui/react-scroll-area';
-import { Slottable } from '@radix-ui/react-slot';
-import { RiArrowDownSLine, RiCheckLine } from '@remixicon/react';
-import { tv, type VariantProps } from '~/utils/tv';
-import { cn } from '~/utils/cn';
-import type { PolymorphicComponentProps } from '~/utils/polymorphic';
+import {Slottable} from '@radix-ui/react-slot';
+import {RiArrowDownSLine, RiCheckLine} from '@remixicon/react';
+import {tv, type VariantProps} from '~/utils/tv';
+import {cn} from '~/utils/cn';
+import type {PolymorphicComponentProps} from '~/utils/polymorphic';
 
 export const selectVariants = tv({
   slots: {
     triggerRoot: [
       // base
-      'group/trigger min-w-0 shrink-0 bg-bg-white-0 shadow-regular-xs outline-none ring-1 ring-inset ring-stroke-soft-200',
-      'text-paragraph-sm text-text-strong-950',
+      'group/trigger min-w-0 bg-green-100 shrink-0 outline-none',
+      'text-label-sm text-green-600 lowercase',
       'flex items-center text-left',
       'transition duration-200 ease-out',
       // hover
-      'hover:bg-bg-weak-50 hover:ring-transparent',
+      'hover:bg-green-200 hover:ring-transparent',
       // focus
-      'focus:shadow-button-important-focus focus:outline-none focus:ring-stroke-strong-950',
-      'focus:text-text-strong-950 data-[placeholder]:focus:text-text-strong-950',
+      'focus:shadow-button-important-focus focus:outline-none focus:ring-stroke-green-600',
+      'focus:text-green-600 data-[placeholder]:focus:text-green-600',
       // disabled
       'disabled:pointer-events-none disabled:bg-bg-weak-50 disabled:text-text-disabled-300 disabled:shadow-none disabled:ring-transparent data-[placeholder]:disabled:text-text-disabled-300',
       // placeholder state
-      'data-[placeholder]:text-text-sub-600',
+      'data-[placeholder]:text-green-500',
     ],
     triggerArrow: [
       // base
       'ml-auto size-5 shrink-0',
       'transition duration-200 ease-out',
       // placeholder state
-      'group-data-[placeholder]/trigger:text-text-soft-400',
+      'group-data-[placeholder]/trigger:text-green-60',
       // filled state
-      'text-text-sub-600',
+      'text-green-600',
       // hover
-      'group-hover/trigger:text-text-sub-600 group-data-[placeholder]/trigger:group-hover:text-text-sub-600',
+      'group-hover/trigger:text-green-600 group-data-[placeholder]/trigger:group-hover:text-green-600',
       // focus
-      'group-focus/trigger:text-text-strong-950 group-data-[placeholder]/trigger:group-focus/trigger:text-text-strong-950',
+      'group-focus/trigger:text-green-600 group-data-[placeholder]/trigger:group-focus/trigger:text-green-600',
       // disabled
       'group-disabled/trigger:text-text-disabled-300 group-data-[placeholder]/trigger:group-disabled/trigger:text-text-disabled-300',
       // open
@@ -240,7 +240,7 @@ const SelectRoot = ({
   ...rest
 }: React.ComponentProps<typeof SelectPrimitives.Root> & SelectContextType) => {
   return (
-    <SelectContext.Provider value={{ size, variant, hasError }}>
+    <SelectContext.Provider value={{size, variant, hasError}}>
       <SelectPrimitives.Root {...rest} />
     </SelectContext.Provider>
   );
@@ -264,10 +264,10 @@ const SELECT_TRIGGER_ICON_NAME = 'SelectTriggerIcon';
 const SelectTrigger = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitives.Trigger>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitives.Trigger>
->(({ className, children, ...rest }, forwardedRef) => {
-  const { size, variant, hasError } = useSelectContext();
+>(({className, children, ...rest}, forwardedRef) => {
+  const {size, variant, hasError} = useSelectContext();
 
-  const { triggerRoot, triggerArrow } = selectVariants({
+  const {triggerRoot, triggerArrow} = selectVariants({
     size,
     variant,
     hasError,
@@ -276,7 +276,7 @@ const SelectTrigger = React.forwardRef<
   return (
     <SelectPrimitives.Trigger
       ref={forwardedRef}
-      className={triggerRoot({ class: className })}
+      className={triggerRoot({class: className})}
       {...rest}
     >
       <Slottable>{children}</Slottable>
@@ -296,10 +296,10 @@ function TriggerIcon<T extends React.ElementType = 'div'>({
 }: PolymorphicComponentProps<T>) {
   const Component = as || 'div';
 
-  const { size, variant, hasError } = useSelectContext();
-  const { triggerIcon } = selectVariants({ size, variant, hasError });
+  const {size, variant, hasError} = useSelectContext();
+  const {triggerIcon} = selectVariants({size, variant, hasError});
 
-  return <Component className={triggerIcon({ class: className })} {...rest} />;
+  return <Component className={triggerIcon({class: className})} {...rest} />;
 }
 TriggerIcon.displayName = SELECT_TRIGGER_ICON_NAME;
 
@@ -340,17 +340,17 @@ const SelectContent = React.forwardRef<
         collisionPadding={collisionPadding}
         {...rest}
       >
-        <ScrollAreaPrimitives.Root type='auto'>
+        <ScrollAreaPrimitives.Root type="auto">
           <SelectPrimitives.Viewport asChild>
             <ScrollAreaPrimitives.Viewport
-              style={{ overflowY: undefined }}
-              className='max-h-[196px] w-full scroll-py-2 overflow-auto p-2'
+              style={{overflowY: undefined}}
+              className="max-h-[196px] w-full scroll-py-2 overflow-auto p-2"
             >
               {children}
             </ScrollAreaPrimitives.Viewport>
           </SelectPrimitives.Viewport>
-          <ScrollAreaPrimitives.Scrollbar orientation='vertical'>
-            <ScrollAreaPrimitives.Thumb className='!w-1 rounded bg-bg-soft-200' />
+          <ScrollAreaPrimitives.Scrollbar orientation="vertical">
+            <ScrollAreaPrimitives.Thumb className="!w-1 rounded bg-bg-soft-200" />
           </ScrollAreaPrimitives.Scrollbar>
         </ScrollAreaPrimitives.Root>
       </SelectPrimitives.Content>
@@ -363,8 +363,8 @@ SelectContent.displayName = 'SelectContent';
 const SelectItem = React.forwardRef<
   React.ComponentRef<typeof SelectPrimitives.Item>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitives.Item>
->(({ className, children, ...rest }, forwardedRef) => {
-  const { size } = useSelectContext();
+>(({className, children, ...rest}, forwardedRef) => {
+  const {size} = useSelectContext();
 
   return (
     <SelectPrimitives.Item
@@ -397,14 +397,14 @@ const SelectItem = React.forwardRef<
           )}
         >
           {typeof children === 'string' ? (
-            <span className='line-clamp-1'>{children}</span>
+            <span className="line-clamp-1">{children}</span>
           ) : (
             children
           )}
         </span>
       </SelectPrimitives.ItemText>
       <SelectPrimitives.ItemIndicator asChild>
-        <RiCheckLine className='absolute right-2 top-1/2 size-5 shrink-0 -translate-y-1/2 text-text-sub-600' />
+        <RiCheckLine className="absolute right-2 top-1/2 size-5 shrink-0 -translate-y-1/2 text-text-sub-600" />
       </SelectPrimitives.ItemIndicator>
     </SelectPrimitives.Item>
   );
@@ -417,14 +417,12 @@ function SelectItemIcon<T extends React.ElementType>({
   className,
   ...rest
 }: PolymorphicComponentProps<T>) {
-  const { size, variant } = useSelectContext();
-  const { selectItemIcon } = selectVariants({ size, variant });
+  const {size, variant} = useSelectContext();
+  const {selectItemIcon} = selectVariants({size, variant});
 
   const Component = as || 'div';
 
-  return (
-    <Component className={selectItemIcon({ class: className })} {...rest} />
-  );
+  return <Component className={selectItemIcon({class: className})} {...rest} />;
 }
 
 export {

@@ -109,9 +109,11 @@ export default function Cart() {
   const cart = useLoaderData<typeof loader>();
 
   return (
-    <div className="cart">
-      <h1>Cart</h1>
-      <CartMain layout="page" cart={cart} />
+    <div className="cart py-[100px]">
+      <div className="max-w-[1200px] w-full flex flex-col gap-8 p-8 justify-center items-center">
+        <h1 className="text-text-sub-600 text-title-h3">seu carrinho</h1>
+        <CartMain layout="page" cart={cart} />
+      </div>
     </div>
   );
 }

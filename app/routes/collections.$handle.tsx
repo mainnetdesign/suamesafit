@@ -11,7 +11,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import { CollectionHeader } from '~/components/collections/CollectionHeader';
 import { CollectionTab } from '~/components/collections/CollectionTab';
-import { Product } from '~/components/Product';
+import { Product } from '~/components/ProductCard';
 import collectionsImage from '~/assets/collections/all.jpg';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {

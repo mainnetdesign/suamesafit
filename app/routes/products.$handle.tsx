@@ -11,6 +11,7 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {Root as Divider} from '~/components/align-ui/ui/divider';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -98,43 +99,57 @@ export default function Product() {
   const {title, descriptionHtml} = product;
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
+    <div className="flex">
+      <div className="py-[100px] max-w-[1200px] w-full flex  gap-8 justify-center items-start">
+        <ProductImage
+          images={
+            product.images.nodes.filter((img) => !!img.id) as {
+              id: string;
+              url: string;
+              altText?: string | null;
+              width?: number | null;
+              height?: number | null;
+            }[]
+          }
         />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
+        <div className="flex flex-col gap-8 max-w-[400px]">
+          <div className="flex flex-col gap-4">
+            <h3 className="text-text-sub-600 text-title-h3">{title}</h3>
+            <ProductPrice
+              price={selectedVariant?.price}
+              compareAtPrice={selectedVariant?.compareAtPrice}
+            />
+          </div>
+
+          
+          <ProductForm
+            productOptions={productOptions}
+            selectedVariant={selectedVariant}
+          />
+          <div className="flex flex-col gap-2">
+            <p className="text-text-sub-600 text-title-h5">descrição</p>
+            <div
+              className="text-text-sub-600"
+              dangerouslySetInnerHTML={{__html: descriptionHtml}}
+            />
+          </div>
+        </div>
+        <Analytics.ProductView
+          data={{
+            products: [
+              {
+                id: product.id,
+                title: product.title,
+                price: selectedVariant?.price.amount || '0',
+                vendor: product.vendor,
+                variantId: selectedVariant?.id || '',
+                variantTitle: selectedVariant?.title || '',
+                quantity: 1,
+              },
+            ],
+          }}
         />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
       </div>
-      <Analytics.ProductView
-        data={{
-          products: [
-            {
-              id: product.id,
-              title: product.title,
-              price: selectedVariant?.price.amount || '0',
-              vendor: product.vendor,
-              variantId: selectedVariant?.id || '',
-              variantTitle: selectedVariant?.title || '',
-              quantity: 1,
-            },
-          ],
-        }}
-      />
     </div>
   );
 }
@@ -212,6 +227,15 @@ const PRODUCT_FRAGMENT = `#graphql
     seo {
       description
       title
+    }
+    images(first: 10) {
+      nodes {
+        id
+        url
+        altText
+        width
+        height
+      }
     }
   }
   ${PRODUCT_VARIANT_FRAGMENT}

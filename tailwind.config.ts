@@ -39,7 +39,7 @@ export const texts = {
     '1.5rem',
     {
       lineHeight: '1.5rem',
-      letterSpacing: '0em',
+      letterSpacing: '-0.005em',
       fontWeight: '500',
     },
   ],

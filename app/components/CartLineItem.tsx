@@ -6,6 +6,8 @@ import {Link} from '@remix-run/react';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { Root as Button, Icon as ButtonIcon } from '~/components/align-ui/ui/button';
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -80,30 +82,33 @@ function CartLineQuantity({line}: {line: CartLine}) {
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="cart-line-quantity">
-      <small>Quantity: {quantity} &nbsp;&nbsp;</small>
-      <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
-        <button
-          aria-label="Decrease quantity"
-          disabled={quantity <= 1 || !!isOptimistic}
-          name="decrease-quantity"
-          value={prevQuantity}
-        >
-          <span>&#8722; </span>
-        </button>
-      </CartLineUpdateButton>
-      &nbsp;
-      <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
-        <button
-          aria-label="Increase quantity"
-          name="increase-quantity"
-          value={nextQuantity}
-          disabled={!!isOptimistic}
-        >
-          <span>&#43;</span>
-        </button>
-      </CartLineUpdateButton>
-      &nbsp;
+    <div className="cart-line-quantity flex items-center gap-2">
+      {/* Quantity Input */}
+      <div className="bg-neutral-0 border border-stroke-soft-200 px-4 py-2 rounded-md flex items-center gap-6">
+        <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
+          <button
+            aria-label="Decrease quantity"
+            disabled={quantity <= 1 || !!isOptimistic}
+            name="decrease-quantity"
+            value={prevQuantity}
+          >
+            <span className='text-text-sub-600 text-paragraph-md'>&#8722; </span>
+          </button>
+        </CartLineUpdateButton>
+        <small className='text-text-sub-600 text-paragraph-md'>{quantity}</small>
+
+        <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
+          <button
+            aria-label="Increase quantity"
+            name="increase-quantity"
+            value={nextQuantity}
+            disabled={!!isOptimistic}
+          >
+            <span className='text-text-sub-600 text-paragraph-md'>&#43;</span>
+          </button>
+        </CartLineUpdateButton>
+      </div>
+
       <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
     </div>
   );
@@ -127,9 +132,15 @@ function CartLineRemoveButton({
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
-      <button disabled={disabled} type="submit">
-        Remove
-      </button>
+      <Button
+        variant="neutral"
+        mode="ghost"
+        size="xsmall"
+        disabled={disabled}
+        type="submit"
+      >
+        <ButtonIcon as={RiDeleteBin6Line} className='text-text-sub-600' />
+      </Button>
     </CartForm>
   );
 }

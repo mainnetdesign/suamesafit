@@ -8,6 +8,7 @@ import {
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import HeaderNew from '~/components/HeaderNew';
+import React from 'react';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -25,6 +26,17 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {shop, menu} = header;
+  const [cartCount, setCartCount] = React.useState<number>(0);
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (cart && typeof cart.then === 'function') {
+        const cartData = await cart;
+        if (!cancelled) setCartCount(cartData?.totalQuantity ?? 0);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [cart]);
   return (
     <header className="relative z-50 ">
       {' '}
@@ -40,7 +52,7 @@ export function Header({
         />
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </header> */}
-      <HeaderNew />
+      <HeaderNew cartCount={cartCount} />
     </header>
   );
 }

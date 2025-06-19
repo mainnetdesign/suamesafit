@@ -5,6 +5,7 @@ import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {RiArrowDownSLine, RiLock2Line} from '@remixicon/react';
+import {CartLineItemTable} from './CartLineItemTable';
 
 export type CartLayout = 'page' | 'aside';
 
@@ -33,17 +34,24 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
     <div className={className}>
       <CartEmpty hidden={linesCount} layout={layout} />
       <div className="cart-details">
-        <div className="flex gap-4 items-center">
-          <div aria-labelledby="cart-lines" className='pl-5'>
-            <ul>
+        <div className="overflow-x-auto">
+          <table className="cart-table w-full min-w-[600px] mb-8">
+            <thead>
+              <tr>
+                <th className="text-left text-text-sub-600 text-label-lg p-4">Produto</th>
+                <th className="text-center text-text-sub-600 text-label-lg p-4">Quantidade</th>
+                {layout !== 'aside' && (
+                  <th className="text-right text-text-sub-600 text-label-lg p-4">Total</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>
               {(cart?.lines?.nodes ?? []).map((line) => (
-                <CartLineItem key={line.id} line={line} layout={layout} />
+                <CartLineItemTable key={line.id} line={line} layout={layout} showTotal={layout !== 'aside'} />
               ))}
-            </ul>
-          </div>
-          
+            </tbody>
+          </table>
         </div>
-
         {cartHasItems && <CartSummary cart={cart} layout={layout} />}
       </div>
     </div>

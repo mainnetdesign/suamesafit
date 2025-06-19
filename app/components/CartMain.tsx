@@ -34,7 +34,7 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
       <CartEmpty hidden={linesCount} layout={layout} />
       <div className="cart-details">
         <div className="flex gap-4 items-center">
-          <div aria-labelledby="cart-lines">
+          <div aria-labelledby="cart-lines" className='pl-5'>
             <ul>
               {(cart?.lines?.nodes ?? []).map((line) => (
                 <CartLineItem key={line.id} line={line} layout={layout} />

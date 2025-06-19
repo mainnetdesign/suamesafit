@@ -1,6 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-import { RiLuggageCartFill, RiSearch2Line, RiShoppingBasketFill, RiUser3Line } from 'react-icons/ri';
-import { Link } from '@remix-run/react';
+import {
+  RiLuggageCartLine,
+  RiSearch2Line,
+  RiShoppingBasketLine,
+  RiUser3Line,
+} from 'react-icons/ri';
+import {Link} from '@remix-run/react';
 
 const HeaderNew = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -28,7 +33,7 @@ const HeaderNew = () => {
   }, []);
 
   return (
-    <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px] z-50">
+    <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px] z-40">
       <div className="w-full h-24 relative flex items-center justify-center">
         {/* Animated yellow bar, centered and collapses from center */}
         <div
@@ -64,10 +69,10 @@ const HeaderNew = () => {
             </div>
             <div className="flex justify-start items-center gap-3.5">
               <Link to="/cart">
-                <RiShoppingBasketFill className='w-5 h-5 text-text-sub-600'/>
+                <RiShoppingBasketLine className="w-5 h-5 text-text-sub-600" />
               </Link>
-              <RiSearch2Line className='w-5 h-5 text-text-sub-600'/>
-              <RiUser3Line className='w-5 h-5 text-text-sub-600'/>
+              <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
+              <RiUser3Line className="w-5 h-5 text-text-sub-600" />
             </div>
           </div>
         </div>

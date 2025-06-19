@@ -49,21 +49,22 @@ export function CartLineItem({
               close();
             }
           }}
-        >
-          <p>
-            <strong>{product.title}</strong>
+          >
+          <p className='text-label-lg text-text-sub-600'>
+            {product.title}
           </p>
         </Link>
         <ProductPrice price={line?.cost?.totalAmount} />
-        <ul>
-          {selectedOptions.map((option) => (
-            <li key={option.name}>
-              <small>
-                {option.name}: {option.value}
-              </small>
-            </li>
-          ))}
-        </ul>
+          <ul>
+            {selectedOptions.map((option) => (
+              <li key={option.name}>
+                <p className='text-paragraph-sm text-text-sub-600'>
+                  {option.name}: {option.value}
+                </p>
+              </li>
+            ))}
+          </ul>
+          <br/>
         <CartLineQuantity line={line} />
       </div>
     </li>
@@ -84,7 +85,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
   return (
     <div className="cart-line-quantity flex items-center gap-2">
       {/* Quantity Input */}
-      <div className="bg-neutral-0 border border-stroke-soft-200 px-4 py-2 rounded-md flex items-center gap-6">
+      <div className="bg-neutral-0 w-[120px] border border-stroke-soft-200 px-4 py-2 rounded-md flex items-center justify-between">
         <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
           <button
             aria-label="Decrease quantity"

@@ -30,6 +30,7 @@ import * as Button from '~/components/align-ui/ui/button';
 import * as Input from '~/components/align-ui/ui/input';
 import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
+import { Header } from '~/components/Header';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -192,6 +193,7 @@ export default function Homepage() {
 
   return (
     <div className="home gap-10  flex flex-col">
+      
       <div className="w-full flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img

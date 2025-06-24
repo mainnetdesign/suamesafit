@@ -101,18 +101,60 @@ export async function action({request, context}: ActionFunctionArgs) {
 }
 
 export async function loader({context}: LoaderFunctionArgs) {
-  const {cart} = context;
-  return await cart.get();
+  const {cart, storefront} = context;
+  const cartData = await cart.get();
+
+  // Buscar produtos relacionados de uma coleção específica (exemplo: 'pratos-principais')
+  const collectionHandle = 'pratos-principais'; // ajuste para o handle desejado
+  const result = await storefront.query(
+    `#graphql
+      fragment MoneyProductItem on MoneyV2 {
+        amount
+        currencyCode
+      }
+      fragment ProductItem on Product {
+        id
+        handle
+        title
+        featuredImage {
+          altText
+          url
+          width
+          height
+        }
+        priceRange {
+          minVariantPrice {
+            ...MoneyProductItem
+          }
+        }
+      }
+      query CollectionProducts($handle: String!, $first: Int) {
+        collection(handle: $handle) {
+          products(first: $first) {
+            nodes {
+              ...ProductItem
+            }
+          }
+        }
+      }
+    `,
+    {
+      variables: {handle: collectionHandle, first: 4},
+    },
+  );
+  const relatedProducts = result.collection?.products?.nodes || [];
+
+  return { cart: cartData, relatedProducts };
 }
 
 export default function Cart() {
-  const cart = useLoaderData<typeof loader>();
+  const { cart, relatedProducts } = useLoaderData<typeof loader>();
 
   return (
     <div className="cart w-full flex flex-col justify-center items-center py-[100px]">
       <div className="max-w-[1200px] w-full flex flex-col gap-8 p-8 justify-center items-center">
         <h1 className="text-text-sub-600 text-title-h3">seu carrinho</h1>
-        <CartMain layout="page" cart={cart} />
+        <CartMain layout="page" cart={cart} relatedProducts={relatedProducts} />
       </div>
     </div>
   );

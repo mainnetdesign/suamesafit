@@ -6,19 +6,21 @@ import {CartLineItem} from '~/components/CartLineItem';
 import {CartSummary} from './CartSummary';
 import {RiArrowDownSLine, RiLock2Line} from '@remixicon/react';
 import {CartLineItemTable} from './CartLineItemTable';
+import {Product as ProductCard} from '~/components/ProductCard';
 
 export type CartLayout = 'page' | 'aside';
 
 export type CartMainProps = {
   cart: CartApiQueryFragment | null;
   layout: CartLayout;
+  relatedProducts?: any[];
 };
 
 /**
  * The main cart component that displays the cart items and summary.
  * It is used by both the /cart route and the cart aside dialog.
  */
-export function CartMain({layout, cart: originalCart}: CartMainProps) {
+export function CartMain({layout, cart: originalCart, relatedProducts}: CartMainProps) {
   // The useOptimisticCart hook applies pending actions to the cart
   // so the user immediately sees feedback when they modify the cart.
   const cart = useOptimisticCart(originalCart);
@@ -34,8 +36,8 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
     <div className={className}>
       <CartEmpty hidden={linesCount} layout={layout} />
       <div className={`cart-details${layout === 'page' ? ' flex gap-8 items-start' : ''}`}>
-        <div className="overflow-x-auto flex-1">
-          <table className="cart-table w-full min-w-[600px] mb-8">
+        <div className="overflow-x-auto">
+          <table className="cart-table w-full mb-8">
             <thead>
               <tr>
                 <th className="text-left text-text-sub-600 text-label-lg p-4">Produto</th>
@@ -61,6 +63,24 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
           <CartSummary cart={cart} layout={layout} />
         )}
       </div>
+      {/* Sessão de produtos relacionados */}
+      {layout === 'page' && relatedProducts && relatedProducts.length > 0 && (
+        <div className="w-full flex justify-center items-center p-6">
+          <div className="max-w-[1200px] w-full flex flex-col justify-center items-center mt-12">
+            <div className="flex items-center justify-between w-full">
+              <h2 className="text-title-h2 text-text-sub-600 mb-6">
+                você também pode gostar
+              </h2>
+              <a href="/collections" className="bg-yellow-300 rounded-lg px-4 py-2 text-text-sub-600 text-label-lg hover:bg-yellow-400 transition-colors">ver mais ↗</a>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-[1200px]">
+              {relatedProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -76,12 +96,11 @@ function CartEmpty({
     <div hidden={hidden}>
       <br />
       <p>
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-        started!
+        Acho que você não adicionou nada fit ainda, vamos começar!
       </p>
       <br />
       <Link to="/collections" onClick={close} prefetch="viewport">
-        Continue shopping →
+        Continuar comprando →
       </Link>
     </div>
   );

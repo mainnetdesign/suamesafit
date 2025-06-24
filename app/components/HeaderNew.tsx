@@ -6,11 +6,13 @@ import {
   RiUser3Line,
 } from 'react-icons/ri';
 import {Link} from '@remix-run/react';
+import {useAside} from './Aside';
 
 const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
   const [collapsed, setCollapsed] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+  const { open } = useAside();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,7 +70,7 @@ const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
               </div>
             </div>
             <div className="flex justify-start items-center gap-3.5 relative">
-              <Link to="/cart" className="w-8 relative">
+              <Link to="/cart" className="w-8 relative" onClick={e => { e.preventDefault(); open('cart'); }}>
                 <RiShoppingBasketLine className="w-5 h-5 text-text-sub-600" />
                 {typeof cartCount === 'number' && cartCount > 0 && (
                   <span className="absolute -top-1 left-4 bg-yellow-500 text-text-sub-600 rounded-full px-1.5 py-0.5 text-label-xs  min-w-[16px] text-center overflow-visible ">

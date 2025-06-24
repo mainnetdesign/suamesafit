@@ -109,7 +109,7 @@ export default function Cart() {
   const cart = useLoaderData<typeof loader>();
 
   return (
-    <div className="cart py-[100px]">
+    <div className="cart w-full flex flex-col justify-center items-center py-[100px]">
       <div className="max-w-[1200px] w-full flex flex-col gap-8 p-8 justify-center items-center">
         <h1 className="text-text-sub-600 text-title-h3">seu carrinho</h1>
         <CartMain layout="page" cart={cart} />

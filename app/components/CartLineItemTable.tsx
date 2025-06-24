@@ -28,7 +28,7 @@ export function CartLineItemTable({
   return (
     <tr key={id} className="border-b align-top">
       {/* Produto */}
-      <td className="flex gap-4 items-start p-4 min-w-[250px]">
+      <td className="flex gap-4 items-start p-4 min-w-[200px] w-full">
         {image && (
           <Image
             alt={title}
@@ -40,36 +40,36 @@ export function CartLineItemTable({
             className="rounded-md"
           />
         )}
-        <div>
+        <div className="w-full min-w-0">
           <Link
             prefetch="intent"
-            to={`/${product.handle}`}
+            to={`/products/${product.handle}`}
             onClick={() => {
               if (layout === 'aside') close();
             }}
-            className="text-label-lg text-text-sub-600 block mb-1"
+            className="text-label-lg text-text-sub-600 block mb-1 break-words w-full"
           >
             {product.title}
           </Link>
           {(!showTotal) && (
-            <span className="block text-blue-500 text-paragraph-lg mb-1">
+            <span className="block text-text-sub-600 text-paragraph-lg mb-1">
               R$ {Number(cost.totalAmount.amount).toFixed(2)}
             </span>
           )}
           {selectedOptions.map((option) => (
-            <span key={option.name} className="block text-paragraph-sm text-gray-400">
-              {option.name}: {option.value}
+            <span key={option.name} className="block text-paragraph-sm text-text-sub-600">
+              {option.name}: {option.value }
             </span>
           ))}
         </div>
       </td>
       {/* Quantidade */}
-      <td className="text-center p-4">
+      <td className="text-center p-4 w-[90px] min-w-[90px] max-w-[90px] whitespace-nowrap">
         <CartLineQuantityTable line={line} />
       </td>
       {/* Total */}
       {showTotal && (
-        <td className="text-right p-4 font-semibold">
+        <td className="text-right p-4 text-text-sub-600 text-paragraph-lg font-semibold min-w-[110px] max-w-[120px] whitespace-nowrap">
           R$ {Number(cost.totalAmount.amount).toFixed(2)}
         </td>
       )}

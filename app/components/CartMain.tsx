@@ -33,8 +33,8 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   return (
     <div className={className}>
       <CartEmpty hidden={linesCount} layout={layout} />
-      <div className="cart-details">
-        <div className="overflow-x-auto">
+      <div className={`cart-details${layout === 'page' ? ' flex gap-8 items-start' : ''}`}>
+        <div className="overflow-x-auto flex-1">
           <table className="cart-table w-full min-w-[600px] mb-8">
             <thead>
               <tr>
@@ -52,7 +52,14 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
             </tbody>
           </table>
         </div>
-        {cartHasItems && <CartSummary cart={cart} layout={layout} />}
+        {cartHasItems && layout === 'page' && (
+          <div className="w-full max-w-[400px]">
+            <CartSummary cart={cart} layout={layout} />
+          </div>
+        )}
+        {cartHasItems && layout === 'aside' && (
+          <CartSummary cart={cart} layout={layout} />
+        )}
       </div>
     </div>
   );

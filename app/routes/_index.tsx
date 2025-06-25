@@ -10,7 +10,7 @@ import {DatepickerRangeDemo} from '~/components/daterange';
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
-import hero1Image from '~/assets/home/hero1.png';
+import hero1Image from '~/assets/home/hero1.jpg';
 
 import {
   Carousel,

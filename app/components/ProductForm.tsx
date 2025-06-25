@@ -7,6 +7,7 @@ import type {
 import {AddToCartButton} from './AddToCartButton';
 import {useAside} from './Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
+import {Root as Button} from './align-ui/ui/button';
 
 export function ProductForm({
   productOptions,
@@ -24,8 +25,8 @@ export function ProductForm({
         if (option.optionValues.length === 1) return null;
 
         return (
-          <div className="product-options" key={option.name}>
-            <h5>{option.name}</h5>
+          <div className="product-options flex flex-col gap-2" key={option.name}>
+            <p className="text-text-sub-600 text-label-lg">{option.name}</p>
             <div className="product-options-grid">
               {option.optionValues.map((value) => {
                 const {
@@ -53,13 +54,15 @@ export function ProductForm({
                       replace
                       to={`/products/${handle}?${variantUriQuery}`}
                       style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
                         opacity: available ? 1 : 0.3,
+                        padding: 0,
                       }}
                     >
-                      <ProductOptionSwatch swatch={swatch} name={name} />
+                      <ProductOptionSwatch
+                        swatch={swatch}
+                        name={name}
+                        selected={selected}
+                      />
                     </Link>
                   );
                 } else {
@@ -76,10 +79,8 @@ export function ProductForm({
                       }`}
                       key={option.name + name}
                       style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
                         opacity: available ? 1 : 0.3,
+                        padding: 0,
                       }}
                       disabled={!exists}
                       onClick={() => {
@@ -91,7 +92,11 @@ export function ProductForm({
                         }
                       }}
                     >
-                      <ProductOptionSwatch swatch={swatch} name={name} />
+                      <ProductOptionSwatch
+                        swatch={swatch}
+                        name={name}
+                        selected={selected}
+                      />
                     </button>
                   );
                 }
@@ -118,7 +123,9 @@ export function ProductForm({
             : []
         }
       >
-        {selectedVariant?.availableForSale ? 'Add to cart' : 'Sold out'}
+        {selectedVariant?.availableForSale
+          ? 'adicionar ao carrinho'
+          : 'esgotado'}
       </AddToCartButton>
     </div>
   );
@@ -127,24 +134,45 @@ export function ProductForm({
 function ProductOptionSwatch({
   swatch,
   name,
+  selected = false,
+  ...props
 }: {
   swatch?: Maybe<ProductOptionValueSwatch> | undefined;
   name: string;
+  selected?: boolean;
+  [key: string]: any;
 }) {
   const image = swatch?.image?.previewImage?.url;
   const color = swatch?.color;
 
-  if (!image && !color) return name;
-
   return (
-    <div
+    <Button
+      variant="primary"
+      mode={selected ? 'filled' : 'lighter'}
+      size="small"
+      type="button"
       aria-label={name}
-      className="product-option-label-swatch"
-      style={{
-        backgroundColor: color || 'transparent',
-      }}
+      {...props}
     >
-      {!!image && <img src={image} alt={name} />}
-    </div>
+      {image ? (
+        <img
+          src={image}
+          alt={name}
+          style={{width: 24, height: 24, borderRadius: '50%'}}
+        />
+      ) : color ? (
+        <span
+          style={{
+            display: 'inline-block',
+            width: 24,
+            height: 24,
+            borderRadius: '50%',
+            background: color,
+          }}
+        />
+      ) : (
+        name
+      )}
+    </Button>
   );
 }

@@ -19,6 +19,8 @@ export const buttonVariants = tv({
       'focus:outline-none',
       // disabled
       'disabled:pointer-events-none disabled:bg-bg-weak-50 disabled:text-text-disabled-300 disabled:ring-transparent',
+      // hover
+      'hover:no-underline',
     ],
     icon: [
       // base
@@ -45,19 +47,19 @@ export const buttonVariants = tv({
     },
     size: {
       medium: {
-        root: 'h-10 gap-3 rounded-10 px-3.5 text-label-sm',
+        root: 'h-10 gap-3 rounded-full px-3.5 text-label-sm',
         icon: '-mx-1',
       },
       small: {
-        root: 'h-9 gap-3 rounded-lg px-3 text-label-sm',
+        root: 'h-9 gap-3 rounded-full px-3 text-label-sm',
         icon: '-mx-1',
       },
       xsmall: {
-        root: 'h-8 gap-2.5 rounded-lg px-2.5 text-label-sm',
+        root: 'h-8 gap-2.5 rounded-full px-2.5 text-label-sm',
         icon: '-mx-1',
       },
       xxsmall: {
-        root: 'h-7 gap-2.5 rounded-lg px-2 text-label-sm',
+        root: 'h-7 gap-2.5 rounded-full px-2 text-label-sm',
         icon: '-mx-1',
       },
     },
@@ -70,7 +72,7 @@ export const buttonVariants = tv({
       class: {
         root: [
           // base
-          'button-background text-static-white',
+          'bg-primary-base text-static-white',
           // hover
           'hover:bg-primary-darker',
           // focus
@@ -86,7 +88,7 @@ export const buttonVariants = tv({
           // base
           'bg-bg-white-0 text-primary-base ring-primary-base',
           // hover
-          'hover:bg-primary-alpha-10 hover:ring-transparent',
+          'hover:bg-primary-alpha-10 hover:ring-transparent hover:no-underline',
           // focus
           'focus-visible:shadow-button-primary-focus',
         ],
@@ -100,9 +102,9 @@ export const buttonVariants = tv({
           // base
           'bg-primary-alpha-10 text-primary-base ring-transparent',
           // hover
-          'hover:bg-bg-white-0 hover:ring-primary-base',
+          'hover:bg-primary-alpha-24 hover:ring-transparent hover:no-underline',
           // focus
-          'focus-visible:bg-bg-white-0 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
+          'focus-visible:bg-primary-alpha-24 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
         ],
       },
     },
@@ -114,7 +116,7 @@ export const buttonVariants = tv({
           // base
           'bg-transparent text-primary-base ring-transparent',
           // hover
-          'hover:bg-primary-alpha-10',
+          'hover:bg-primary-alpha-10 hover:ring-transparent hover:no-underline',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:shadow-button-primary-focus focus-visible:ring-primary-base',
         ],

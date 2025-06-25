@@ -55,15 +55,15 @@ export function Aside({
   return (
     <div
       aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
+      className={`overlay  ${expanded ? 'expanded' : ''}`}
       role="dialog"
     >
       <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
+      <aside className='bg-yellow-50'>
+        <header className='border-none'>
+          <h3 className='text-title-h4 text-text-sub-600'>carrinho</h3>
+          <button className=" close reset" onClick={close} aria-label="Close">
+            <p className='text-title-h4 text-text-sub-600'>&times;</p>
           </button>
         </header>
         <main>{children}</main>

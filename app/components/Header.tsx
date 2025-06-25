@@ -7,6 +7,8 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import HeaderNew from '~/components/HeaderNew';
+import React from 'react';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -24,18 +26,33 @@ export function Header({
   publicStoreDomain,
 }: HeaderProps) {
   const {shop, menu} = header;
+  const [cartCount, setCartCount] = React.useState<number>(0);
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (cart && typeof cart.then === 'function') {
+        const cartData = await cart;
+        if (!cancelled) setCartCount(cartData?.totalQuantity ?? 0);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [cart]);
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu
-        menu={menu}
-        viewport="desktop"
-        primaryDomainUrl={header.shop.primaryDomain.url}
-        publicStoreDomain={publicStoreDomain}
-      />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+    <header className="relative z-50 ">
+      {' '}
+      {/* <header className="header">
+        <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+          <strong>{shop.name}</strong>
+        </NavLink>
+        <HeaderMenu
+          menu={menu}
+          viewport="desktop"
+          primaryDomainUrl={header.shop.primaryDomain.url}
+          publicStoreDomain={publicStoreDomain}
+        />
+        <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      </header> */}
+      <HeaderNew cartCount={cartCount} />
     </header>
   );
 }

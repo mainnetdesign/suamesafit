@@ -102,6 +102,14 @@ export default function Collection() {
                       height: product.featuredImage.height || 0,
                     }
                   : undefined,
+                secondaryImage: (product as any).images?.nodes?.[1]
+                  ? {
+                      altText: (product as any).images.nodes[1].altText || undefined,
+                      url: (product as any).images.nodes[1].url,
+                      width: (product as any).images.nodes[1].width || 0,
+                      height: (product as any).images.nodes[1].height || 0,
+                    }
+                  : undefined,
                 priceRange: product.priceRange
                   ? {
                       minVariantPrice: product.priceRange.minVariantPrice,
@@ -163,6 +171,15 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
       url
       width
       height
+    }
+    images(first: 2) {
+      nodes {
+        id
+        url
+        altText
+        width
+        height
+      }
     }
     priceRange {
       minVariantPrice {

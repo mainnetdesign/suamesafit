@@ -25,7 +25,7 @@ function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | n
       <dl className="cart-subtotal flex justify-between">
         <dt className='text-title-h5 text-text-sub-600'>subtotal</dt>
         <dd className='text-title-h5 text-text-sub-600'>
-          {cart?.cost?.subtotalAmount?.amount ? (
+          {cart?.cost?.subtotalAmount ? (
             <Money data={cart.cost.subtotalAmount} />
           ) : (
             'R$ 0,00'
@@ -50,7 +50,7 @@ function CartSummaryPage({cart}: {cart: OptimisticCart<CartApiQueryFragment | nu
       <dl className="cart-total flex justify-between items-center">
         <dt className='text-title-h5 text-text-sub-600'>Total</dt>
         <dd className='text-title-h4 text-text-sub-600'>
-          {cart?.cost?.totalAmount?.amount ? (
+          {cart?.cost?.totalAmount ? (
             <Money data={cart.cost.totalAmount} />
           ) : (
             'R$ 0,00'

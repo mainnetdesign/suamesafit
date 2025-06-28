@@ -17,9 +17,18 @@ export function AddToCartButton({
   lines: Array<OptimisticCartLineInput>;
   onClick?: () => void;
 }) {
+  // Filtra somente linhas com merchandiseId válido
+  const validLines = (Array.isArray(lines) ? lines : []).filter(
+    (line) => line && typeof (line as any).merchandiseId === 'string',
+  );
+
+  if (validLines.length === 0) {
+    return null;
+  }
+
   const [quantity, setQuantity] = useState(1);
 
-  const linesWithQuantity = lines.map(line => ({
+  const linesWithQuantity = validLines.map(line => ({
     ...line,
     quantity,
   }));

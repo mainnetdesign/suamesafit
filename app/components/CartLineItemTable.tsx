@@ -53,7 +53,7 @@ export function CartLineItemTable({
           </Link>
           {(!showTotal) && (
             <span className="block text-text-sub-600 text-paragraph-lg mb-1">
-              R$ {Number(cost.totalAmount.amount).toFixed(2)}
+              R$ {Number(cost?.totalAmount?.amount ?? 0).toFixed(2)}
             </span>
           )}
           {selectedOptions.map((option) => (
@@ -70,7 +70,7 @@ export function CartLineItemTable({
       {/* Total */}
       {showTotal && (
         <td className="text-right p-4 text-text-sub-600 text-paragraph-lg font-semibold min-w-[110px] max-w-[120px] whitespace-nowrap">
-          R$ {Number(cost.totalAmount.amount).toFixed(2)}
+          R$ {Number(cost?.totalAmount?.amount ?? 0).toFixed(2)}
         </td>
       )}
     </tr>

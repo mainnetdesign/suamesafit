@@ -1,9 +1,14 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
-import type {ProductItemFragment} from 'storefrontapi.generated';
+import type {ProductItemFragment, CatalogQueryVariables} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import {CollectionHeader} from '~/components/collections/CollectionHeader';
+import {CollectionTab} from '~/components/collections/CollectionTab';
+import {CollectionFilters} from '~/components/collections/CollectionFilters';
+import {Product} from '~/components/ProductCard';
+import collectionsImage from '~/assets/collections/all.jpg';
 
 export const meta: MetaFunction<typeof loader> = () => {
   return [{title: `Hydrogen | Products`}];
@@ -25,17 +30,35 @@ export async function loader(args: LoaderFunctionArgs) {
  */
 async function loadCriticalData({context, request}: LoaderFunctionArgs) {
   const {storefront} = context;
+  const url = new URL(request.url);
+  const searchParams = url.searchParams;
+  const query = searchParams.get('q') || '';
+  const sortKey = searchParams.get('sort') || 'TITLE';
+  const reverse = sortKey.includes('desc');
+
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 100,
   });
 
-  const [{products}] = await Promise.all([
+  // Função para validar e converter o sortKey
+  function getValidSortKey(key: string): NonNullable<CatalogQueryVariables['sortKey']> {
+    const validKeys = ['TITLE', 'PRICE', 'BEST_SELLING', 'CREATED_AT', 'ID', 'MANUAL', 'RELEVANCE'] as const;
+    const upperKey = key.split('-')[0].toUpperCase();
+    return validKeys.includes(upperKey as any) ? upperKey as NonNullable<CatalogQueryVariables['sortKey']> : 'TITLE';
+  }
+
+  const [{products}, {collections}] = await Promise.all([
     storefront.query(CATALOG_QUERY, {
-      variables: {...paginationVariables},
+      variables: {
+        ...paginationVariables,
+        query,
+        sortKey: getValidSortKey(sortKey),
+        reverse,
+      },
     }),
-    // Add other queries here, so that they are loaded in parallel
+    storefront.query(COLLECTIONS_QUERY),
   ]);
-  return {products};
+  return {products, collections};
 }
 
 /**
@@ -48,23 +71,47 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 }
 
 export default function Collection() {
-  const {products} = useLoaderData<typeof loader>();
+  const {products, collections} = useLoaderData<typeof loader>();
 
   return (
-    <div className="collection">
-      <h1>Products</h1>
-      <PaginatedResourceSection
-        connection={products}
-        resourcesClassName="products-grid"
-      >
-        {({node: product, index}) => (
-          <ProductItem
-            key={product.id}
-            product={product}
-            loading={index < 8 ? 'eager' : undefined}
-          />
-        )}
-      </PaginatedResourceSection>
+    <div className="collection items-center justify-start flex flex-col">
+      <CollectionHeader
+        title="cardápio"
+        description="sua próxima refeição saudável está aqui"
+        image={collectionsImage}
+      />
+
+      <div className="w-full max-w-[1200px] items-center justify-center">
+        <CollectionTab categories={collections.nodes} />
+      </div>
+
+      <div className="max-w-[1200px] w-full items-center justify-center px-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {products.nodes.map((product: ProductItemFragment) => (
+            <Product
+              key={product.id}
+              product={{
+                id: product.id,
+                handle: product.handle,
+                title: product.title,
+                featuredImage: product.featuredImage
+                  ? {
+                      altText: product.featuredImage.altText || undefined,
+                      url: product.featuredImage.url,
+                      width: product.featuredImage.width || 0,
+                      height: product.featuredImage.height || 0,
+                    }
+                  : undefined,
+                priceRange: product.priceRange
+                  ? {
+                      minVariantPrice: product.priceRange.minVariantPrice,
+                    }
+                  : undefined,
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
@@ -137,8 +184,19 @@ const CATALOG_QUERY = `#graphql
     $last: Int
     $startCursor: String
     $endCursor: String
+    $query: String
+    $sortKey: ProductSortKeys
+    $reverse: Boolean
   ) @inContext(country: $country, language: $language) {
-    products(first: $first, last: $last, before: $startCursor, after: $endCursor) {
+    products(
+      first: $first,
+      last: $last,
+      before: $startCursor,
+      after: $endCursor,
+      query: $query,
+      sortKey: $sortKey,
+      reverse: $reverse
+    ) {
       nodes {
         ...ProductItem
       }
@@ -151,4 +209,16 @@ const CATALOG_QUERY = `#graphql
     }
   }
   ${PRODUCT_ITEM_FRAGMENT}
+` as const;
+
+const COLLECTIONS_QUERY = `#graphql
+  query Collections {
+    collections(first: 10) {
+      nodes {
+        id
+        title
+        handle
+      }
+    }
+  }
 ` as const;

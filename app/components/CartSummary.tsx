@@ -3,6 +3,9 @@ import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useRef} from 'react';
 import {FetcherWithComponents} from '@remix-run/react';
+import * as Button from '~/components/align-ui/ui/button';
+import * as Select from '~/components/align-ui/ui/select';
+import * as Input from '~/components/align-ui/ui/input';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -10,37 +13,77 @@ type CartSummaryProps = {
 };
 
 export function CartSummary({cart, layout}: CartSummaryProps) {
-  const className =
-    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
+  if (layout === 'aside') {
+    return <CartSummaryAside cart={cart} />;
+  }
+  return <CartSummaryPage cart={cart} />;
+}
 
+function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
   return (
-    <div aria-labelledby="cart-summary" className={className}>
-      <h4>Totals</h4>
-      <dl className="cart-subtotal">
-        <dt>Subtotal</dt>
-        <dd>
-          {cart.cost?.subtotalAmount?.amount ? (
-            <Money data={cart.cost?.subtotalAmount} />
+    <div aria-labelledby="cart-summary" className="cart-summary-aside">
+      <dl className="cart-subtotal flex justify-between">
+        <dt className='text-title-h5 text-text-sub-600'>subtotal</dt>
+        <dd className='text-title-h5 text-text-sub-600'>
+          {cart?.cost?.subtotalAmount?.amount ? (
+            <Money data={cart.cost.subtotalAmount} />
           ) : (
-            '-'
+            'R$ 0,00'
           )}
         </dd>
       </dl>
-      <CartDiscounts discountCodes={cart.discountCodes} />
-      <CartGiftCard giftCardCodes={cart.appliedGiftCards} />
-      <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+      <div>
+        <Button.Root asChild variant="primary" mode="filled">
+          <a href="/cart" target="_self">
+            <p>revisar pedido&rarr;</p>
+          </a>
+        </Button.Root>
+        <br />
+      </div>
     </div>
   );
 }
-function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
-  if (!checkoutUrl) return null;
 
+function CartSummaryPage({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
   return (
-    <div>
-      <a href={checkoutUrl} target="_self">
-        <p>Continue to Checkout &rarr;</p>
-      </a>
-      <br />
+    <div aria-labelledby="cart-summary" className="cart-summary-page flex flex-col gap-6 p-6 rounded-2xl bg-bg-white-0 shadow-regular-md min-w-[320px] max-w-[400px] w-full">
+      <dl className="cart-total flex justify-between items-center">
+        <dt className='text-title-h5 text-text-sub-600'>Total</dt>
+        <dd className='text-title-h4 text-text-sub-600'>
+          {cart?.cost?.totalAmount?.amount ? (
+            <Money data={cart.cost.totalAmount} />
+          ) : (
+            'R$ 0,00'
+          )}
+        </dd>
+      </dl>
+      {/* <div>
+        <Select.Root defaultValue="portaria">
+          <Select.Trigger>
+            <Select.Value placeholder="Escolha como deseja receber" />
+          </Select.Trigger>
+          <Select.Content>
+            <Select.Item value="portaria">Deixar na portaria</Select.Item>
+            <Select.Item value="apartamento">Entregar no apartamento</Select.Item>
+          </Select.Content>
+        </Select.Root>
+      </div>
+      <div>
+        <label className="block text-label-sm text-text-sub-600 mb-1" htmlFor="cep">Informe seu CEP</label>
+        <Input.Root>
+          <Input.Input id="cep" name="cep" placeholder="00000-000" maxLength={9} autoComplete="postal-code" />
+        </Input.Root>
+        <Button.Root variant="primary" mode="filled" size="small" className="mt-2 w-full">Buscar</Button.Root>
+      </div> */}
+      <Button.Root asChild variant="primary" mode="filled" className="w-full">
+        <a href={cart?.checkoutUrl || '#'} target="_self">
+          <p>Fechar Pedido</p>
+        </a>
+      </Button.Root>
+      <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
+        <span className="text-green-700 text-label-md font-bold">Você ganha 5% de cashback para seu próximo pedido!</span>
+        <span className="text-green-700 text-paragraph-sm">É o nosso jeito de agradecer por comprar com a gente. Use esse valor no próximo pedido (válido por 60 dias)</span>
+      </div>
     </div>
   );
 }

@@ -8,7 +8,7 @@ import {
 } from '@remix-run/react';
 import type {LinksFunction} from '@remix-run/node';
 import favicon from '~/assets/favicon.svg';
-import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {FOOTER_QUERY, HEADER_QUERY, FEATURED_COLLECTION_QUERY} from '~/lib/fragments';
 
 export type RootLoader = typeof loader;
 
@@ -93,17 +93,21 @@ export async function loader(args: LoaderFunctionArgs) {
 async function loadCriticalData({context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  const [header, collections] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
+    storefront.query(FEATURED_COLLECTION_QUERY),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  return {header};
+  return {
+    header,
+    featuredCollections: collections.collections.nodes,
+  };
 }
 
 /**

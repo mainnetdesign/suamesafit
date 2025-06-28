@@ -38,6 +38,7 @@ export default defineConfig({
     allowedHosts: [
       'helping-merely-fish.ngrok-free.app',
       'concrete-willingly-alien.ngrok-free.app',
+      'subtly-intense-toucan.ngrok-free.app',
     ],
   },
   ssr: {
@@ -53,6 +54,7 @@ export default defineConfig({
        * @see https://vitejs.dev/config/dep-optimization-options
        */
       include: [
+        'prop-types',
         'date-fns',
         '@remixicon/react',
         'react-day-picker',
@@ -63,6 +65,7 @@ export default defineConfig({
         'tailwind-variants',
         'tailwindcss/defaultTheme',
         'tailwindcss-animate',
+        'react-countdown'
       ],
     },
   },

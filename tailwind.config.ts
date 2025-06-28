@@ -22,15 +22,15 @@ export const texts = {
   'title-h3': [
     '2.5rem',
     {
-      lineHeight: '3rem',
-      letterSpacing: '-0.01em',
+      lineHeight: '2.5rem',
+      letterSpacing: '-0.05em',
       fontWeight: '500',
     },
   ],
   'title-h4': [
     '2rem',
     {
-      lineHeight: '2.5rem',
+      lineHeight: '1.5rem',
       letterSpacing: '-0.005em',
       fontWeight: '500',
     },
@@ -38,15 +38,15 @@ export const texts = {
   'title-h5': [
     '1.5rem',
     {
-      lineHeight: '2rem',
-      letterSpacing: '0em',
+      lineHeight: '1.5rem',
+      letterSpacing: '-0.005em',
       fontWeight: '500',
     },
   ],
   'title-h6': [
     '1.25rem',
     {
-      lineHeight: '1.75rem',
+      lineHeight: '1.5rem',
       letterSpacing: '0em',
       fontWeight: '500',
     },
@@ -259,15 +259,15 @@ export const borderRadii = {
 const config = {
   darkMode: ['class'],
   safelist: ['.dark'],
-  fontFamily: {
-    sans: ['Plus Jakarta Sans Variable, sans-serif', ...defaultTheme.fontFamily.sans],
-  },
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './utils/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    fontFamily: {
+      sans: ['Plus Jakarta Sans Variable', ...defaultTheme.fontFamily.sans],
+    },
     colors: {
       gray: {
         '0': 'var(--gray-0)',

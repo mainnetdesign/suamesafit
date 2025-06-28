@@ -1,129 +1,64 @@
-import {Suspense} from 'react';
-import {Await, NavLink} from '@remix-run/react';
-import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import React from 'react';
+import { Link } from '@remix-run/react';
+import { RiInstagramLine } from 'react-icons/ri';
 
-interface FooterProps {
-  footer: Promise<FooterQuery | null>;
-  header: HeaderQuery;
-  publicStoreDomain: string;
-}
-
-export function Footer({
-  footer: footerPromise,
-  header,
-  publicStoreDomain,
-}: FooterProps) {
+export function Footer({ collections = [] }: { collections?: { id: string, title: string, handle: string }[] }) {
   return (
-    <Suspense>
-      <Await resolve={footerPromise}>
-        {(footer) => (
-          <footer className="footer">
-            {footer?.menu && header.shop.primaryDomain?.url && (
-              <FooterMenu
-                menu={footer.menu}
-                primaryDomainUrl={header.shop.primaryDomain.url}
-                publicStoreDomain={publicStoreDomain}
-              />
+    <footer className="bg-[#EFC76A] w-full py-16 px-4">
+      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+        {/* Coluna 1 */}
+        <div className="flex flex-col gap-6 min-w-[260px]">
+          <div className="text-[2.5rem] text-text-sub-600 leading-none">sua <span className="font-normal">mesa fit</span></div>
+          <div className="text-text-sub-600 text-lg leading-snug">comida saudável, prática e saborosa<br/>para o seu dia a dia.</div>
+          <div className="flex flex-row gap-4 mt-2">
+            {/* Ícones sociais (apenas placeholders) */}
+            <Link to="https://instagram.com/suamesa.fit/" target="_blank" rel="noopener noreferrer">
+              <RiInstagramLine className="w-6 h-6 text-text-sub-600" />      
+            </Link>
+          </div>
+        </div>
+        {/* Coluna 2 */}
+        <div className="flex flex-row flex-wrap gap-16 md:gap-8">
+          <div className="flex flex-col gap-2 min-w-[120px]">
+            <div className="text-text-sub-600 mb-2">HOME</div>
+            <div className="text-paragraph-sm text-text-sub-600">pratos</div>
+            <div className="text-paragraph-sm text-text-sub-600">parcerias</div>
+            <div className="text-paragraph-sm text-text-sub-600">blog</div>
+            <div className="text-paragraph-sm text-text-sub-600">sobre</div>
+          </div>
+          <div className="flex flex-col gap-2 min-w-[120px]">
+            <div className="text-text-sub-600 mb-2">CATEGORIAS</div>
+            {collections.length > 0 ? (
+              collections.map((cat) => (
+                <Link
+                  key={cat.id}
+                  to={`/collections/${cat.handle}`}
+                  className="lowercase text-paragraph-sm text-text-sub-600"
+                >
+                  {cat.title}
+                </Link>
+              ))
+            ) : (
+              <div className="text-paragraph-sm text-text-sub-600">Nenhuma categoria encontrada</div>
             )}
-          </footer>
-        )}
-      </Await>
-    </Suspense>
+          </div>
+          <div className="flex opacity-30 flex-col gap-2 min-w-[120px]">
+            <div className="text-text-sub-600 mb-2">SOBRE NÓS</div>
+            <div className="text-paragraph-sm text-text-sub-600">nossa historia</div>
+            <div className="text-paragraph-sm text-text-sub-600">equipe</div>
+            <div className="text-paragraph-sm text-text-sub-600">parcerias</div>
+          </div>
+          <div className="flex flex-col gap-2 min-w-[120px]">
+            <div className="text-text-sub-600 mb-2">LEGAL</div>
+            <div className="text-paragraph-sm text-text-sub-600">política de privacidade</div>
+            <div className="text-paragraph-sm text-text-sub-600">termos de uso</div>
+          </div>
+        </div>
+      </div>
+      <div className="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-12 gap-4 text-text-sub-600 text-base">
+        <div>sua marmita fit © 2025. all rights reserved</div>
+        <div>powered by <a href="https://mainnet.design" target="_blank" rel="noopener noreferrer" className="underline text-text-sub-600">mainnet™</a></div>
+      </div>
+    </footer>
   );
-}
-
-function FooterMenu({
-  menu,
-  primaryDomainUrl,
-  publicStoreDomain,
-}: {
-  menu: FooterQuery['menu'];
-  primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
-  publicStoreDomain: string;
-}) {
-  return (
-    <nav className="footer-menu" role="navigation">
-      {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
-        if (!item.url) return null;
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        const isExternal = !url.startsWith('/');
-        return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
-        ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
-        );
-      })}
-    </nav>
-  );
-}
-
-const FALLBACK_FOOTER_MENU = {
-  id: 'gid://shopify/Menu/199655620664',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461633060920',
-      resourceId: 'gid://shopify/ShopPolicy/23358046264',
-      tags: [],
-      title: 'Privacy Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/privacy-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633093688',
-      resourceId: 'gid://shopify/ShopPolicy/23358013496',
-      tags: [],
-      title: 'Refund Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/refund-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633126456',
-      resourceId: 'gid://shopify/ShopPolicy/23358111800',
-      tags: [],
-      title: 'Shipping Policy',
-      type: 'SHOP_POLICY',
-      url: '/policies/shipping-policy',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461633159224',
-      resourceId: 'gid://shopify/ShopPolicy/23358079032',
-      tags: [],
-      title: 'Terms of Service',
-      type: 'SHOP_POLICY',
-      url: '/policies/terms-of-service',
-      items: [],
-    },
-  ],
-};
-
-function activeLinkStyle({
-  isActive,
-  isPending,
-}: {
-  isActive: boolean;
-  isPending: boolean;
-}) {
-  return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'white',
-  };
 }

@@ -6,3 +6,5 @@ node_modules
 /.mf
 .env
 .shopify
+pnpm-lock.yaml
+pnpm-workspace.yaml

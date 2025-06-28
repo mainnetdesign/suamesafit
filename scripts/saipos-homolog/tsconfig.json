@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["es2017", "dom"],
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["./index.ts"]
+} 

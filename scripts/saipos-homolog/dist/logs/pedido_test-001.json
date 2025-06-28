@@ -1,0 +1,31 @@
+{
+  "payload": {
+    "order_id": "test-001",
+    "display_id": "test-001",
+    "cod_store": "123",
+    "created_at": "2025-06-28T01:23:51.131Z",
+    "notes": "Pedido de homologação - cliente novo",
+    "products": [
+      {
+        "product_id": "001",
+        "quantity": 1,
+        "name": "Produto Teste",
+        "unit_price": 10,
+        "total_price": 10,
+        "code_pdv": "produto-teste"
+      }
+    ],
+    "customer": {
+      "name": "Cliente Teste",
+      "phone": "21999999999"
+    }
+  },
+  "response": null,
+  "error": {
+    "type": "sale",
+    "errorCode": 901,
+    "dateTime": "2025-06-28T01:23:51.408Z",
+    "errorMessage": "Token inválido ou expirado.",
+    "guidRequest": "38995a89-98eb-4c92-97f1-42d8ad9dff58"
+  }
+}

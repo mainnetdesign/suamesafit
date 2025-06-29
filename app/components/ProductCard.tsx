@@ -2,6 +2,7 @@ import {Link} from '@remix-run/react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import * as Button from '~/components/align-ui/ui/button';
+import {QuickAddModal} from '~/components/QuickAddModal';
 
 interface ProductProps {
   product: {
@@ -36,7 +37,7 @@ export function Product({product}: ProductProps) {
   return (
     <div className="product-item bg-bg-white-0 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[400px]">
       <Link
-        className="flex flex-col h-full group no-underline hover:no-underline"
+        className="flex flex-col group no-underline hover:no-underline"
         to={`/products/${product.handle}`}
       >
         <div className="relative aspect-square overflow-hidden">
@@ -64,23 +65,26 @@ export function Product({product}: ProductProps) {
             />
           )}
         </div>
-        <div className="p-4 flex-1 flex flex-col justify-between no-underline">
+        <div className="p-4 flex flex-col gap-2 no-underline">
           <h4 className="text-text-sub-600 text-label-lg mb-2 no-underline">
             {product.title}
           </h4>
-          <div className="flex flex-col gap-2">
-            {product.priceRange?.minVariantPrice && (
-              <small className="flex gap-2 text-paragraph-md text-blue-500 no-underline">
-                a partir de
-                <Money data={product.priceRange.minVariantPrice} />
-              </small>
-            )}
-            <Button.Root variant="primary" mode="lighter">
-              adicionar ao carrinho
-            </Button.Root>
-          </div>
+          {product.priceRange?.minVariantPrice && (
+            <small className="flex gap-2 text-paragraph-md text-blue-500 no-underline">
+              a partir de
+              <Money data={product.priceRange.minVariantPrice} />
+            </small>
+          )}
         </div>
       </Link>
+      {/* Botão fora do Link para não acionar navegação */}
+      <div className="p-4 pt-0">
+        <QuickAddModal product={product}>
+          <Button.Root variant="primary" mode="lighter" className="w-full">
+            adicionar ao carrinho
+          </Button.Root>
+        </QuickAddModal>
+      </div>
     </div>
   );
 }

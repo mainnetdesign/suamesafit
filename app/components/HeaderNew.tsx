@@ -1,14 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState, Suspense} from 'react';
 import {
   RiLuggageCartLine,
   RiSearch2Line,
   RiShoppingBasketLine,
   RiUser3Line,
 } from 'react-icons/ri';
-import {Link} from '@remix-run/react';
+import {Link, Await} from '@remix-run/react';
 import {useAside} from './Aside';
 
-const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
+const HeaderNew = ({ cartCount, isLoggedIn }: { cartCount?: number, isLoggedIn: Promise<boolean> }) => {
   const [collapsed, setCollapsed] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
@@ -79,7 +79,15 @@ const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
                 )}
               </Link>
               <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
-              <RiUser3Line className="w-5 h-5 text-text-sub-600" />
+              <Link to="/account" prefetch="intent">
+                <Suspense fallback={<RiUser3Line className="w-5 h-5 text-text-sub-600" />}>
+                  <Await resolve={isLoggedIn}>
+                    {(isLoggedIn) => (
+                      <RiUser3Line className="w-5 h-5 text-text-sub-600" title={isLoggedIn ? 'Minha Conta' : 'Entrar'} />
+                    )}
+                  </Await>
+                </Suspense>
+              </Link>
             </div>
           </div>
         </div>

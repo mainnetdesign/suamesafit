@@ -52,7 +52,7 @@ export function Header({
         />
         <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
       </header> */}
-      <HeaderNew cartCount={cartCount} />
+      <HeaderNew cartCount={cartCount} isLoggedIn={isLoggedIn} />
     </header>
   );
 }

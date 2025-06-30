@@ -12,28 +12,55 @@ const PLANILHA_PATH = path.resolve(__dirname, '..', 'pedidos.xlsx');
 // Pasta para salvar os logs
 const LOGS_DIR = path.join(__dirname, 'logs');
 // Configurações da API Saipos
-const SAIPOS_API_URL = 'https://homolog-order-api.saipos.com/order';
-const HEADERS = {
-    'Content-Type': 'application/json',
-    'x-id-partner': '3f8a028b73ef542e4a37f77e81be7477',
-    'x-secret-key': '7f2cd14dc1982bba14d7fc00d506a0ac',
-};
-async function main() {
-    // 1. Ler a planilha
+const SAIPOS_BASE_URL = 'https://homolog-order-api.saipos.com';
+const SAIPOS_AUTH_URL = `${SAIPOS_BASE_URL}/auth`;
+const SAIPOS_API_URL = `${SAIPOS_BASE_URL}/order`;
+// Credenciais
+const ID_PARTNER = '3f8a028b73ef542e4a37f77e81be7477';
+const SECRET = '7f2cd14dc1982bba14d7fc00d506a0ac';
+async function getAuthToken() {
+    var _a;
     try {
+        const response = await axios.post(SAIPOS_AUTH_URL, {
+            idPartner: ID_PARTNER,
+            secret: SECRET
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data.token;
+    }
+    catch (error) {
+        console.error('Erro ao obter token de autenticação:', ((_a = error.response) === null || _a === void 0 ? void 0 : _a.data) || error.message);
+        throw error;
+    }
+}
+async function main() {
+    try {
+        // 1. Obter token de autenticação
+        console.log('Obtendo token de autenticação...');
+        const token = await getAuthToken();
+        console.log('Token obtido com sucesso!');
+        // 2. Configurar headers com o token
+        const headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        };
+        // 3. Ler a planilha
         await fs.mkdir(LOGS_DIR, { recursive: true });
         const workbook = XLSX.readFile(PLANILHA_PATH);
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const pedidos = XLSX.utils.sheet_to_json(sheet);
-        // 2. Montar e enviar apenas 1 pedido para teste
+        // 4. Montar e enviar apenas 1 pedido para teste
         if (pedidos.length > 0) {
             const pedido = pedidos[0];
             const payload = mapearPedido(pedido, 0);
             let responseData = null;
             let errorData = null;
             try {
-                const response = await axios.post(SAIPOS_API_URL, payload, { headers: HEADERS });
+                const response = await axios.post(SAIPOS_API_URL, payload, { headers });
                 responseData = response.data;
                 console.log(`Pedido ${payload.order_id} enviado com sucesso!`);
             }
@@ -43,6 +70,8 @@ async function main() {
             }
             // Salvar log
             const log = {
+                token,
+                headers,
                 payload,
                 response: responseData,
                 error: errorData,

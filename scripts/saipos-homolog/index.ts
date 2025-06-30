@@ -16,51 +16,93 @@ const PLANILHA_PATH = path.resolve(__dirname, '..', 'pedidos.xlsx');
 const LOGS_DIR = path.join(__dirname, 'logs');
 
 // Configurações da API Saipos
-const SAIPOS_API_URL = 'https://homolog-order-api.saipos.com/order';
-const HEADERS = {
-  'Content-Type': 'application/json',
-  'x-id-partner': '3f8a028b73ef542e4a37f77e81be7477',
-  'x-secret-key': '7f2cd14dc1982bba14d7fc00d506a0ac',
-};
+const SAIPOS_BASE_URL = 'https://homolog-order-api.saipos.com';
+const SAIPOS_AUTH_URL = `${SAIPOS_BASE_URL}/auth`;
+const SAIPOS_ORDER_URL = `${SAIPOS_BASE_URL}/order`;
+
+// Credenciais
+const ID_PARTNER = '3f8a028b73ef542e4a37f77e81be7477';
+const SECRET = '7f2cd14dc1982bba14d7fc00d506a0ac';
+
+async function getAuthToken() {
+  try {
+    const authPayload = {
+      idPartner: ID_PARTNER,
+      secret: SECRET
+    };
+
+    console.log('Enviando requisição de autenticação:', {
+      url: SAIPOS_AUTH_URL,
+      body: authPayload
+    });
+    
+    const response = await axios.post(SAIPOS_AUTH_URL, authPayload);
+    
+    console.log('Resposta da autenticação:', response.data);
+    
+    if (!response.data.token) {
+      throw new Error('Token não retornado pela API');
+    }
+    
+    return response.data.token;
+  } catch (error: any) {
+    console.error('Erro ao obter token de autenticação:', error.response?.data || error.message);
+    throw error;
+  }
+}
+
+async function sendOrder(order: any, token: string) {
+  try {
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'x-id-partner': ID_PARTNER,
+      'x-secret-key': SECRET
+    };
+
+    console.log('Enviando pedido com os seguintes dados:', {
+      url: SAIPOS_ORDER_URL,
+      headers: {
+        ...headers,
+        'Authorization': '(token omitido para log)'
+      },
+      data: order
+    });
+
+    const response = await axios.post(SAIPOS_ORDER_URL, order, { headers });
+
+    console.log('Resposta do envio do pedido:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('Erro ao enviar pedido:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      headers: error.response?.headers
+    });
+    throw error;
+  }
+}
 
 async function main() {
-  // 1. Ler a planilha
   try {
-    await fs.mkdir(LOGS_DIR, { recursive: true });
-    const workbook = XLSX.readFile(PLANILHA_PATH);
-    const sheetName = workbook.SheetNames[0];
-    const sheet = workbook.Sheets[sheetName];
-    const pedidos = XLSX.utils.sheet_to_json(sheet);
+    console.log('Obtendo token de autenticação...');
+    const token = await getAuthToken();
+    console.log('Token obtido com sucesso!');
 
-    // 2. Montar e enviar apenas 1 pedido para teste
-    if (pedidos.length > 0) {
-      const pedido = pedidos[0];
-      const payload = mapearPedido(pedido, 0);
-      let responseData = null;
-      let errorData = null;
-      try {
-        const response = await axios.post(SAIPOS_API_URL, payload, { headers: HEADERS });
-        responseData = response.data;
-        console.log(`Pedido ${payload.order_id} enviado com sucesso!`);
-      } catch (error: any) {
-        errorData = error.response ? error.response.data : error.message;
-        console.error(`Erro ao enviar pedido ${payload.order_id}:`, errorData);
-      }
-      // Salvar log
-      const log = {
-        payload,
-        response: responseData,
-        error: errorData,
-      };
-      await fs.writeFile(
-        path.join(LOGS_DIR, `pedido_${payload.order_id}.json`),
-        JSON.stringify(log, null, 2)
-      );
-    } else {
-      console.log('Nenhum pedido encontrado na planilha.');
+    // Ler o pedido de teste
+    const pedidoJson = await fs.readFile('./pedido_teste.json', 'utf-8');
+    const pedidoTeste = JSON.parse(pedidoJson);
+    
+    console.log('Enviando pedido de teste...');
+    try {
+      const responseData = await sendOrder(pedidoTeste, token);
+      console.log('Resposta do envio:', responseData);
+    } catch (error: any) {
+      console.error('Erro ao enviar pedido:', error.message);
+      throw error;
     }
-  } catch (err) {
-    console.error('Erro geral:', err);
+  } catch (error: any) {
+    console.error('Erro geral:', error);
   }
 }
 

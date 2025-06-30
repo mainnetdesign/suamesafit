@@ -66,7 +66,7 @@ export function Aside({
             <p className='text-title-h4 text-text-sub-600'>&times;</p>
           </button>
         </header>
-        <main>{children}</main>
+        <main className={type === 'cart' ? 'h-full flex flex-col' : ''}>{children}</main>
       </aside>
     </div>
   );

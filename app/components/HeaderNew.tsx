@@ -79,7 +79,9 @@ const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
                 )}
               </Link>
               <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
-              <RiUser3Line className="w-5 h-5 text-text-sub-600" />
+              <Link to="/account" className="w-8 h-8 flex items-center justify-center">
+                <RiUser3Line className="w-5 h-5 text-text-sub-600" />
+              </Link>
             </div>
           </div>
         </div>

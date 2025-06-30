@@ -60,14 +60,20 @@ async function sendOrder(order: any, token: string) {
       'x-secret-key': SECRET
     };
 
-    console.log('Enviando pedido com os seguintes dados:', {
+    // Salvar a última request completa para análise
+    const requestLog = {
       url: SAIPOS_ORDER_URL,
       headers: {
         ...headers,
         'Authorization': '(token omitido para log)'
       },
-      data: order
-    });
+      body: order
+    };
+    // Garante que a pasta de logs existe
+    await fs.mkdir(LOGS_DIR, { recursive: true });
+    await fs.writeFile(path.join(LOGS_DIR, 'ultima-request.json'), JSON.stringify(requestLog, null, 2), 'utf-8');
+
+    console.log('Enviando pedido com os seguintes dados:', requestLog);
 
     const response = await axios.post(SAIPOS_ORDER_URL, order, { headers });
 

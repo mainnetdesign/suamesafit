@@ -110,9 +110,10 @@ export function CartMain({
 
 function CartEmpty({
   hidden = false,
+  layout,
 }: {
   hidden: boolean;
-  layout?: CartMainProps['layout'];
+  layout: CartMainProps['layout'];
 }) {
   const {close} = useAside();
   return (
@@ -202,7 +203,15 @@ function CartEmpty({
         <div className="text-center text-text-sub-600 text-label-lg">
           Nada fit por aqui, vamos adicionar?
         </div>
-        <Button.Root>continuar comprando</Button.Root>
+        {layout === 'aside' ? (
+          <Link to="/" onClick={close}>
+            <Button.Root>continuar comprando</Button.Root>
+          </Link>
+        ) : (
+          <Link to="/">
+            <Button.Root>continuar comprando</Button.Root>
+          </Link>
+        )}
       </div>
     </div>
   );

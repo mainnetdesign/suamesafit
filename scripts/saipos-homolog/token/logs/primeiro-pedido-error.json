@@ -1,0 +1,9 @@
+{
+  "error": {
+    "type": "auth",
+    "errorCode": 902,
+    "dateTime": "2025-06-30T23:16:30.170Z",
+    "errorMessage": "Erro na validação dos dados enviados. >> Id do parceiro ou secret inválidos!",
+    "guidRequest": "474c857f-033d-49cb-8a8a-18daff878dd9"
+  }
+}

@@ -1,8 +1,11 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, Suspense } from "react"
 import { User, Package, UserCircle } from "lucide-react"
 import * as Button from "app/components/align-ui/ui/button"
+import { RiUser3Line } from "react-icons/ri"
+import { useRouteLoaderData } from "@remix-run/react"
+import { Await } from "@remix-run/react"
 
 interface UserProfileDropdownProps {
   onLoginClick?: () => void
@@ -20,6 +23,9 @@ export default function ProfileDropdown({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const profileButtonRef = useRef<HTMLDivElement>(null)
+
+  // Obter dados do loader root conforme documentação Shopify
+  const rootData: any = useRouteLoaderData('root')
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen)
@@ -65,26 +71,103 @@ export default function ProfileDropdown({
     }
   }, [isDropdownOpen])
 
-  return (
-    <div className={`relative ${className}`}>
-      <div
-        ref={profileButtonRef}
-        onClick={toggleDropdown}
-        className="p-2 text-gray-600 transition-colors rounded cursor-pointer"
-        aria-label="Perfil do usuário"
-        aria-expanded={isDropdownOpen}
-      >
-        <User className="w-5 h-5 text-text-sub-600 hover:text-text-strong-950 transition-colors" />
-      </div>
+  // Componente interno para renderizar o estado autenticado
+  const AuthenticatedContent = ({ isLoggedIn, customerEmail }: { isLoggedIn: boolean, customerEmail: string | null }) => {
+    // Calcular inicial do email de forma segura
+    const initial = customerEmail && typeof customerEmail === 'string' && customerEmail.length > 0
+      ? customerEmail.charAt(0).toUpperCase()
+      : ""
 
-      {/* Dropdown Overlay */}
+    return (
+      <>
+        <div
+          ref={profileButtonRef}
+          onClick={toggleDropdown}
+          className="p-2 text-gray-600 transition-colors rounded cursor-pointer"
+          aria-label="Perfil do usuário"
+          aria-expanded={isDropdownOpen}
+        >
+          {isLoggedIn && initial ? (
+            // Avatar circular com inicial quando logado
+            <div className="w-8 h-8 bg-primary-base text-white rounded-full flex items-center justify-center text-sm font-medium">
+              {initial}
+            </div>
+          ) : (
+            // Ícone padrão quando não logado
+            <RiUser3Line className="w-5 h-5 text-text-sub-600 hover:text-text-strong-950 transition-colors" />
+          )}
+        </div>
+
+        {/* Dropdown Overlay */}
+        {isDropdownOpen && (
+          <div
+            ref={dropdownRef}
+            className="absolute right-0 top-full mt-2 w-80 bg-yellow-50 rounded-lg shadow-lg border border-gray-200 p-6 z-50"
+          >
+            <h5 className="text-label-xl text-text-sub-600 mb-4">conta</h5>
+
+            <div className="space-y-3">
+              {isLoggedIn && customerEmail ? (
+                // Mostrar email quando logado
+                <div className="text-sm text-text-sub-600 rounded">
+                  {customerEmail}
+                </div>
+              ) : (
+                // Botão de login quando não logado
+                <Button.Root
+                  variant="primary"
+                  mode="filled"
+                  size="medium"
+                  className="w-full"
+                  onClick={handleLoginClick}
+                >
+                  fazer login
+                </Button.Root>
+              )}
+
+              <div className="flex space-x-3">
+                <Button.Root
+                  variant="neutral"
+                  mode="stroke"
+                  className="flex-1 rounded-full py-3 border-gray-300"
+                  onClick={handleOrdersClick}
+                >
+                  <Package className="w-4 h-4 mr-2" />
+                  pedidos
+                </Button.Root>
+                <Button.Root
+                  variant="neutral"
+                  mode="stroke"
+                  className="flex-1 rounded-full py-3 border-gray-300"
+                  onClick={handleProfileClick}
+                >
+                  <UserCircle className="w-4 h-4 mr-2" />
+                  perfil
+                </Button.Root>
+              </div>
+            </div>
+          </div>
+        )}
+      </>
+    )
+  }
+
+  // Fallback enquanto carrega os dados
+  const LoadingFallback = () => (
+    <div
+      ref={profileButtonRef}
+      onClick={toggleDropdown}
+      className="p-2 text-gray-600 transition-colors rounded cursor-pointer"
+      aria-label="Perfil do usuário"
+      aria-expanded={isDropdownOpen}
+    >
+      <RiUser3Line className="w-5 h-5 text-text-sub-600 hover:text-text-strong-950 transition-colors" />
       {isDropdownOpen && (
         <div
           ref={dropdownRef}
           className="absolute right-0 top-full mt-2 w-80 bg-yellow-50 rounded-lg shadow-lg border border-gray-200 p-6 z-50"
         >
           <h5 className="text-label-xl text-text-sub-600 mb-4">conta</h5>
-
           <div className="space-y-3">
             <Button.Root
               variant="primary"
@@ -95,12 +178,11 @@ export default function ProfileDropdown({
             >
               fazer login
             </Button.Root>
-
             <div className="flex space-x-3">
               <Button.Root
                 variant="neutral"
                 mode="stroke"
-                className="flex-1 rounded-full py-3 border-gray-300 "
+                className="flex-1 rounded-full py-3 border-gray-300"
                 onClick={handleOrdersClick}
               >
                 <Package className="w-4 h-4 mr-2" />
@@ -119,6 +201,32 @@ export default function ProfileDropdown({
           </div>
         </div>
       )}
+    </div>
+  )
+
+  return (
+    <div className={`relative ${className}`}>
+      <Suspense fallback={<LoadingFallback />}>
+        {rootData?.isLoggedInPromise ? (
+          <Await resolve={rootData.isLoggedInPromise} errorElement={<LoadingFallback />}>
+            {(isLoggedIn) => (
+              <Suspense fallback={<AuthenticatedContent isLoggedIn={false} customerEmail={null} />}>
+                {rootData?.customerEmailPromise && isLoggedIn ? (
+                  <Await resolve={rootData.customerEmailPromise} errorElement={<AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={null} />}>
+                    {(customerEmail) => (
+                      <AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={customerEmail} />
+                    )}
+                  </Await>
+                ) : (
+                  <AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={null} />
+                )}
+              </Suspense>
+            )}
+          </Await>
+        ) : (
+          <LoadingFallback />
+        )}
+      </Suspense>
     </div>
   )
 } 

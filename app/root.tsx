@@ -1,5 +1,5 @@
 import {getShopAnalytics} from '@shopify/hydrogen';
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {type LoaderFunctionArgs, defer} from '@shopify/remix-oxygen';
 import {
   Outlet,
   useRouteError,
@@ -67,7 +67,7 @@ export async function loader(args: LoaderFunctionArgs) {
 
   const {storefront, env} = args.context;
 
-  return {
+  return defer({
     ...deferredData,
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
@@ -83,7 +83,11 @@ export async function loader(args: LoaderFunctionArgs) {
       country: args.context.storefront.i18n.country,
       language: args.context.storefront.i18n.language,
     },
-  };
+  }, {
+    headers: {
+      'Set-Cookie': await args.context.session.commit(),
+    },
+  });
 }
 
 /**
@@ -131,9 +135,41 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       console.error(error);
       return null;
     });
+
+  // Verificação de login conforme documentação Shopify
+  const isLoggedInPromise = customerAccount.isLoggedIn();
+  
+  // Buscar email do cliente quando logado
+  const customerEmailPromise = isLoggedInPromise.then(async (isLoggedIn) => {
+    if (!isLoggedIn) return null;
+    
+    try {
+      const {data, errors} = await customerAccount.query(`#graphql
+        query getCustomer {
+          customer {
+            emailAddress {
+              emailAddress
+            }
+          }
+        }
+      `);
+      
+      if (errors?.length || !data?.customer) {
+        console.error('Failed to fetch customer email:', errors);
+        return null;
+      }
+      
+      return data.customer.emailAddress?.emailAddress ?? null;
+    } catch (error) {
+      console.error('Error fetching customer email:', error);
+      return null;
+    }
+  });
+
   return {
     cart: cart.get(),
-    isLoggedIn: customerAccount.isLoggedIn(),
+    isLoggedInPromise,
+    customerEmailPromise,
     footer,
   };
 }

@@ -34,6 +34,10 @@ export async function createAppLoadContext(
     cart: {
       queryFragment: CART_QUERY_FRAGMENT,
     },
+    customerAccount: {
+      // Customer Account API is automatically configured in Hydrogen
+      // when PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID is present in env
+    },
   });
 
   return {

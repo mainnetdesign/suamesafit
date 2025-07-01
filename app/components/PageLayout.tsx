@@ -19,7 +19,8 @@ interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
   footer: Promise<FooterQuery | null>;
   header: HeaderQuery;
-  isLoggedIn: Promise<boolean>;
+  isLoggedInPromise: Promise<boolean>;
+  customerEmailPromise: Promise<string | null>;
   publicStoreDomain: string;
   children?: React.ReactNode;
 }
@@ -29,7 +30,8 @@ export function PageLayout({
   children = null,
   footer,
   header,
-  isLoggedIn,
+  isLoggedInPromise,
+  customerEmailPromise,
   publicStoreDomain,
 }: PageLayoutProps) {
   return (
@@ -41,7 +43,7 @@ export function PageLayout({
         <Header
           header={header}
           cart={cart}
-          isLoggedIn={isLoggedIn}
+          isLoggedIn={isLoggedInPromise}
           publicStoreDomain={publicStoreDomain}
         />
       )}

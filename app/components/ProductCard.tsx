@@ -35,9 +35,9 @@ export function Product({product}: ProductProps) {
   const hasSecondary = Boolean(secondaryImage);
 
   return (
-    <div className="product-item bg-bg-white-0 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[400px]">
+    <div className="product-item bg-bg-white-0 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow min-h-[400px] flex flex-col">
       <Link
-        className="flex flex-col group no-underline hover:no-underline"
+        className="flex flex-col group no-underline hover:no-underline flex-1"
         to={`/products/${product.handle}`}
       >
         <div className="relative aspect-square overflow-hidden">
@@ -65,7 +65,7 @@ export function Product({product}: ProductProps) {
             />
           )}
         </div>
-        <div className="p-4 flex flex-col gap-2 no-underline">
+        <div className="p-4 flex flex-col gap-2 no-underline flex-1">
           <h4 className="text-text-sub-600 text-label-lg mb-2 no-underline">
             {product.title}
           </h4>
@@ -77,8 +77,8 @@ export function Product({product}: ProductProps) {
           )}
         </div>
       </Link>
-      {/* Botão fora do Link para não acionar navegação */}
-      <div className="p-4 pt-0">
+      {/* Botão fora do Link para não acionar navegação - sempre fixo na parte inferior */}
+      <div className="p-4 pt-0 mt-auto">
         <QuickAddModal product={product}>
           <Button.Root variant="primary" mode="lighter" className="w-full">
             adicionar ao carrinho

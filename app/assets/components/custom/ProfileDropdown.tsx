@@ -81,39 +81,39 @@ export default function ProfileDropdown({
       {isDropdownOpen && (
         <div
           ref={dropdownRef}
-          className="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 p-6 z-50"
+          className="absolute right-0 top-full mt-2 w-80 bg-yellow-50 rounded-lg shadow-lg border border-gray-200 p-6 z-50"
         >
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Conta</h3>
+          <h5 className="text-label-xl text-text-sub-600 mb-4">conta</h5>
 
           <div className="space-y-3">
             <Button.Root
-              variant="error"
+              variant="primary"
               mode="filled"
               size="medium"
               className="w-full"
               onClick={handleLoginClick}
             >
-              Fazer login
+              fazer login
             </Button.Root>
 
             <div className="flex space-x-3">
               <Button.Root
                 variant="neutral"
                 mode="stroke"
-                className="flex-1 rounded-full py-3 border-gray-300 bg-transparent"
+                className="flex-1 rounded-full py-3 border-gray-300 "
                 onClick={handleOrdersClick}
               >
                 <Package className="w-4 h-4 mr-2" />
-                Pedidos
+                pedidos
               </Button.Root>
               <Button.Root
                 variant="neutral"
                 mode="stroke"
-                className="flex-1 rounded-full py-3 border-gray-300 bg-transparent"
+                className="flex-1 rounded-full py-3 border-gray-300"
                 onClick={handleProfileClick}
               >
                 <UserCircle className="w-4 h-4 mr-2" />
-                Perfil
+                perfil
               </Button.Root>
             </div>
           </div>

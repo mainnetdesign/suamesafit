@@ -7,6 +7,7 @@ import {
 } from 'react-icons/ri';
 import {Link} from '@remix-run/react';
 import {useAside} from './Aside';
+import ProfileDropdown from "app/assets/components/custom/ProfileDropdown";
 
 const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }) => {
   const [collapsed, setCollapsed] = useState(false);
@@ -82,8 +83,8 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
         >
           {/* Menu and icons fade/scale out when collapsed */}
           <div
-            className={` overflow-hidden  w-full inline-flex justify-between items-center transition-all duration-1000
-              ${collapsed ? 'opacity-0 scale-75 pointer-events-none' : 'opacity-100 scale-100'}
+            className={`w-full inline-flex justify-between items-center transition-all duration-1000
+              ${collapsed ? 'overflow-visible opacity-0 scale-75 pointer-events-none' : 'overflow-visible opacity-100 scale-100'}
             `}
             style={{transitionProperty: 'opacity, transform'}}
           >
@@ -114,48 +115,12 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
               </Link>
               <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
               <div className="relative">
-                <div
+                <ProfileDropdown
+                  onLoginClick={() => window.location.href = "https://shopify.com/65347551301/account/login"}
+                  onOrdersClick={() => window.location.href = "https://shopify.com/65347551301/account/orders"}
+                  onProfileClick={() => window.location.href = "https://shopify.com/65347551301/account/profile"}
                   className="w-8 h-8 flex items-center justify-center cursor-pointer"
-                  onClick={toggleDropdown}
-                  ref={profileButtonRef}
-                >
-                  <RiUser3Line className="w-5 h-5 text-text-sub-600" />
-                </div>
-                {showAccountMenu && (
-                  <div
-                    ref={dropdownRef}
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border rounded-xl shadow-lg min-w-[260px] z-[9999] p-6"
-                  >
-                    <div className="mb-2 text-base font-semibold text-brown-700">Conta</div>
-                    {isLoggedIn ? (
-                      <>
-                        <div className="mb-2 text-sm text-brown-600">{userEmail}</div>
-                        <div className="flex gap-2">
-                          <a href="https://shopify.com/65347551301/account/orders" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
-                            <span role="img" aria-label="Pedidos">📦</span> Pedidos
-                          </a>
-                          <a href="https://shopify.com/65347551301/account/profile" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
-                            <span role="img" aria-label="Perfil">👤</span> Perfil
-                          </a>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <a href="https://shopify.com/65347551301/account/login" className="block w-full bg-red-500 text-white rounded-full px-4 py-2 text-center font-semibold mb-4">
-                          Fazer login
-                        </a>
-                        <div className="flex gap-2">
-                          <a href="https://shopify.com/65347551301/account/orders" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
-                            <span role="img" aria-label="Pedidos">📦</span> Pedidos
-                          </a>
-                          <a href="https://shopify.com/65347551301/account/profile" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
-                            <span role="img" aria-label="Perfil">👤</span> Perfil
-                          </a>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+                />
               </div>
             </div>
           </div>

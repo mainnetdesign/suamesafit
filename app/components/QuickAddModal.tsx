@@ -22,6 +22,7 @@ export function QuickAddModal({product, children}: QuickAddModalProps) {
   const [open, setOpen] = React.useState(false);
   const fetcher = useFetcher<{product: ProductFragment}>();
   const hasFetched = React.useRef(false);
+  const {open: openAside} = useAside();
 
   // Faz load somente se abrirmos e ainda não tivermos dados completos
   React.useEffect(() => {
@@ -117,9 +118,8 @@ export function QuickAddModal({product, children}: QuickAddModalProps) {
                   } as any,
                 ]}
                 onClick={() => {
-                  const {open:openAside} = useAside();
-                  openAside('cart');
                   setOpen(false);
+                  openAside('cart');
                 }}
               >
                 adicionar ao carrinho

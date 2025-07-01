@@ -419,7 +419,7 @@ function FeaturedCollections({
           buttonText="peça agora"
           buttonLink="/collections/limited-offer"
           imageUrl={limitedTimeOfferImage}
-          deadline="2025-06-30T23:59:59"
+          deadline="2025-07-30T23:59:59"
         />
       </div>
     </div>

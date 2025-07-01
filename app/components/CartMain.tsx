@@ -117,7 +117,7 @@ function CartEmpty({
 }) {
   const {close} = useAside();
   return (
-    <div className='h-full' hidden={hidden}>
+    <div className="h-full" hidden={hidden}>
       <br />
       <div className="w-full h-full inline-flex flex-col justify-center items-center gap-3.5">
         <div className="w-72 h-80 relative">

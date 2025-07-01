@@ -8,11 +8,26 @@ import {
 import {Link} from '@remix-run/react';
 import {useAside} from './Aside';
 
-const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
+const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }) => {
   const [collapsed, setCollapsed] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
   const { open } = useAside();
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const profileButtonRef = useRef<HTMLDivElement>(null);
+
+  // Simulação de login (troque por seu contexto real depois)
+  const isLoggedIn = false; // Troque para true para testar o outro menu
+  const userEmail = "navalservice1@gmail.com";
+
+  const toggleDropdown = () => {
+    setShowAccountMenu((v) => !v);
+  };
+
+  const closeDropdown = () => {
+    setShowAccountMenu(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,6 +48,25 @@ const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        profileButtonRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        !profileButtonRef.current.contains(event.target as Node)
+      ) {
+        closeDropdown();
+      }
+    }
+    if (showAccountMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showAccountMenu]);
 
   return (
     <header className="w-full left-1/2 -translate-x-1/2 max-w-[934px] h-24 fixed top-[20.28px] z-40">
@@ -79,9 +113,50 @@ const HeaderNew = ({ cartCount }: { cartCount?: number }) => {
                 )}
               </Link>
               <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
-              <Link to="/account" className="w-8 h-8 flex items-center justify-center">
-                <RiUser3Line className="w-5 h-5 text-text-sub-600" />
-              </Link>
+              <div className="relative">
+                <div
+                  className="w-8 h-8 flex items-center justify-center cursor-pointer"
+                  onClick={toggleDropdown}
+                  ref={profileButtonRef}
+                >
+                  <RiUser3Line className="w-5 h-5 text-text-sub-600" />
+                </div>
+                {showAccountMenu && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border rounded-xl shadow-lg min-w-[260px] z-[9999] p-6"
+                  >
+                    <div className="mb-2 text-base font-semibold text-brown-700">Conta</div>
+                    {isLoggedIn ? (
+                      <>
+                        <div className="mb-2 text-sm text-brown-600">{userEmail}</div>
+                        <div className="flex gap-2">
+                          <a href="https://shopify.com/65347551301/account/orders" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
+                            <span role="img" aria-label="Pedidos">📦</span> Pedidos
+                          </a>
+                          <a href="https://shopify.com/65347551301/account/profile" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
+                            <span role="img" aria-label="Perfil">👤</span> Perfil
+                          </a>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <a href="https://shopify.com/65347551301/account/login" className="block w-full bg-red-500 text-white rounded-full px-4 py-2 text-center font-semibold mb-4">
+                          Fazer login
+                        </a>
+                        <div className="flex gap-2">
+                          <a href="https://shopify.com/65347551301/account/orders" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
+                            <span role="img" aria-label="Pedidos">📦</span> Pedidos
+                          </a>
+                          <a href="https://shopify.com/65347551301/account/profile" className="flex-1 border rounded-full px-4 py-2 flex items-center justify-center gap-2 text-brown-700 hover:bg-brown-50">
+                            <span role="img" aria-label="Perfil">👤</span> Perfil
+                          </a>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

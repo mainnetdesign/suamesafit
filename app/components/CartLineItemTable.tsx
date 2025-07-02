@@ -1,11 +1,12 @@
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Image, type OptimisticCartLine} from '@shopify/hydrogen';
-import {Link} from '@remix-run/react';
+import {Link, useNavigation} from '@remix-run/react';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Root as Button, Icon as ButtonIcon } from '~/components/align-ui/ui/button';
+import { useState, useEffect } from 'react';
 
 // Tipos
 // O CartLine é igual ao usado no CartLineItem
@@ -24,6 +25,18 @@ export function CartLineItemTable({
   const {id, merchandise, quantity, cost} = line;
   const {product, title, image, selectedOptions} = merchandise;
   const {close} = useAside();
+  const navigation = useNavigation();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Detectar quando uma requisição de carrinho está em andamento
+  useEffect(() => {
+    // Detectar QUALQUER submissão - mais abrangente
+    const isSubmitting = navigation.state === 'submitting';
+    setIsUpdating(isSubmitting);
+  }, [navigation.state]);
+
+  // Combinar todas as condições de loading
+  const isLoading = line.isOptimistic || isUpdating;
 
   return (
     <tr key={id} className="border-b align-top">
@@ -52,8 +65,8 @@ export function CartLineItemTable({
             {product.title}
           </Link>
           {(!showTotal) && (
-            <span className="block text-text-sub-600 text-paragraph-lg mb-1">
-              R$ {Number(cost.totalAmount.amount).toFixed(2)}
+            <span className={`block text-text-sub-600 text-paragraph-lg mb-1 ${isLoading ? 'bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] text-transparent' : ''}`}>
+              R$ {Number(cost?.totalAmount?.amount ?? 0).toFixed(2)}
             </span>
           )}
           {selectedOptions.map((option) => (
@@ -69,8 +82,8 @@ export function CartLineItemTable({
       </td>
       {/* Total */}
       {showTotal && (
-        <td className="text-right p-4 text-text-sub-600 text-paragraph-lg font-semibold min-w-[110px] max-w-[120px] whitespace-nowrap">
-          R$ {Number(cost.totalAmount.amount).toFixed(2)}
+        <td className={`text-right p-4 text-text-sub-600 text-paragraph-lg font-semibold min-w-[110px] max-w-[120px] whitespace-nowrap ${isLoading ? 'bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] text-transparent rounded' : ''}`}>
+          R$ {Number(cost?.totalAmount?.amount ?? 0).toFixed(2)}
         </td>
       )}
     </tr>

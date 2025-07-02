@@ -2,12 +2,13 @@ import type {CartLineUpdateInput} from '@shopify/hydrogen/storefront-api-types';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Image, type OptimisticCartLine} from '@shopify/hydrogen';
 import {useVariantUrl} from '~/lib/variants';
-import {Link} from '@remix-run/react';
+import {Link, useNavigation} from '@remix-run/react';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import { RiDeleteBin6Line } from 'react-icons/ri';
 import { Root as Button, Icon as ButtonIcon } from '~/components/align-ui/ui/button';
+import { useState, useEffect } from 'react';
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -26,6 +27,17 @@ export function CartLineItem({
   const {product, title, image, selectedOptions} = merchandise;
   const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
   const {close} = useAside();
+  const navigation = useNavigation();
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  // Detectar quando uma requisição está em andamento
+  useEffect(() => {
+    const isSubmitting = navigation.state === 'submitting';
+    setIsUpdating(isSubmitting);
+  }, [navigation.state]);
+
+  // Combinar todas as condições de loading
+  const isLoading = line.isOptimistic || isUpdating;
 
   return (
     <li key={id} className="cart-line">
@@ -54,7 +66,7 @@ export function CartLineItem({
             {product.title}
           </p>
         </Link>
-        <ProductPrice price={line?.cost?.totalAmount} />
+        <ProductPrice price={line?.cost?.totalAmount} isLoading={isLoading} />
           <ul>
             {selectedOptions.map((option) => (
               <li key={option.name}>

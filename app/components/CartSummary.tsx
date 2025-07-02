@@ -1,8 +1,8 @@
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
-import {useRef} from 'react';
-import {FetcherWithComponents} from '@remix-run/react';
+import {useRef, useState, useEffect} from 'react';
+import {FetcherWithComponents, useNavigation} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
 import * as Select from '~/components/align-ui/ui/select';
 import * as Input from '~/components/align-ui/ui/input';
@@ -20,12 +20,23 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
 }
 
 function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
+  const navigation = useNavigation();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const isOptimistic = cart?.lines?.nodes?.some(line => line.isOptimistic) || false;
+  
+  // Detectar quando uma requisição está em andamento
+  useEffect(() => {
+    const isSubmitting = navigation.state === 'submitting';
+    setIsUpdating(isSubmitting);
+    console.log('🔄 CartSummaryAside - Navigation state:', navigation.state, 'isUpdating:', isSubmitting, 'isOptimistic:', isOptimistic);
+  }, [navigation.state, isOptimistic]);
+  
   return (
     <div aria-labelledby="cart-summary" className="cart-summary-aside">
       <dl className="cart-subtotal flex justify-between">
         <dt className='text-title-h5 text-text-sub-600'>subtotal</dt>
-        <dd className='text-title-h5 text-text-sub-600'>
-          {cart?.cost?.subtotalAmount?.amount ? (
+        <dd className={`text-title-h5 text-text-sub-600 ${isOptimistic || isUpdating ? 'bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] text-transparent rounded' : ''}`}>
+          {cart?.cost?.subtotalAmount ? (
             <Money data={cart.cost.subtotalAmount} />
           ) : (
             'R$ 0,00'
@@ -45,12 +56,23 @@ function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | n
 }
 
 function CartSummaryPage({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
+  const navigation = useNavigation();
+  const [isUpdating, setIsUpdating] = useState(false);
+  const isOptimistic = cart?.lines?.nodes?.some(line => line.isOptimistic) || false;
+  
+  // Detectar quando uma requisição está em andamento
+  useEffect(() => {
+    const isSubmitting = navigation.state === 'submitting';
+    setIsUpdating(isSubmitting);
+    console.log('🔄 CartSummaryPage - Navigation state:', navigation.state, 'isUpdating:', isSubmitting, 'isOptimistic:', isOptimistic);
+  }, [navigation.state, isOptimistic]);
+  
   return (
     <div aria-labelledby="cart-summary" className="cart-summary-page flex flex-col gap-6 p-6 rounded-2xl bg-bg-white-0 shadow-regular-md min-w-[320px] max-w-[400px] w-full">
       <dl className="cart-total flex justify-between items-center">
         <dt className='text-title-h5 text-text-sub-600'>Total</dt>
-        <dd className='text-title-h4 text-text-sub-600'>
-          {cart?.cost?.totalAmount?.amount ? (
+        <dd className={`text-title-h4 text-text-sub-600 ${isOptimistic || isUpdating ? 'bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.5s_ease-in-out_infinite] text-transparent rounded' : ''}`}>
+          {cart?.cost?.totalAmount ? (
             <Money data={cart.cost.totalAmount} />
           ) : (
             'R$ 0,00'

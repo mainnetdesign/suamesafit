@@ -1,9 +1,9 @@
 {
   "error": {
-    "type": "auth",
-    "errorCode": 902,
-    "dateTime": "2025-06-30T23:16:30.170Z",
-    "errorMessage": "Erro na validação dos dados enviados. >> Id do parceiro ou secret inválidos!",
-    "guidRequest": "474c857f-033d-49cb-8a8a-18daff878dd9"
+    "type": "sale",
+    "errorCode": 901,
+    "dateTime": "2025-07-02T19:18:03.573Z",
+    "errorMessage": "Token inválido ou expirado.",
+    "guidRequest": "bce91315-3de0-45fe-922d-89c3d2e02f8a"
   }
 }

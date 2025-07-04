@@ -156,12 +156,8 @@ export function NutritionalTable({
 }: NutritionalTableProps) {
   const [showNutrition, setShowNutrition] = useState(true);
 
-  // Debug temporário
-  console.log('NutritionalTable - nutritionalInfo:', nutritionalInfo);
-
   // Se não há informações nutricionais, não renderiza o componente
   if (!nutritionalInfo) {
-    console.log('NutritionalTable - Sem informações nutricionais, não renderizando');
     return null;
   }
 
@@ -231,9 +227,9 @@ export function NutritionalTable({
             )}
             
             {/* Tabela nutricional */}
-            <table className="w-full border-collapse rounded-md overflow-hidden">
+            <table className="w-full border-collapse rounded-md overflow-hidden border border-text-sub-600">
               <thead>
-                <tr className="bg-[#E86F51] text-text-white-0">
+                <tr className="bg-text-sub-600 text-text-white-0">
                   <th className="p-3 text-left text-paragraph-md font-semibold">
                     Informação Nutricional
                   </th>
@@ -245,7 +241,7 @@ export function NutritionalTable({
                   </th>
                 </tr>
               </thead>
-              <tbody className="text-[#2B2B6A]">
+              <tbody className="text-text-sub-600">
                 {availableFields.map((field, index) => {
                   const item = nutritionalInfo[field.key];
                   const isLastItem = index === availableFields.length - 1;
@@ -286,17 +282,12 @@ export function parseNutritionalData(
   metafieldValue?: string | null, 
   selectedVariant?: string | null
 ): NutritionalInfo | null {
-  console.log('parseNutritionalData - metafieldValue:', metafieldValue);
-  console.log('parseNutritionalData - selectedVariant:', selectedVariant);
-  
   if (!metafieldValue) {
-    console.log('parseNutritionalData - Sem metafieldValue');
     return null;
   }
 
   try {
     const parsed = JSON.parse(metafieldValue) as any;
-    console.log('parseNutritionalData - parsed:', parsed);
     
     // Verifica se tem estrutura de variantes
     if (parsed.variants) {

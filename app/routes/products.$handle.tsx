@@ -17,6 +17,7 @@ import React from 'react';
 import {RiArrowDownSLine, RiArrowUpSLine} from 'react-icons/ri';
 import {Product as ProductCard} from '~/components/ProductCard';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
+import { NutritionalTable, parseNutritionalData } from '~/components/NutritionalTable';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -163,8 +164,13 @@ export default function Product() {
   });
 
   const {title, descriptionHtml} = product;
-  const [showNutrition, setShowNutrition] = React.useState(true);
   const [showDescription, setShowDescription] = React.useState(true);
+  
+  // Parse dos dados nutricionais do metafield
+  const nutritionalData = parseNutritionalData(
+    product.nutritionalInfo?.value,
+    selectedVariant?.title // Passa o título da variante selecionada
+  );
 
   return (
     <div className="flex flex-col gap-8">
@@ -220,118 +226,8 @@ export default function Product() {
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-2 text-paragraph-md">
-            <div className="flex items-center gap-4 justify-between">
-              <p className="text-text-sub-600 text-title-h5 mb-0">
-                tabela nutricional
-              </p>
-              <Button.Root
-                variant="primary"
-                mode="lighter"
-                size="xsmall"
-                onClick={() => setShowNutrition((prev) => !prev)}
-                className="w-fit"
-              >
-                {showNutrition ? (
-                  <Button.Icon as={RiArrowDownSLine} />
-                ) : (
-                  <Button.Icon as={RiArrowUpSLine} />
-                )}
-              </Button.Root>
-            </div>
-            <div
-              className={`transition-all duration-300 overflow-hidden ${showNutrition ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
-            >
-              {showNutrition && (
-                <>
-                  <table className="w-full border border-text-sub-600 border-separate border-spacing-0 rounded-lg overflow-hidden mt-4">
-                    <thead>
-                      <tr className="bg-[#2B2B6A] text-white">
-                        <th className="p-2 text-label-md text-left border-b border-text-sub-600">
-                          item
-                        </th>
-                        <th className="p-2 text-label-md text-left border-b border-text-sub-600">
-                          Total
-                        </th>
-                        <th className="p-2 text-label-md text-left border-b border-text-sub-600">
-                          VD*
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className=" text-[#2B2B6A]">
-                      <tr>
-                        <td className="p-2 text-paragraph-md border-b border-text-sub-600">
-                          peso da porção
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          100g
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          5%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-2 text-paragraph-md border-b border-text-sub-600">
-                          valor energético
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          120kcal
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          6%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-2 text-paragraph-md border-b border-text-sub-600">
-                          proteínas
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          15g
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          20%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-2 text-paragraph-md border-b border-text-sub-600">
-                          carboidratos
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          18g
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          6%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-2 text-paragraph-md border-b border-text-sub-600">
-                          gorduras
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          2g
-                        </td>
-                        <td className="p-2 font-bold border-b border-text-sub-600">
-                          4%
-                        </td>
-                      </tr>
-                      <tr>
-                        <td className="p-2 text-paragraph-md">fibras</td>
-                        <td className="p-2 font-bold">5g</td>
-                        <td className="p-2 font-bold">20%</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <p className="text-paragraph-xs text-text-sub-600 mt-2">
-                    Valores diários de referência com base em uma dieta de 2000
-                    kcal ou 8400kJ. Seus valores diários podem ser maiores ou
-                    menores dependendo de suas necessidades energéticas. (**) VD
-                    não estabelecido. (***) Informação Não Disponível no
-                    momento.
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
+          {/* Tabela Nutricional Dinâmica */}
+          <NutritionalTable nutritionalInfo={nutritionalData} />
         </div>
         <Analytics.ProductView
           data={{
@@ -793,6 +689,9 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
+    nutritionalInfo: metafield(namespace: "custom", key: "nutritional_info") {
+      value
+    }
     options {
       name
       optionValues {

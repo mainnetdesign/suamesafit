@@ -1,0 +1,198 @@
+{
+  "exemplo_marmita_fitness": {
+    "porcao": {
+      "tamanho": "300",
+      "unidade": "g"
+    },
+    "valorEnergetico": {
+      "quantidade": 350,
+      "unidade": "kcal",
+      "vd": 18
+    },
+    "carboidratos": {
+      "quantidade": 45,
+      "unidade": "g",
+      "vd": 15
+    },
+    "acucares": {
+      "quantidade": 8,
+      "unidade": "g"
+    },
+    "proteinas": {
+      "quantidade": 28,
+      "unidade": "g",
+      "vd": 37
+    },
+    "gordurasTotais": {
+      "quantidade": 12,
+      "unidade": "g",
+      "vd": 22
+    },
+    "gordurasSaturadas": {
+      "quantidade": 3.5,
+      "unidade": "g",
+      "vd": 16
+    },
+    "gordurasTrans": {
+      "quantidade": 0,
+      "unidade": "g"
+    },
+    "fibras": {
+      "quantidade": 7,
+      "unidade": "g",
+      "vd": 28
+    },
+    "sodio": {
+      "quantidade": 1.2,
+      "unidade": "g",
+      "vd": 50
+    },
+    "calcio": {
+      "quantidade": 180,
+      "unidade": "mg",
+      "vd": 18
+    },
+    "ferro": {
+      "quantidade": 3.2,
+      "unidade": "mg",
+      "vd": 23
+    },
+    "vitaminaA": {
+      "quantidade": 450,
+      "unidade": "mcg",
+      "vd": 50
+    },
+    "vitaminaC": {
+      "quantidade": 25,
+      "unidade": "mg",
+      "vd": 56
+    }
+  },
+  "exemplo_salada_light": {
+    "porcao": {
+      "tamanho": "250",
+      "unidade": "g"
+    },
+    "valorEnergetico": {
+      "quantidade": 180,
+      "unidade": "kcal",
+      "vd": 9
+    },
+    "carboidratos": {
+      "quantidade": 15,
+      "unidade": "g",
+      "vd": 5
+    },
+    "acucares": {
+      "quantidade": 12,
+      "unidade": "g"
+    },
+    "proteinas": {
+      "quantidade": 8,
+      "unidade": "g",
+      "vd": 11
+    },
+    "gordurasTotais": {
+      "quantidade": 10,
+      "unidade": "g",
+      "vd": 18
+    },
+    "gordurasSaturadas": {
+      "quantidade": 2,
+      "unidade": "g",
+      "vd": 9
+    },
+    "fibras": {
+      "quantidade": 5,
+      "unidade": "g",
+      "vd": 20
+    },
+    "sodio": {
+      "quantidade": 0.8,
+      "unidade": "g",
+      "vd": 33
+    },
+    "vitaminaA": {
+      "quantidade": 320,
+      "unidade": "mcg",
+      "vd": 36
+    },
+    "vitaminaC": {
+      "quantidade": 35,
+      "unidade": "mg",
+      "vd": 78
+    }
+  },
+  "exemplo_prato_vegano": {
+    "porcao": {
+      "tamanho": "280",
+      "unidade": "g"
+    },
+    "valorEnergetico": {
+      "quantidade": 290,
+      "unidade": "kcal",
+      "vd": 15
+    },
+    "carboidratos": {
+      "quantidade": 38,
+      "unidade": "g",
+      "vd": 13
+    },
+    "acucares": {
+      "quantidade": 6,
+      "unidade": "g"
+    },
+    "proteinas": {
+      "quantidade": 18,
+      "unidade": "g",
+      "vd": 24
+    },
+    "gordurasTotais": {
+      "quantidade": 8,
+      "unidade": "g",
+      "vd": 15
+    },
+    "gordurasSaturadas": {
+      "quantidade": 1.5,
+      "unidade": "g",
+      "vd": 7
+    },
+    "fibras": {
+      "quantidade": 12,
+      "unidade": "g",
+      "vd": 48
+    },
+    "sodio": {
+      "quantidade": 0.9,
+      "unidade": "g",
+      "vd": 38
+    },
+    "ferro": {
+      "quantidade": 4.2,
+      "unidade": "mg",
+      "vd": 30
+    },
+    "vitaminaC": {
+      "quantidade": 18,
+      "unidade": "mg",
+      "vd": 40
+    }
+  },
+  "exemplo_minimo": {
+    "valorEnergetico": {
+      "quantidade": 150,
+      "unidade": "kcal",
+      "vd": 8
+    },
+    "carboidratos": {
+      "quantidade": 20,
+      "unidade": "g",
+      "vd": 7
+    },
+    "proteinas": {
+      "quantidade": 10,
+      "unidade": "g",
+      "vd": 13
+    }
+  }
+} 

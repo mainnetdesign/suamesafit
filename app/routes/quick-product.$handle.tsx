@@ -70,6 +70,9 @@ const PRODUCT_FRAGMENT = `#graphql
     description
     encodedVariantExistence
     encodedVariantAvailability
+    nutritionalInfo: metafield(namespace: "custom", key: "nutritional_info") {
+      value
+    }
     options {
       name
       optionValues {

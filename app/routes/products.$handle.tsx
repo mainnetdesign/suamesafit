@@ -166,10 +166,43 @@ export default function Product() {
   const {title, descriptionHtml} = product;
   const [showDescription, setShowDescription] = React.useState(true);
   
+  // Calcular o índice da variante selecionada
+  const selectedVariantIndex = React.useMemo(() => {
+    if (!selectedVariant || !product.options || product.options.length === 0) {
+      return 0; // Default para primeira variante
+    }
+    
+    // Encontrar o índice baseado nas opções selecionadas
+    const sizeOption = product.options.find((option: any) => 
+      option.name.toLowerCase().includes('tamanho') || 
+      option.name.toLowerCase().includes('size') ||
+      option.optionValues.some((value: any) => value.name.includes('g'))
+    );
+    
+    if (sizeOption) {
+      const selectedOptionValue = selectedVariant.selectedOptions.find(
+        (opt: any) => opt.name === sizeOption.name
+      );
+      
+      if (selectedOptionValue) {
+        const index = sizeOption.optionValues.findIndex(
+          (value: any) => value.name === selectedOptionValue.value
+        );
+        return index >= 0 ? index : 0;
+      }
+    }
+    
+    return 0;
+  }, [selectedVariant, product.options]);
+  
+  // Debug do índice da variante
+  console.log('🔍 Índice calculado da variante:', selectedVariantIndex);
+  console.log('🔍 Título da variante:', selectedVariant?.title);
+  
   // Parse dos dados nutricionais do metafield
   const nutritionalData = parseNutritionalData(
     product.nutritionalInfo?.value,
-    selectedVariant?.title // Passa o título da variante selecionada
+    selectedVariantIndex // Passa o índice da variante selecionada
   );
 
   return (
@@ -227,7 +260,11 @@ export default function Product() {
             </div>
           </div>
           {/* Tabela Nutricional Dinâmica */}
-          <NutritionalTable nutritionalInfo={nutritionalData} />
+          <NutritionalTable 
+            nutritionalInfo={nutritionalData} 
+            selectedVariantIndex={selectedVariantIndex}
+            selectedVariantTitle={selectedVariant?.title}
+          />
         </div>
         <Analytics.ProductView
           data={{

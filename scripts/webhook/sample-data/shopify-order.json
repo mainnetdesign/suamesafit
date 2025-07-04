@@ -1,0 +1,369 @@
+{
+  "id": 820982911946154508,
+  "email": "joao@example.com",
+  "closed_at": null,
+  "created_at": "2024-01-15T10:30:00-03:00",
+  "updated_at": "2024-01-15T10:30:00-03:00",
+  "number": 1001,
+  "note": "Cliente pediu entrega rápida",
+  "token": "b1946ac92492d23424",
+  "gateway": "manual",
+  "test": false,
+  "total_price": "125.50",
+  "subtotal_price": "110.00",
+  "total_weight": 1200,
+  "total_tax": "15.50",
+  "taxes_included": false,
+  "currency": "BRL",
+  "financial_status": "paid",
+  "confirmed": true,
+  "total_discounts": "0.00",
+  "total_line_items_price": "110.00",
+  "cart_token": "68778783ad298f1c80c3bafcddeea02f",
+  "buyer_accepts_marketing": false,
+  "name": "#SUA1001",
+  "referring_site": null,
+  "landing_site": "/collections/alimentos",
+  "cancelled_at": null,
+  "cancel_reason": null,
+  "total_price_usd": "25.10",
+  "checkout_token": "bd5a8aa1ecd019dd3520ded1f9e20800",
+  "reference": null,
+  "user_id": null,
+  "location_id": null,
+  "source_identifier": null,
+  "source_url": null,
+  "processed_at": "2024-01-15T10:30:00-03:00",
+  "device_id": null,
+  "phone": "+5521999887766",
+  "customer_locale": "pt-BR",
+  "app_id": 580111,
+  "browser_ip": "192.168.1.100",
+  "landing_site_ref": null,
+  "order_number": 1001,
+  "discount_applications": [],
+  "discount_codes": [],
+  "note_attributes": [
+    {
+      "name": "delivery_instructions",
+      "value": "Deixar com porteiro"
+    }
+  ],
+  "payment_gateway_names": [
+    "pix"
+  ],
+  "processing_method": "direct",
+  "checkout_id": 901414060,
+  "source_name": "web",
+  "fulfillment_status": null,
+  "tax_lines": [
+    {
+      "title": "ICMS",
+      "price": "15.50",
+      "rate": 0.1409
+    }
+  ],
+  "tags": "primeira-compra,delivery",
+  "contact_email": "joao@example.com",
+  "order_status_url": "https://suamesafit.myshopify.com/65981411/orders/b1946ac92492d23424/authenticate?key=459b814e59e46b9e3dc8a7bbaf4ad03a",
+  "presentment_currency": "BRL",
+  "total_line_items_price_set": {
+    "shop_money": {
+      "amount": "110.00",
+      "currency_code": "BRL"
+    },
+    "presentment_money": {
+      "amount": "110.00",
+      "currency_code": "BRL"
+    }
+  },
+  "total_discounts_set": {
+    "shop_money": {
+      "amount": "0.00",
+      "currency_code": "BRL"
+    },
+    "presentment_money": {
+      "amount": "0.00",
+      "currency_code": "BRL"
+    }
+  },
+  "total_shipping_price_set": {
+    "shop_money": {
+      "amount": "10.00",
+      "currency_code": "BRL"
+    },
+    "presentment_money": {
+      "amount": "10.00",
+      "currency_code": "BRL"
+    }
+  },
+  "subtotal_price_set": {
+    "shop_money": {
+      "amount": "110.00",
+      "currency_code": "BRL"
+    },
+    "presentment_money": {
+      "amount": "110.00",
+      "currency_code": "BRL"
+    }
+  },
+  "total_price_set": {
+    "shop_money": {
+      "amount": "125.50",
+      "currency_code": "BRL"
+    },
+    "presentment_money": {
+      "amount": "125.50",
+      "currency_code": "BRL"
+    }
+  },
+  "total_tax_set": {
+    "shop_money": {
+      "amount": "15.50",
+      "currency_code": "BRL"
+    },
+    "presentment_money": {
+      "amount": "15.50",
+      "currency_code": "BRL"
+    }
+  },
+  "line_items": [
+    {
+      "id": 866550311766439020,
+      "variant_id": 808950810,
+      "title": "Marmita Fitness - Frango Grelhado",
+      "quantity": 2,
+      "sku": "MARM-FRANGO-001",
+      "variant_title": "Grande",
+      "vendor": "Sua Mesa Fit",
+      "fulfillment_service": "manual",
+      "product_id": 632910392,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "Marmita Fitness - Frango Grelhado - Grande",
+      "variant_inventory_management": "shopify",
+      "properties": [
+        {
+          "name": "Observações",
+          "value": "Sem cebola"
+        }
+      ],
+      "product_exists": true,
+      "fulfillable_quantity": 2,
+      "grams": 600,
+      "price": "35.00",
+      "total_discount": "0.00",
+      "fulfillment_status": null,
+      "price_set": {
+        "shop_money": {
+          "amount": "35.00",
+          "currency_code": "BRL"
+        },
+        "presentment_money": {
+          "amount": "35.00",
+          "currency_code": "BRL"
+        }
+      },
+      "total_discount_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "BRL"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "BRL"
+        }
+      },
+      "discount_allocations": [],
+      "duties": [],
+      "admin_graphql_api_id": "gid://shopify/LineItem/866550311766439020",
+      "tax_lines": [
+        {
+          "title": "ICMS",
+          "price": "9.80",
+          "rate": 0.1409
+        }
+      ]
+    },
+    {
+      "id": 141249953214522974,
+      "variant_id": 808950811,
+      "title": "Suco Detox Verde",
+      "quantity": 1,
+      "sku": "SUCO-DETOX-001",
+      "variant_title": "500ml",
+      "vendor": "Sua Mesa Fit",
+      "fulfillment_service": "manual",
+      "product_id": 632910393,
+      "requires_shipping": true,
+      "taxable": true,
+      "gift_card": false,
+      "name": "Suco Detox Verde - 500ml",
+      "variant_inventory_management": "shopify",
+      "properties": [],
+      "product_exists": true,
+      "fulfillable_quantity": 1,
+      "grams": 500,
+      "price": "40.00",
+      "total_discount": "0.00",
+      "fulfillment_status": null,
+      "price_set": {
+        "shop_money": {
+          "amount": "40.00",
+          "currency_code": "BRL"
+        },
+        "presentment_money": {
+          "amount": "40.00",
+          "currency_code": "BRL"
+        }
+      },
+      "total_discount_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "BRL"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "BRL"
+        }
+      },
+      "discount_allocations": [],
+      "duties": [],
+      "admin_graphql_api_id": "gid://shopify/LineItem/141249953214522974",
+      "tax_lines": [
+        {
+          "title": "ICMS",
+          "price": "5.70",
+          "rate": 0.1409
+        }
+      ]
+    }
+  ],
+  "fulfillments": [],
+  "refunds": [],
+  "total_tip_received": "0.0",
+  "original_total_duties_set": null,
+  "current_total_duties_set": null,
+  "payment_terms": null,
+  "admin_graphql_api_id": "gid://shopify/Order/820982911946154508",
+  "shipping_lines": [
+    {
+      "id": 271878346596884015,
+      "title": "Entrega Expressa",
+      "price": "10.00",
+      "code": "EXPRESS",
+      "source": "shopify",
+      "phone": null,
+      "requested_fulfillment_service_id": null,
+      "delivery_category": null,
+      "carrier_identifier": null,
+      "discounted_price": "10.00",
+      "price_set": {
+        "shop_money": {
+          "amount": "10.00",
+          "currency_code": "BRL"
+        },
+        "presentment_money": {
+          "amount": "10.00",
+          "currency_code": "BRL"
+        }
+      },
+      "discounted_price_set": {
+        "shop_money": {
+          "amount": "10.00",
+          "currency_code": "BRL"
+        },
+        "presentment_money": {
+          "amount": "10.00",
+          "currency_code": "BRL"
+        }
+      },
+      "discount_allocations": [],
+      "tax_lines": []
+    }
+  ],
+  "billing_address": {
+    "first_name": "João",
+    "address1": "Rua das Flores, 123",
+    "phone": "+5521999887766",
+    "city": "Rio de Janeiro",
+    "zip": "22070-000",
+    "province": "Rio de Janeiro",
+    "country": "Brazil",
+    "last_name": "Silva",
+    "address2": "Apto 504",
+    "company": null,
+    "latitude": -22.9068467,
+    "longitude": -43.1728965,
+    "name": "João Silva",
+    "country_code": "BR",
+    "province_code": "RJ"
+  },
+  "shipping_address": {
+    "first_name": "João",
+    "address1": "Rua das Flores, 123",
+    "phone": "+5521999887766",
+    "city": "Rio de Janeiro",
+    "zip": "22070-000",
+    "province": "Rio de Janeiro",
+    "country": "Brazil",
+    "last_name": "Silva",
+    "address2": "Apto 504",
+    "company": null,
+    "latitude": -22.9068467,
+    "longitude": -43.1728965,
+    "name": "João Silva",
+    "country_code": "BR",
+    "province_code": "RJ"
+  },
+  "customer": {
+    "id": 115310627314723954,
+    "email": "joao@example.com",
+    "accepts_marketing": false,
+    "created_at": "2023-12-01T10:00:00-03:00",
+    "updated_at": "2024-01-15T10:30:00-03:00",
+    "first_name": "João",
+    "last_name": "Silva",
+    "orders_count": 1,
+    "state": "enabled",
+    "total_spent": "125.50",
+    "last_order_id": 820982911946154508,
+    "note": "Cliente VIP - primeira compra",
+    "verified_email": true,
+    "multipass_identifier": null,
+    "tax_exempt": false,
+    "tags": "vip,primeira-compra",
+    "last_order_name": "#SUA1001",
+    "currency": "BRL",
+    "phone": "+5521999887766",
+    "accepts_marketing_updated_at": "2023-12-01T10:00:00-03:00",
+    "marketing_opt_in_level": null,
+    "sms_marketing_consent": {
+      "state": "not_subscribed",
+      "opt_in_level": "single_opt_in",
+      "consent_updated_at": "2023-12-01T10:00:00-03:00",
+      "consent_collected_from": "OTHER"
+    },
+    "admin_graphql_api_id": "gid://shopify/Customer/115310627314723954",
+    "default_address": {
+      "id": 715243470612851245,
+      "customer_id": 115310627314723954,
+      "first_name": "João",
+      "last_name": "Silva",
+      "company": null,
+      "address1": "Rua das Flores, 123",
+      "address2": "Apto 504",
+      "city": "Rio de Janeiro",
+      "province": "Rio de Janeiro",
+      "country": "Brazil",
+      "zip": "22070-000",
+      "phone": "+5521999887766",
+      "name": "João Silva",
+      "province_code": "RJ",
+      "country_code": "BR",
+      "country_name": "Brazil",
+      "default": true
+    }
+  }
+} 

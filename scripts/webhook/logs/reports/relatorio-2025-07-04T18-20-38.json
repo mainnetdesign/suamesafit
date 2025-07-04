@@ -1,0 +1,29 @@
+{
+  "timestamp": "2025-07-04T18:20:38.439Z",
+  "test_id": "2025-07-04T18-20-38",
+  "status": "success",
+  "summary": {
+    "shopify_order_id": 820982911946154500,
+    "shopify_order_number": 1001,
+    "saipos_order_id": "shopify_820982911946154500",
+    "total_price": "125.50",
+    "customer_name": "João Silva",
+    "products_count": 2
+  },
+  "validation": {
+    "isValid": true,
+    "errors": []
+  },
+  "mapping_details": {
+    "original_fields_count": 73,
+    "mapped_fields_count": 12,
+    "has_customer": true,
+    "has_shipping_address": true,
+    "has_line_items": true
+  },
+  "files_generated": {
+    "shopify_order": "pedido-shopify-2025-07-04T18-20-38.json",
+    "saipos_order": "pedido-saipos-2025-07-04T18-20-38.json",
+    "report": "relatorio-2025-07-04T18-20-38.json"
+  }
+}

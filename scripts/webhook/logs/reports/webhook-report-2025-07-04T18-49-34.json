@@ -1,0 +1,27 @@
+{
+  "timestamp": "2025-07-04T18:49:34.084Z",
+  "test_id": "2025-07-04T18-49-34",
+  "source": "real_webhook",
+  "ngrok_url": "https://subtly-intense-toucan.ngrok-free.app",
+  "shopify_order": {
+    "id": 820982911946154500,
+    "number": 1234,
+    "total": "66.80",
+    "customer": "John Smith"
+  },
+  "saipos_order": {
+    "order_id": "shopify_820982911946154500",
+    "customer": "John Smith",
+    "total": 66.8,
+    "products": 3
+  },
+  "validation": {
+    "isValid": true,
+    "errors": []
+  },
+  "files_created": [
+    "webhook-shopify-2025-07-04T18-49-34.json",
+    "webhook-saipos-2025-07-04T18-49-34.json",
+    "webhook-report-2025-07-04T18-49-34.json"
+  ]
+}

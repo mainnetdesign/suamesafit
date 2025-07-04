@@ -1,0 +1,55 @@
+{
+  "order_id": "shopify_820982911946154500",
+  "display_id": "#1001",
+  "cod_store": "123",
+  "created_at": "2024-01-15T10:30:00-03:00",
+  "notes": "Pedido importado do Shopify #1001 - Cliente pediu entrega rápida",
+  "products": [
+    {
+      "product_id": "808950810",
+      "name": "Marmita Fitness - Frango Grelhado",
+      "quantity": 2,
+      "unit_price": 35,
+      "total_price": 70,
+      "sku": "MARM-FRANGO-001",
+      "variant_title": "Grande"
+    },
+    {
+      "product_id": "808950811",
+      "name": "Suco Detox Verde",
+      "quantity": 1,
+      "unit_price": 40,
+      "total_price": 40,
+      "sku": "SUCO-DETOX-001",
+      "variant_title": "500ml"
+    }
+  ],
+  "customer": {
+    "name": "João Silva",
+    "phone": "+5521999887766",
+    "email": "joao@example.com",
+    "address": {
+      "street": "Rua das Flores, 123",
+      "number": "Apto 504",
+      "complement": "Apto 504",
+      "neighborhood": "Rio de Janeiro",
+      "city": "Rio de Janeiro",
+      "state": "RJ",
+      "zipcode": "22070-000",
+      "country": "BR"
+    }
+  },
+  "total_amount": 125.5,
+  "total_tax": 15.5,
+  "shipping_fee": 10,
+  "metadata": {
+    "shopify_order_id": 820982911946154500,
+    "shopify_order_number": 1001,
+    "shopify_financial_status": "paid",
+    "shopify_fulfillment_status": null,
+    "shopify_currency": "BRL",
+    "shopify_test": false,
+    "mapped_at": "2025-07-04T18:20:38.437Z"
+  },
+  "delivery_type": "delivery"
+}

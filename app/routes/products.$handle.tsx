@@ -195,9 +195,6 @@ export default function Product() {
     return 0;
   }, [selectedVariant, product.options]);
   
-  // Debug do índice da variante
-  console.log('🔍 Índice calculado da variante:', selectedVariantIndex);
-  console.log('🔍 Título da variante:', selectedVariant?.title);
   
   // Parse dos dados nutricionais do metafield
   const nutritionalData = parseNutritionalData(
@@ -263,7 +260,6 @@ export default function Product() {
           <NutritionalTable 
             nutritionalInfo={nutritionalData} 
             selectedVariantIndex={selectedVariantIndex}
-            selectedVariantTitle={selectedVariant?.title}
           />
         </div>
         <Analytics.ProductView

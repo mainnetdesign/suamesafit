@@ -360,7 +360,7 @@ function FeaturedCollections({
   return (
     <div className="featured-collections px-4 flex flex-col gap-10">
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
+        <div className="bg-green-700 max-w-[1200px] w-full p-4 py-8 md:p-16 gap-8 flex flex-col mx-auto rounded-3xl">
           <div className="text-text-white-0 align-center text-center flex items-center flex-col ">
             <div className="text-label-lg">categorias</div>
             <h4 className="text-title-h4">encontre sua refeição ideal</h4>

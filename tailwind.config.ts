@@ -30,7 +30,7 @@ export const texts = {
   'title-h4': [
     '2rem',
     {
-      lineHeight: '1.5rem',
+      lineHeight: '2rem',
       letterSpacing: '-0.005em',
       fontWeight: '500',
     },

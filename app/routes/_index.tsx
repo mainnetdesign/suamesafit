@@ -216,7 +216,7 @@ export default function Homepage() {
         <div className="max-w-[1200px] w-full flex flex-col gap-8 justify-center items-center">
           <div className="w-full flex justify-between items-center gap-4">
             <div className="flex flex-col items-center gap-4">
-              <h3 className="text-title-h4 text-text-sub-600">
+              <h3 className="text-title-h4  text-text-sub-600">
                 pratos em destaque
               </h3>
             </div>
@@ -496,7 +496,7 @@ function HomepageProductsGrid({products}: {products: any[]}) {
   if (!products?.length) return null;
   return (
     <div className="">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {products.map((product) => (
           <Product key={product.id} product={product} />
         ))}

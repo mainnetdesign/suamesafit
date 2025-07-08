@@ -14,8 +14,8 @@ export function CollectionHeader({
   const imageSrc = typeof image === 'string' ? image : image.src;
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
-      <div className="p-8 w-full flex justify-center items-center">
+    <div className="px-4 flex flex-col items-center justify-center w-full">
+      <div className="w-full flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <Image
             src={imageSrc}

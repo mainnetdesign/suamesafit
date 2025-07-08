@@ -194,7 +194,7 @@ export default function Homepage() {
   return (
     <div className="home gap-10  flex flex-col">
       
-      <div className="w-full flex justify-center items-center">
+      <div className="w-full px-4 flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img
             className="z-10 absolute  object-cover w-full h-full"
@@ -212,7 +212,7 @@ export default function Homepage() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full px-4 flex flex-col justify-center items-center">
         <div className="max-w-[1200px] w-full flex flex-col gap-8 justify-center items-center">
           <div className="w-full flex justify-between items-center gap-4">
             <div className="flex flex-col items-center gap-4">
@@ -258,10 +258,10 @@ export default function Homepage() {
         </div>
       </div> */}
 
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full px-4 flex flex-col justify-center items-center">
         <div className="max-w-[1200px] w-full flex gap-4 justify-center items-start">
           <div className="w-full flex flex-col justify-center items-start">
-            <div className="text-label-lg bg-primary-base px-8 py-2 rounded-full">
+            <div className="text-label-lg bg-yellow-500 px-8 py-2 rounded-full">
               faq
             </div>
             <h2 className="text-title-h2 text-text-sub-600">
@@ -358,7 +358,7 @@ function FeaturedCollections({
   if (!collections?.length) return null;
 
   return (
-    <div className="featured-collections flex flex-col gap-10">
+    <div className="featured-collections px-4 flex flex-col gap-10">
       <div className="w-full flex flex-col justify-center items-center">
         <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
           <div className="text-text-white-0 align-center text-center flex items-center flex-col ">

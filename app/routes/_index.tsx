@@ -1,6 +1,6 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {Image, Money, CartForm} from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
@@ -31,6 +31,7 @@ import * as Input from '~/components/align-ui/ui/input';
 import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
 import { Header } from '~/components/Header';
+import Autoplay from 'embla-carousel-autoplay';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -194,7 +195,7 @@ export default function Homepage() {
   return (
     <div className="home gap-10  flex flex-col">
       
-      <div className="w-full flex justify-center items-center">
+      <div className="w-full px-4 flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img
             className="z-10 absolute  object-cover w-full h-full"
@@ -212,11 +213,11 @@ export default function Homepage() {
         </div>
       </div>
 
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full px-4 flex flex-col justify-center items-center">
         <div className="max-w-[1200px] w-full flex flex-col gap-8 justify-center items-center">
           <div className="w-full flex justify-between items-center gap-4">
             <div className="flex flex-col items-center gap-4">
-              <h3 className="text-title-h4 text-text-sub-600">
+              <h3 className="text-title-h4  text-text-sub-600">
                 pratos em destaque
               </h3>
             </div>
@@ -258,10 +259,10 @@ export default function Homepage() {
         </div>
       </div> */}
 
-      <div className="w-full flex flex-col justify-center items-center">
+      <div className="w-full px-4 flex flex-col justify-center items-center">
         <div className="max-w-[1200px] w-full flex gap-4 justify-center items-start">
           <div className="w-full flex flex-col justify-center items-start">
-            <div className="text-label-lg bg-primary-base px-8 py-2 rounded-full">
+            <div className="text-label-lg bg-yellow-500 px-8 py-2 rounded-full">
               faq
             </div>
             <h2 className="text-title-h2 text-text-sub-600">
@@ -355,24 +356,46 @@ function FeaturedCollections({
   summerProducts: any[];
 }) {
   const {setColor, setBorderColor} = useCursorColor();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   if (!collections?.length) return null;
 
+  const autoplayOptions = {
+    delay: 4000,
+    stopOnInteraction: false,
+    stopOnMouseEnter: false,
+  };
+
   return (
-    <div className="featured-collections flex flex-col gap-10">
+    <div className="featured-collections px-4 flex flex-col gap-10">
       <div className="w-full flex flex-col justify-center items-center">
-        <div className="bg-green-700 max-w-[1200px] w-full p-16 gap-8 flex flex-col mx-auto rounded-3xl">
+        <div className="bg-green-700 max-w-[1200px] w-full p-4 py-8 md:p-16 gap-8 flex flex-col mx-auto rounded-3xl">
           <div className="text-text-white-0 align-center text-center flex items-center flex-col ">
             <div className="text-label-lg">categorias</div>
             <h4 className="text-title-h4">encontre sua refeição ideal</h4>
           </div>
           <div className="relative">
-            <Carousel className="w-full max-w-[964px] mx-auto">
+            <Carousel 
+              className="w-full max-w-[964px] mx-auto"
+              plugins={isMobile ? [Autoplay(autoplayOptions)] : []}
+            >
               <CarouselContent className="min-h-[524px]">
                 {collections.map((collection) => (
                   <CarouselItem key={collection.id} className="md:basis-full">
                     <div className="p-1">
-                      <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
-                        <div className="min-h-[524px] flex-1 max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
+                      <div className="flex flex-col-reverse md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
+                        <div className="min-h-[400px] flex-1  md:max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
                           <div className="flex flex-col justify-between items-start h-full">
                             <h3 className="text-[2.5rem] lowercase font-medium text-text-sub-600 mb-4 font-serif">
                               {collection.title}
@@ -388,7 +411,7 @@ function FeaturedCollections({
                           </InteractiveHoverButton>
                         </div>
                         {collection.image && (
-                          <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
+                          <div className="flex-1 md:max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
                             <Image
                               data={collection.image}
                               sizes="(min-width: 768px) 50vw, 100vw"
@@ -402,11 +425,11 @@ function FeaturedCollections({
                 ))}
               </CarouselContent>
               <CarouselPrevious
-                className="w-left-0 md:-left-16 lg:-left-24 text-white"
+                className={`w-left-0 md:-left-16  text-white ${isMobile ? 'hidden' : ''}`}
                 iconSize={48}
               />
               <CarouselNext
-                className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
+                className={`w-9 h-9 right-0 md:-right-16  text-white ${isMobile ? 'hidden' : ''}`}
                 iconSize={48}
               />
               <CarouselDots />
@@ -496,7 +519,7 @@ function HomepageProductsGrid({products}: {products: any[]}) {
   if (!products?.length) return null;
   return (
     <div className="">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {products.map((product) => (
           <Product key={product.id} product={product} />
         ))}

@@ -17,7 +17,10 @@ import React from 'react';
 import {RiArrowDownSLine, RiArrowUpSLine} from 'react-icons/ri';
 import {Product as ProductCard} from '~/components/ProductCard';
 import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
-import { NutritionalTable, parseNutritionalData } from '~/components/NutritionalTable';
+import {
+  NutritionalTable,
+  parseNutritionalData,
+} from '~/components/NutritionalTable';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -165,121 +168,123 @@ export default function Product() {
 
   const {title, descriptionHtml} = product;
   const [showDescription, setShowDescription] = React.useState(true);
-  
+
   // Calcular o índice da variante selecionada
   const selectedVariantIndex = React.useMemo(() => {
     if (!selectedVariant || !product.options || product.options.length === 0) {
       return 0; // Default para primeira variante
     }
-    
+
     // Encontrar o índice baseado nas opções selecionadas
-    const sizeOption = product.options.find((option: any) => 
-      option.name.toLowerCase().includes('tamanho') || 
-      option.name.toLowerCase().includes('size') ||
-      option.optionValues.some((value: any) => value.name.includes('g'))
+    const sizeOption = product.options.find(
+      (option: any) =>
+        option.name.toLowerCase().includes('tamanho') ||
+        option.name.toLowerCase().includes('size') ||
+        option.optionValues.some((value: any) => value.name.includes('g')),
     );
-    
+
     if (sizeOption) {
       const selectedOptionValue = selectedVariant.selectedOptions.find(
-        (opt: any) => opt.name === sizeOption.name
+        (opt: any) => opt.name === sizeOption.name,
       );
-      
+
       if (selectedOptionValue) {
         const index = sizeOption.optionValues.findIndex(
-          (value: any) => value.name === selectedOptionValue.value
+          (value: any) => value.name === selectedOptionValue.value,
         );
         return index >= 0 ? index : 0;
       }
     }
-    
+
     return 0;
   }, [selectedVariant, product.options]);
-  
-  
+
   // Parse dos dados nutricionais do metafield
   const nutritionalData = parseNutritionalData(
     product.nutritionalInfo?.value,
-    selectedVariantIndex // Passa o índice da variante selecionada
+    selectedVariantIndex, // Passa o índice da variante selecionada
   );
 
   return (
     <div className="flex flex-col gap-8">
-      <div className='py-[100px] w-full flex justify-center items-center'>
-      <div className="max-w-[1200px] w-full flex  gap-8 justify-center items-start">
-        <ProductImage
-          images={
-            product.images.nodes.filter((img: {id: string}) => !!img.id) as {
-              id: string;
-              url: string;
-              altText?: string | null;
-            }[]
-          }
-        />
-        <div className="flex flex-col gap-8 max-w-[400px]">
-          <div className="flex flex-col gap-4">
-            <h3 className="text-text-sub-600 text-title-h3">{title}</h3>
-            <ProductPrice
-              price={selectedVariant?.price}
-              compareAtPrice={selectedVariant?.compareAtPrice}
+      <div className="py-[100px] w-full flex justify-center items-center">
+        <div className="max-w-[1200px] w-full flex  gap-8 justify-center items-start">
+          <ProductImage
+            images={
+              product.images.nodes.filter((img: {id: string}) => !!img.id) as {
+                id: string;
+                url: string;
+                altText?: string | null;
+              }[]
+            }
+          />
+          <div className="flex flex-col gap-8 max-w-[400px]">
+            <div className="flex flex-col gap-4">
+              <h3 className="text-text-sub-600 text-title-h3">{title}</h3>
+              <ProductPrice
+                price={selectedVariant?.price}
+                compareAtPrice={selectedVariant?.compareAtPrice}
+              />
+            </div>
+
+            <ProductForm
+              productOptions={productOptions}
+              selectedVariant={selectedVariant}
+            />
+            <div className="flex flex-col gap-2 text-paragraph-md">
+              <div className="flex items-center gap-4 justify-between">
+                <p className="text-text-sub-600 text-title-h5 mb-0">
+                  descrição
+                </p>
+                <Button.Root
+                  variant="primary"
+                  mode="lighter"
+                  size="xsmall"
+                  onClick={() => setShowDescription((prev) => !prev)}
+                  className="w-fit"
+                >
+                  {showDescription ? (
+                    <Button.Icon as={RiArrowDownSLine} />
+                  ) : (
+                    <Button.Icon as={RiArrowUpSLine} />
+                  )}
+                </Button.Root>
+              </div>
+              <div
+                className={`transition-all duration-300 overflow-hidden ${showDescription ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+              >
+                {showDescription && (
+                  <div
+                    className="text-text-sub-600"
+                    dangerouslySetInnerHTML={{__html: descriptionHtml}}
+                  />
+                )}
+              </div>
+            </div>
+            {/* Tabela Nutricional Dinâmica */}
+            <NutritionalTable
+              nutritionalInfo={nutritionalData}
+              selectedVariantIndex={selectedVariantIndex}
             />
           </div>
-
-          <ProductForm
-            productOptions={productOptions}
-            selectedVariant={selectedVariant}
-          />
-          <div className="flex flex-col gap-2 text-paragraph-md">
-            <div className="flex items-center gap-4 justify-between">
-              <p className="text-text-sub-600 text-title-h5 mb-0">descrição</p>
-              <Button.Root
-                variant="primary"
-                mode="lighter"
-                size="xsmall"
-                onClick={() => setShowDescription((prev) => !prev)}
-                className="w-fit"
-              >
-                {showDescription ? (
-                  <Button.Icon as={RiArrowDownSLine} />
-                ) : (
-                  <Button.Icon as={RiArrowUpSLine} />
-                )}
-              </Button.Root>
-            </div>
-            <div
-              className={`transition-all duration-300 overflow-hidden ${showDescription ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
-            >
-              {showDescription && (
-                <div
-                  className="text-text-sub-600"
-                  dangerouslySetInnerHTML={{__html: descriptionHtml}}
-                />
-              )}
-            </div>
-          </div>
-          {/* Tabela Nutricional Dinâmica */}
-          <NutritionalTable 
-            nutritionalInfo={nutritionalData} 
-            selectedVariantIndex={selectedVariantIndex}
+          <Analytics.ProductView
+            data={{
+              products: [
+                {
+                  id: product.id,
+                  title: product.title,
+                  price: selectedVariant?.price.amount || '0',
+                  vendor: product.vendor,
+                  variantId: selectedVariant?.id || '',
+                  variantTitle: selectedVariant?.title || '',
+                  quantity: 1,
+                },
+              ],
+            }}
           />
         </div>
-        <Analytics.ProductView
-          data={{
-            products: [
-              {
-                id: product.id,
-                title: product.title,
-                price: selectedVariant?.price.amount || '0',
-                vendor: product.vendor,
-                variantId: selectedVariant?.id || '',
-                variantTitle: selectedVariant?.title || '',
-                quantity: 1,
-              },
-            ],
-          }}
-        />
       </div>
-      </div>
-      
+
       {/* <div className="w-full flex justify-center p-6">
         <div className="max-w-[1200px] bg-yellow-500 p-6 rounded-lg justify-center items-center w-full flex flex-col gap-4">
           <p className="text-title-h3 text-text-sub-600 text-center">
@@ -641,36 +646,35 @@ export default function Product() {
           </div>
         </div>
       </div> */}
-      <div className="w-full flex justify-center items-center p-6">
-      <div className="max-w-[1200px] w-full flex flex-col justify-center items-center mt-12">
-        <div className="flex items-center justify-between w-full">
-          <h2 className="text-title-h2 text-text-sub-600 mb-6">
-            você também pode gostar
-          </h2>
-          <Button.Root>Abrir</Button.Root>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-[1200px]">
-          {relatedProducts &&
-            relatedProducts.map(
-              (product: {
-                id: string;
-                handle: string;
-                title: string;
-                featuredImage?: {
-                  altText?: string | null;
-                  url: string;
-                  width?: number | null;
-                  height?: number | null;
-                } | null;
-                priceRange?: {
-                  minVariantPrice: MoneyV2;
-                };
-              }) => <ProductCard key={product.id} product={product} />,
-            )}
+      <div className="w-full flex justify-center items-center px-4">
+        <div className="max-w-[1200px] w-full flex flex-col justify-center items-center mt-12">
+          <div className="flex items-center justify-between w-full">
+            <h2 className="text-title-h3 text-text-sub-600 mb-6">
+              você também pode gostar
+            </h2>
+            <Button.Root>Abrir</Button.Root>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full max-w-[1200px]">
+            {relatedProducts &&
+              relatedProducts.map(
+                (product: {
+                  id: string;
+                  handle: string;
+                  title: string;
+                  featuredImage?: {
+                    altText?: string | null;
+                    url: string;
+                    width?: number | null;
+                    height?: number | null;
+                  } | null;
+                  priceRange?: {
+                    minVariantPrice: MoneyV2;
+                  };
+                }) => <ProductCard key={product.id} product={product} />,
+              )}
+          </div>
         </div>
       </div>
-      </div>
-      
     </div>
   );
 }

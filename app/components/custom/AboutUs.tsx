@@ -12,7 +12,7 @@ export function AboutUs() {
 
   return (
     <section
-      className="gap-8   relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F9F6EC] overflow-hidden"
+      className="gap-8  px-4 relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F9F6EC] overflow-hidden"
       onMouseEnter={() => {
         setColor('#DF5627');
         setBorderColor('#303172');

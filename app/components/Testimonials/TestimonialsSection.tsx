@@ -43,7 +43,7 @@ export function TestimonialsSection({
       onMouseEnter={() => { setColor('#E69250'); setBorderColor('white'); }}
       onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
     >
-      <div className="w-full !max-w-[1024px]">
+      <div className="w-full  !max-w-[1024px]">
         <Carousel
           opts={{
             align: 'start',

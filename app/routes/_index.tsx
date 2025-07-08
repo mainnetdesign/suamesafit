@@ -1,6 +1,6 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {Suspense} from 'react';
+import {Suspense, useEffect, useState} from 'react';
 import {Image, Money, CartForm} from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
@@ -31,6 +31,7 @@ import * as Input from '~/components/align-ui/ui/input';
 import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
 import { Header } from '~/components/Header';
+import Autoplay from 'embla-carousel-autoplay';
 
 export const meta: MetaFunction = () => {
   return [{title: 'Hydrogen | Home'}];
@@ -355,7 +356,26 @@ function FeaturedCollections({
   summerProducts: any[];
 }) {
   const {setColor, setBorderColor} = useCursorColor();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
   if (!collections?.length) return null;
+
+  const autoplayOptions = {
+    delay: 4000,
+    stopOnInteraction: false,
+    stopOnMouseEnter: false,
+  };
 
   return (
     <div className="featured-collections px-4 flex flex-col gap-10">
@@ -366,13 +386,16 @@ function FeaturedCollections({
             <h4 className="text-title-h4">encontre sua refeição ideal</h4>
           </div>
           <div className="relative">
-            <Carousel className="w-full max-w-[964px] mx-auto">
+            <Carousel 
+              className="w-full max-w-[964px] mx-auto"
+              plugins={isMobile ? [Autoplay(autoplayOptions)] : []}
+            >
               <CarouselContent className="min-h-[524px]">
                 {collections.map((collection) => (
                   <CarouselItem key={collection.id} className="md:basis-full">
                     <div className="p-1">
-                      <div className="flex flex-col md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
-                        <div className="min-h-[524px] flex-1 max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
+                      <div className="flex flex-col-reverse md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
+                        <div className="min-h-[400px] flex-1  md:max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
                           <div className="flex flex-col justify-between items-start h-full">
                             <h3 className="text-[2.5rem] lowercase font-medium text-text-sub-600 mb-4 font-serif">
                               {collection.title}
@@ -388,7 +411,7 @@ function FeaturedCollections({
                           </InteractiveHoverButton>
                         </div>
                         {collection.image && (
-                          <div className="flex-1 max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
+                          <div className="flex-1 md:max-w-[524px] featured-collection-image rounded-lg overflow-hidden h-full min-h-[400] md:min-h-[524px]">
                             <Image
                               data={collection.image}
                               sizes="(min-width: 768px) 50vw, 100vw"
@@ -402,11 +425,11 @@ function FeaturedCollections({
                 ))}
               </CarouselContent>
               <CarouselPrevious
-                className="w-left-0 md:-left-16 lg:-left-24 text-white"
+                className={`w-left-0 md:-left-16  text-white ${isMobile ? 'hidden' : ''}`}
                 iconSize={48}
               />
               <CarouselNext
-                className="w-9 h-9 right-0 md:-right-16 lg:-right-24 text-white"
+                className={`w-9 h-9 right-0 md:-right-16  text-white ${isMobile ? 'hidden' : ''}`}
                 iconSize={48}
               />
               <CarouselDots />

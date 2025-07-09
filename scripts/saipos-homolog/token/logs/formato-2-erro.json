@@ -4,7 +4,7 @@
     "order_id": "homolog-001",
     "display_id": "homolog-001",
     "cod_store": "123",
-    "created_at": "2025-07-02T19:20:24.133Z",
+    "created_at": "2025-07-08T17:48:13.869Z",
     "products": [
       {
         "product_id": "001",
@@ -22,8 +22,8 @@
   "error": {
     "type": "sale",
     "errorCode": 901,
-    "dateTime": "2025-07-02T19:20:26.167Z",
+    "dateTime": "2025-07-08T17:50:55.354Z",
     "errorMessage": "Token inválido ou expirado.",
-    "guidRequest": "57a58905-869c-4252-8cba-c9fd3a4e89fd"
+    "guidRequest": "7cc046b9-5b0d-414b-b438-ee7e6a4f6c72"
   }
 }

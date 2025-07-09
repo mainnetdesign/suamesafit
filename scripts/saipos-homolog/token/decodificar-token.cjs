@@ -10,7 +10,7 @@ async function main() {
       secret: '7f2cd14dc1982bba14d7fc00d506a0ac'
     });
     
-    const token = authResponse.data.accessToken;
+    const token = authResponse.data.token;
     console.log('✅ Token obtido com sucesso');
     console.log('Token completo:', token);
     console.log('Comprimento:', token.length, 'caracteres\n');

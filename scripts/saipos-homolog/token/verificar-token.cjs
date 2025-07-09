@@ -19,6 +19,7 @@ async function verificarToken() {
     console.log('\n');
     
     const response = await axios.post(SAIPOS_AUTH_URL, authPayload);
+    console.log(response);
     
     console.log('📥 RESPOSTA COMPLETA DA API:');
     console.log('Status HTTP:', response.status);
@@ -49,6 +50,7 @@ async function verificarToken() {
           console.log('(Signature não é decodificada por segurança)');
         }
       } catch (e) {
+        console.log(e);
         console.log('\n⚠️  Token não parece ser JWT padrão ou está em outro formato');
       }
       

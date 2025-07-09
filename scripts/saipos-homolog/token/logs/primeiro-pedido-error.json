@@ -2,8 +2,8 @@
   "error": {
     "type": "sale",
     "errorCode": 901,
-    "dateTime": "2025-07-02T19:18:03.573Z",
+    "dateTime": "2025-07-08T17:51:09.342Z",
     "errorMessage": "Token inválido ou expirado.",
-    "guidRequest": "bce91315-3de0-45fe-922d-89c3d2e02f8a"
+    "guidRequest": "66c6ac47-0c11-4711-a81d-900b747a2c93"
   }
 }

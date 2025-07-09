@@ -1,0 +1,20 @@
+{
+  "timestamp": "2025-07-08T17-46-40",
+  "ambiente": "Saipos Homologação",
+  "credenciais": "idPartner: 3f8a028b73ef542e4a37f77e81be7477",
+  "totalTestes": 20,
+  "sucessos": 0,
+  "erros": 20,
+  "observacoes": [
+    "Todas as requisições retornaram erro 901: Token inválido ou expirado",
+    "Token foi gerado com sucesso e está dentro da validade",
+    "Testados múltiplos formatos de payload",
+    "Testados ambos códigos de loja: 123 e 8664",
+    "Headers seguem exatamente a documentação"
+  ],
+  "proximosPassos": [
+    "Verificar configuração no ambiente Saipos",
+    "Confirmar se credenciais estão ativas para homologação",
+    "Validar se há restrições de IP ou outras configurações"
+  ]
+}

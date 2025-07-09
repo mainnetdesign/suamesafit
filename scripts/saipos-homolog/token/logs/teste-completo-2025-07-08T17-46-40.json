@@ -1,0 +1,640 @@
+{
+  "timestamp": "2025-07-08T17-46-40",
+  "credenciais": {
+    "idPartner": "3f8a028b73ef542e4a37f77e81be7477",
+    "secret": "7f2cd14dc1982bba14d7fc00d506a0ac",
+    "ambiente": "homolog-order-api.saipos.com"
+  },
+  "resumo": {
+    "totalTestes": 20,
+    "sucessos": 0,
+    "erros": 20,
+    "formatosTestados": 10,
+    "codigosLoja": [
+      "123",
+      "8664"
+    ]
+  },
+  "resultadosDetalhados": [
+    {
+      "sucesso": false,
+      "formato": "Minimalista Básico",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-minimal-001",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:21.168Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "88c5f909-0e27-49c0-8c47-0741c95b6092"
+      },
+      "timestamp": "2025-07-08T17:46:41.087Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Só com Produtos",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-produtos-002",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "price": 10
+          }
+        ],
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:22.223Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "cf0df4b1-16bc-44c0-ac13-f9dc569095d1"
+      },
+      "timestamp": "2025-07-08T17:46:42.140Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Só com Cliente",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-cliente-003",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "customer": {
+          "name": "Cliente Teste Homolog",
+          "phone": "21999999999"
+        },
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:23.264Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "683de003-5f42-4131-a4ea-5b60da9ad4bc"
+      },
+      "timestamp": "2025-07-08T17:46:43.182Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Produto + Cliente",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-completo-004",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10,
+            "total_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste Homolog",
+          "phone": "21999999999"
+        },
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:24.311Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "cc1975f4-045d-4846-91b3-f95fce9b8d48"
+      },
+      "timestamp": "2025-07-08T17:46:44.229Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Com Display ID",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-display-005",
+        "display_id": "HOMOLOG-005",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste",
+          "phone": "21999999999"
+        },
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:25.371Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "dbf94e31-93ce-4f18-aa87-27530e1fc64f"
+      },
+      "timestamp": "2025-07-08T17:46:45.289Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Com Endereço Completo",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-endereco-006",
+        "display_id": "HOMOLOG-006",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Pedido de homologação com endereço",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10,
+            "total_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste Homolog",
+          "phone": "21999999999",
+          "address": {
+            "street": "Rua Teste",
+            "number": "123",
+            "complement": "Apto 101",
+            "neighborhood": "Centro",
+            "city": "Rio de Janeiro",
+            "state": "RJ",
+            "zipcode": "20000-000"
+          }
+        },
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:26.415Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "ef9c3a63-ec67-4bb3-a2ad-aacc1484372e"
+      },
+      "timestamp": "2025-07-08T17:46:46.332Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Snake Case Format",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-snake-007",
+        "display_id": "HOMOLOG-007",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Teste formato snake_case",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10,
+            "total_price": 10
+          }
+        ],
+        "customer_name": "Cliente Teste",
+        "customer_phone": "21999999999",
+        "customer_address": "Rua Teste, 123 - Centro - Rio de Janeiro/RJ",
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:27.465Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "cbd27e48-1654-44f2-a992-0f9c71097428"
+      },
+      "timestamp": "2025-07-08T17:46:47.382Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Múltiplos Produtos",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-multi-008",
+        "display_id": "HOMOLOG-008",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Teste com múltiplos produtos",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto 1",
+            "quantity": 2,
+            "unit_price": 15,
+            "total_price": 30
+          },
+          {
+            "product_id": "002",
+            "name": "Produto 2",
+            "quantity": 1,
+            "unit_price": 25,
+            "total_price": 25
+          }
+        ],
+        "customer": {
+          "name": "Cliente Multi Produtos",
+          "phone": "21999999999"
+        },
+        "total_amount": 55,
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:28.512Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "b3f3c57a-450f-417a-afbc-0e16db928ed4"
+      },
+      "timestamp": "2025-07-08T17:46:48.430Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Formato Delivery",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-delivery-009",
+        "display_id": "HOMOLOG-009",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Novo cliente enviado é cadastrado com telefone e endereço no banco",
+        "delivery_type": "delivery",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Refeição Delivery",
+            "quantity": 1,
+            "unit_price": 20,
+            "total_price": 20
+          }
+        ],
+        "customer": {
+          "name": "Cliente Delivery",
+          "phone": "21999999999",
+          "address": "Rua do Delivery, 456 - Bairro - Cidade/UF - 12345-678"
+        },
+        "delivery_fee": 5,
+        "total_amount": 25,
+        "cod_store": "123"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:29.560Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "f359c61f-3986-4ca2-9c67-0509d1c7f66e"
+      },
+      "timestamp": "2025-07-08T17:46:49.478Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Cod Store Numérico",
+      "codStore": "123",
+      "payload": {
+        "order_id": "test-numeric-010",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste Numérico",
+            "quantity": 1,
+            "unit_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste Numérico",
+          "phone": "21999999999"
+        },
+        "cod_store": 123
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:30.611Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "c9f290c9-155c-4226-b7e3-2ad29850bab0"
+      },
+      "timestamp": "2025-07-08T17:46:50.529Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Minimalista Básico",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-minimal-001",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:31.663Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "37780b52-25e3-4e8b-9dac-d61957946d59"
+      },
+      "timestamp": "2025-07-08T17:46:51.581Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Só com Produtos",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-produtos-002",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "price": 10
+          }
+        ],
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:32.714Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "fdbacdbc-473a-4e33-b059-2e2dbdefff60"
+      },
+      "timestamp": "2025-07-08T17:46:52.637Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Só com Cliente",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-cliente-003",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "customer": {
+          "name": "Cliente Teste Homolog",
+          "phone": "21999999999"
+        },
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:33.772Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "ad664ebe-d39d-4599-b96b-49d439732733"
+      },
+      "timestamp": "2025-07-08T17:46:53.689Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Produto + Cliente",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-completo-004",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10,
+            "total_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste Homolog",
+          "phone": "21999999999"
+        },
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:34.815Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "79ce7a6c-e512-47c7-b698-8aa4800c5992"
+      },
+      "timestamp": "2025-07-08T17:46:54.731Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Com Display ID",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-display-005",
+        "display_id": "HOMOLOG-005",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste",
+          "phone": "21999999999"
+        },
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:35.866Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "b368a6d2-c115-49b4-ad5d-95880ce615c0"
+      },
+      "timestamp": "2025-07-08T17:46:55.784Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Com Endereço Completo",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-endereco-006",
+        "display_id": "HOMOLOG-006",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Pedido de homologação com endereço",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10,
+            "total_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste Homolog",
+          "phone": "21999999999",
+          "address": {
+            "street": "Rua Teste",
+            "number": "123",
+            "complement": "Apto 101",
+            "neighborhood": "Centro",
+            "city": "Rio de Janeiro",
+            "state": "RJ",
+            "zipcode": "20000-000"
+          }
+        },
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:36.919Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "9ad990dc-5dd3-4453-8bc4-a1b27b1970ea"
+      },
+      "timestamp": "2025-07-08T17:46:56.837Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Snake Case Format",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-snake-007",
+        "display_id": "HOMOLOG-007",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Teste formato snake_case",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste",
+            "quantity": 1,
+            "unit_price": 10,
+            "total_price": 10
+          }
+        ],
+        "customer_name": "Cliente Teste",
+        "customer_phone": "21999999999",
+        "customer_address": "Rua Teste, 123 - Centro - Rio de Janeiro/RJ",
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:37.967Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "f5367fd5-8dd3-4c88-adf1-216634cb7117"
+      },
+      "timestamp": "2025-07-08T17:46:57.885Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Múltiplos Produtos",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-multi-008",
+        "display_id": "HOMOLOG-008",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Teste com múltiplos produtos",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto 1",
+            "quantity": 2,
+            "unit_price": 15,
+            "total_price": 30
+          },
+          {
+            "product_id": "002",
+            "name": "Produto 2",
+            "quantity": 1,
+            "unit_price": 25,
+            "total_price": 25
+          }
+        ],
+        "customer": {
+          "name": "Cliente Multi Produtos",
+          "phone": "21999999999"
+        },
+        "total_amount": 55,
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:39.030Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "7c09a56b-4627-4ca2-9c32-09cd58197aa1"
+      },
+      "timestamp": "2025-07-08T17:46:58.947Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Formato Delivery",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-delivery-009",
+        "display_id": "HOMOLOG-009",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "notes": "Novo cliente enviado é cadastrado com telefone e endereço no banco",
+        "delivery_type": "delivery",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Refeição Delivery",
+            "quantity": 1,
+            "unit_price": 20,
+            "total_price": 20
+          }
+        ],
+        "customer": {
+          "name": "Cliente Delivery",
+          "phone": "21999999999",
+          "address": "Rua do Delivery, 456 - Bairro - Cidade/UF - 12345-678"
+        },
+        "delivery_fee": 5,
+        "total_amount": 25,
+        "cod_store": "8664"
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:40.079Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "2700d618-a2d6-4c81-9fda-781fe738541d"
+      },
+      "timestamp": "2025-07-08T17:46:59.995Z"
+    },
+    {
+      "sucesso": false,
+      "formato": "Cod Store Numérico",
+      "codStore": "8664",
+      "payload": {
+        "order_id": "test-numeric-010",
+        "created_at": "2025-07-08T17:46:40.823Z",
+        "products": [
+          {
+            "product_id": "001",
+            "name": "Produto Teste Numérico",
+            "quantity": 1,
+            "unit_price": 10
+          }
+        ],
+        "customer": {
+          "name": "Cliente Teste Numérico",
+          "phone": "21999999999"
+        },
+        "cod_store": 8664
+      },
+      "error": {
+        "type": "sale",
+        "errorCode": 901,
+        "dateTime": "2025-07-08T17:49:41.123Z",
+        "errorMessage": "Token inválido ou expirado.",
+        "guidRequest": "e5d5e745-e327-488f-85bd-665b7868eac6"
+      },
+      "timestamp": "2025-07-08T17:47:01.040Z"
+    }
+  ]
+}

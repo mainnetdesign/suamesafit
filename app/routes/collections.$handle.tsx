@@ -85,12 +85,12 @@ export default function Collection() {
         description={collection.description} 
         image={collection.image?.url || collectionsImage} 
       />
-      <div className="w-full max-w-[1200px] items-center justify-center">
+      <div className="w-full px-4 max-w-[1200px] items-center justify-center">
         <CollectionTab categories={collections.nodes} />
       </div>
       
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
           {collection.products.nodes.map((product: ProductItemFragment) => (
             <Product
               key={product.id}

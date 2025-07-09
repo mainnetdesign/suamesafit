@@ -27,7 +27,7 @@ export function CollectionFilters() {
   };
 
   return (
-    <div className="flex flex-col items-center md:flex-row gap-4 px-4">
+    <div className="flex flex-col items-center md:flex-row gap-4 md:px-4">
       
       <Select.Root
         defaultValue={searchParams.get('sort') ?? ''}

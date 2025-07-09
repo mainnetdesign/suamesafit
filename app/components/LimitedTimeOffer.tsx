@@ -74,24 +74,24 @@ export function LimitedTimeOffer({
 
   return (
     <div
-      className="w-full h-[722px] relative"
+      className="w-full  relative"
       onMouseEnter={() => { setColor('#f9f6ec'); setBorderColor('#303172'); }}
       onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
     >
-      <div className="w-full h-[722px] px-[78px] py-14 bg-[#f9f6ec] inline-flex flex-col justify-center items-center gap-2.5">
-        <div className="inline-flex w-full max-w-[1024px] justify-center items-center gap-[15.23px]">
-          <div className="flex w-full justify-center items-center gap-[13.54px]">
+      <div className="w-full h-auto px-4 md:px-[78px] py-14 bg-[#f9f6ec] flex flex-col justify-center items-center gap-2.5">
+        <div className="flex flex-col md:flex-row w-full max-w-[1024px] justify-center items-center gap-[15.23px]">
+          <div className="flex flex-col md:flex-row w-full justify-center items-center gap-[13.54px]">
             {/* Left column - Image */}
-            <div className="w-[512.68px] h-[379px] relative bg-white rounded-2xl overflow-hidden">
+            <div className="w-full md:w-1/2 relative bg-white rounded-2xl overflow-hidden">
               <img
                 src={imageUrl}
                 alt="Limited time offer"
-                className="w-[512.68px] h-[379px] object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
 
             {/* Right column - Content */}
-            <div className="w-[600px] h-[379px] p-8 bg-[#e48890] rounded-2xl inline-flex flex-col justify-center items-center gap-[8.46px]">
+            <div className="w-full md:w-1/2 p-8 bg-[#e48890] rounded-2xl flex flex-col justify-center items-center gap-[8.46px]">
               <div className=" flex flex-col justify-start items-center gap-[30.46px]">
                 {isClient && (
                   <Countdown
@@ -102,7 +102,7 @@ export function LimitedTimeOffer({
                 )}
 
                 <div className="self-stretch flex flex-col justify-start items-center gap-2">
-                  <h2 className="text-title-h4 text-text-white-0">
+                  <h2 className="text-title-h4 text-center md:text-left text-text-white-0">
                     {title}
                   </h2>
                   <p className="text-text-white-0 text-pragraph-sm text-center">
@@ -110,7 +110,7 @@ export function LimitedTimeOffer({
                   </p>
                 </div>
 
-                <InteractiveHoverButton className="text-text-white-0 p-2 bg-yellow-600 rounded-lg inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors border-0 outline-none" style={{ textDecoration: 'none', border: 'none', outline: 'none' }}>
+                <InteractiveHoverButton className="text-text-white-0 p-2 bg-yellow-600 rounded-full inline-flex justify-center items-center gap-[3.38px] overflow-hidden hover:bg-[#d5b165] transition-colors border-0 outline-none" style={{ textDecoration: 'none', border: 'none', outline: 'none' }}>
                   <a
                     href={buttonLink}
                     aria-label={`${buttonText} - Limited time offer`}
@@ -129,7 +129,7 @@ export function LimitedTimeOffer({
             </div>
           </div>
         </div>
-        <div className="w-full h-fit absolute">
+        <div className="w-full h-fit absolute top-0 left-0 -z-10">
           <div className="w-full h-[616.33px] relative">
             <div
               data-svg-wrapper

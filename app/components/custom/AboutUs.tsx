@@ -12,7 +12,7 @@ export function AboutUs() {
 
   return (
     <section
-      className="gap-8  px-4 relative flex flex-col items-center justify-center min-h-[70vh] py-32 bg-[#F9F6EC] overflow-hidden"
+      className="gap-8 px-4 relative flex flex-col items-center justify-center    bg-[#F9F6EC] overflow-hidden"
       onMouseEnter={() => {
         setColor('#DF5627');
         setBorderColor('#303172');
@@ -55,10 +55,10 @@ export function AboutUs() {
           />
         </svg>
       </div>
-      <span className="text-title-h3 text-primary-base ">
+      <span className="text-title-h3 text-text-sub-600 ">
           quem somos nós?
         </span>
-      <div className="bg-orange-100 p-16 rounded-3xl relative z-10 flex flex-col items-center w-full max-w-5xl mx-auto gap-5">
+      <div className="bg-orange-100 md:p-16 rounded-3xl relative z-10 flex flex-col items-center w-full max-w-5xl mx-auto gap-5">
         <div className="w-full flex flex-col items-center absolute top-1/2 -translate-y-[45%]">
           <ScrollVelocity
             texts={[

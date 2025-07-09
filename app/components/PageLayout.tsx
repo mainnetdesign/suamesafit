@@ -14,6 +14,8 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+import {RiInstagramLine, RiLinkedinBoxFill, RiWhatsappLine} from 'react-icons/ri';
+import {useAside} from '~/components/Aside';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -156,16 +158,29 @@ function MobileMenuAside({
   header: PageLayoutProps['header'];
   publicStoreDomain: PageLayoutProps['publicStoreDomain'];
 }) {
+  const {close} = useAside();
   return (
     header.menu &&
     header.shop.primaryDomain?.url && (
       <Aside type="mobile" heading="MENU">
-        <HeaderMenu
-          menu={header.menu}
-          viewport="mobile"
-          primaryDomainUrl={header.shop.primaryDomain.url}
-          publicStoreDomain={publicStoreDomain}
-        />
+        <nav className="flex flex-col gap-10 p-10">
+          <Link onClick={() => { close(); }} to="/" className="text-title-h3 text-text-sub-600">home</Link>
+          <Link onClick={() => close()} to="/collections/all" className="text-title-h3 text-text-sub-600">cardápio</Link>
+          <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">parcerias</span>
+          <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">blog</span>
+          <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">sobre</span>
+
+          <div className="mt-20 border-t border-gray-300 pt-10">
+            <h4 className="text-title-h4 text-text-sub-600 mb-4">minha conta</h4>
+            {/* poderia adicionar links de conta futuramente */}
+          </div>
+
+          <div className="mt-auto flex gap-6 pt-10">
+            <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-text-sub-600"><RiLinkedinBoxFill size={28}/></a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="text-text-sub-600"><RiInstagramLine size={28}/></a>
+            <a href="https://wa.me/5521999999999" target="_blank" rel="noopener noreferrer" className="text-text-sub-600"><RiWhatsappLine size={28}/></a>
+          </div>
+        </nav>
       </Aside>
     )
   );

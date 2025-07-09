@@ -7098,3 +7098,20 @@ body::-webkit-scrollbar {
   height: 0;
   background: transparent;
 }
+
+/* ---------- custom left-aside (mobile menu) ---------- */
+.overlay.left-aside .close-outside{
+  left: var(--aside-width);
+}
+
+aside.left-aside{
+  left: calc(-1 * var(--aside-width));
+  right: auto;
+  width: 95vw;
+  min-width: 95vw;
+  max-width: 95vw;
+}
+
+.overlay.expanded aside.left-aside{
+  transform: translateX(var(--aside-width));
+}

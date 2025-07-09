@@ -1,25 +1,51 @@
 import {json, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
+import {getSelectedProductOptions} from '@shopify/hydrogen';
 
-export async function loader({context, params}: LoaderFunctionArgs) {
+// Função auxiliar para validar dados do produto
+function validateProductData(product: any) {
+  if (!product || !product.id) {
+    return false;
+  }
+  // Validações básicas
+  if (!product.title || !product.handle) {
+    return false;
+  }
+  return true;
+}
+
+export async function loader({context, params, request}: LoaderFunctionArgs) {
   const {handle} = params;
   const {storefront} = context;
 
   if (!handle) {
-    throw new Response('Handle não informado', {status: 400});
+    throw new Response('Handle não informado', {status: 400, statusText: 'Bad Request'});
   }
 
-  const data = await storefront.query(PRODUCT_QUERY, {
-    variables: {
-      handle,
-      selectedOptions: [],
-    },
-  });
+  try {
+    const selectedOptions = getSelectedProductOptions(request);
+    
+    const {product} = await storefront.query(PRODUCT_QUERY, {
+      variables: {
+        handle,
+        selectedOptions,
+      },
+    });
 
-  if (!data?.product) {
-    throw new Response('Produto não encontrado', {status: 404});
+    if (!validateProductData(product)) {
+      throw new Response('Produto não encontrado', {status: 404, statusText: 'Not Found'});
+    }
+
+    return json({product});
+  } catch (error: any) {
+    console.error(`Erro no loader do quick-product para o handle "${handle}":`, error);
+
+    // Se o erro for uma resposta, repassa. Senão, cria uma nova resposta de erro.
+    if (error instanceof Response) {
+      throw error;
+    }
+    
+    throw new Response('Erro ao carregar o produto', {status: 500, statusText: 'Internal Server Error'});
   }
-
-  return json({product: data.product});
 }
 
 // Reaproveitamos o mesmo fragmento utilizado na página de produto para garantir consistência.

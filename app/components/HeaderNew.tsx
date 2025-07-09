@@ -18,7 +18,6 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const profileButtonRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(false);
 
   // Simulação de login (troque por seu contexto real depois)
   const isLoggedIn = false; // Troque para true para testar o outro menu
@@ -71,44 +70,12 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
     };
   }, [showAccountMenu]);
 
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(max-width: 767px)');
-    const handleResize = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIsMobile(e.matches);
-    };
-
-    // Initial check
-    handleResize(mediaQuery);
-
-    // Add listener
-    if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', handleResize);
-    } else {
-      // Safari
-      /* @ts-ignore */
-      mediaQuery.addListener(handleResize);
-    }
-
-    return () => {
-      if (mediaQuery.removeEventListener) {
-        mediaQuery.removeEventListener('change', handleResize);
-      } else {
-        /* @ts-ignore */
-        mediaQuery.removeListener(handleResize);
-      }
-    };
-  }, []);
-
   /* ---------- BAR WIDTH LOGIC ---------- */
   const barClasses = collapsed
-    ? 'w-24 px-5 py-4'
-    : isMobile
-      ? 'w-[90%] px-5 py-4'
-      : 'w-full max-w-[calc(100vw-152px)] px-5 py-4';
+    ? 'w-24 px-5 py-4 md:min-w-[96px]'
+    : 'w-full md:max-w-[calc(100vw-152px)] px-5 py-4 md:min-w-[320px]';
 
-  const barStyle: React.CSSProperties = isMobile
-    ? {} // mobile – no minWidth to avoid shrinking below 90%
-    : {minWidth: collapsed ? '96px' : '320px'}; // desktop fallback
+  const barStyle: React.CSSProperties = collapsed ? {} : {minWidth: '320px'}; // desktop fallback
 
   return (
     <header className="w-[90%] md:w-full left-1/2 -translate-x-1/2 md:max-w-[934px] h-24 fixed top-[20.28px] z-40">
@@ -130,30 +97,27 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
             style={{transitionProperty: 'opacity, transform'}}
           >
             {/* Left side: Navigation links or hamburger */}
-            {isMobile ? (
-              <div>
-                <button onClick={() => open('mobile')} className="p-2">
-                  <RiMenuLine className="w-6 h-6 text-text-sub-600" />
-                </button>
+            <div className="md:hidden">
+              <button onClick={() => open('mobile')} className="p-2">
+                <RiMenuLine className="w-6 h-6 text-text-sub-600" />
+              </button>
+            </div>
+            <div className="hidden md:flex justify-start items-center gap-4">
+              <a href="/collections/all">
+                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
+                  cardápio
+                </div>
+              </a>
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
+                parcerias
               </div>
-            ) : (
-              <div className="flex justify-start items-center gap-4">
-                <a href="/collections/all">
-                  <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
-                    cardápio
-                  </div>
-                </a>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
-                  parcerias
-                </div>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
-                  blog
-                </div>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
-                  sobre
-                </div>
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
+                blog
               </div>
-            )}
+              <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
+                sobre
+              </div>
+            </div>
 
             {/* Right side icons */}
             <div className="flex justify-start items-center gap-3.5 relative">
@@ -173,25 +137,23 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                 )}
               </Link>
               <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
-              {!isMobile && (
-                <div className="relative">
-                  <ProfileDropdown
-                    onLoginClick={() =>
-                      (window.location.href =
-                        'https://shopify.com/65347551301/account/login')
-                    }
-                    onOrdersClick={() =>
-                      (window.location.href =
-                        'https://shopify.com/65347551301/account/orders')
-                    }
-                    onProfileClick={() =>
-                      (window.location.href =
-                        'https://shopify.com/65347551301/account/profile')
-                    }
-                    className="w-8 h-8 flex items-center justify-center cursor-pointer"
-                  />
-                </div>
-              )}
+              <div className="relative hidden md:block">
+                <ProfileDropdown
+                  onLoginClick={() =>
+                    (window.location.href =
+                      'https://shopify.com/65347551301/account/login')
+                  }
+                  onOrdersClick={() =>
+                    (window.location.href =
+                      'https://shopify.com/65347551301/account/orders')
+                  }
+                  onProfileClick={() =>
+                    (window.location.href =
+                      'https://shopify.com/65347551301/account/profile')
+                  }
+                  className="w-8 h-8 flex items-center justify-center cursor-pointer"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -40,7 +40,7 @@ export function Product({product}: ProductProps) {
         className="flex flex-col group no-underline hover:no-underline flex-1"
         to={`/products/${product.handle}`}
       >
-        <div className="relative aspect-square overflow-hidden">
+        <div className="relative aspect-[4/3] md:aspect-square overflow-hidden">
           {/* Imagem principal */}
           {product.featuredImage && (
             <Image

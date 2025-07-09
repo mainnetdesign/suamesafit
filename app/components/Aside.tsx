@@ -34,6 +34,7 @@ export function Aside({
 }) {
   const {type: activeType, close} = useAside();
   const expanded = type === activeType;
+  const leftAside = type === 'mobile';
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -55,16 +56,23 @@ export function Aside({
   return (
     <div
       aria-modal
-      className={`overlay  ${expanded ? 'expanded' : ''}`}
+      className={`overlay ${leftAside ? 'left-aside' : ''} ${expanded ? 'expanded' : ''} ${!expanded ? 'overflow-hidden' : ''}`}
       role="dialog"
+      style={!expanded ? {overflow: 'hidden'} : {}}
     >
-      <button className="close-outside" onClick={close} />
-      <aside className='bg-yellow-50'>
+      {expanded && <button className="close-outside" onClick={close} />}
+      <aside className={`bg-yellow-50 ${leftAside ? 'left-aside' : ''} ${!expanded ? 'overflow-hidden' : ''}`} style={!expanded ? {overflow: 'hidden'} : {}}>
         <header className='border-none'>
-          <h3 className='text-title-h4 text-text-sub-600'>carrinho</h3>
-          <button className=" close reset" onClick={close} aria-label="Close">
-            <p className='text-title-h4 text-text-sub-600'>&times;</p>
-          </button>
+          <h3 className='text-title-h4 text-text-sub-600'>
+            {type === 'cart' && 'carrinho'}
+            {type === 'mobile' && 'menu'}
+            {type !== 'cart' && type !== 'mobile' && heading}
+          </h3>
+          {expanded && (
+            <button className=" close reset" onClick={close} aria-label="Close">
+              <p className='text-title-h4 text-text-sub-600'>&times;</p>
+            </button>
+          )}
         </header>
         <main className={type === 'cart' ? 'h-full flex flex-col' : ''}>{children}</main>
       </aside>

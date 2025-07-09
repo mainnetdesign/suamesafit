@@ -86,7 +86,7 @@ export default function Collection() {
       </div>
 
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.nodes.map((product: ProductItemFragment) => (
             <Product
               key={product.id}

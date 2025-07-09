@@ -207,25 +207,15 @@ export default function ProfileDropdown({
   return (
     <div className={`relative ${className}`}>
       <Suspense fallback={<LoadingFallback />}>
-        {rootData?.isLoggedInPromise ? (
-          <Await resolve={rootData.isLoggedInPromise} errorElement={<LoadingFallback />}>
-            {(isLoggedIn) => (
-              <Suspense fallback={<AuthenticatedContent isLoggedIn={false} customerEmail={null} />}>
-                {rootData?.customerEmailPromise && isLoggedIn ? (
-                  <Await resolve={rootData.customerEmailPromise} errorElement={<AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={null} />}>
-                    {(customerEmail) => (
-                      <AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={customerEmail} />
-                    )}
-                  </Await>
-                ) : (
-                  <AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={null} />
-                )}
-              </Suspense>
-            )}
-          </Await>
-        ) : (
-          <LoadingFallback />
-        )}
+        <Await resolve={rootData?.isLoggedInPromise} errorElement={<LoadingFallback />}>
+          {(isLoggedIn) => (
+             <Await resolve={rootData?.customerEmailPromise} errorElement={<AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={null} />}>
+              {(customerEmail) => (
+                <AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={customerEmail} />
+              )}
+            </Await>
+          )}
+        </Await>
       </Suspense>
     </div>
   )

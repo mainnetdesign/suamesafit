@@ -30,7 +30,7 @@ import * as Button from '~/components/align-ui/ui/button';
 import * as Input from '~/components/align-ui/ui/input';
 import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
-import { Header } from '~/components/Header';
+import {Header} from '~/components/Header';
 import Autoplay from 'embla-carousel-autoplay';
 
 export const meta: MetaFunction = () => {
@@ -136,7 +136,7 @@ export async function loader(args: LoaderFunctionArgs) {
 
   // Buscar 8 produtos em ordem alfabética
   const homepageProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
-    variables: {first: 4},
+    variables: {first: 8},
   });
 
   // Fetch testimonials
@@ -194,7 +194,6 @@ export default function Homepage() {
 
   return (
     <div className="home gap-10  flex flex-col">
-      
       <div className="w-full px-4 flex justify-center items-center">
         <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
           <img
@@ -213,9 +212,9 @@ export default function Homepage() {
         </div>
       </div>
 
-      <div className="w-full px-4 flex flex-col justify-center items-center">
-        <div className="max-w-[1200px] w-full flex flex-col gap-8 justify-center items-center">
-          <div className="w-full flex justify-between items-center gap-4">
+      <div className="w-full visible flex flex-col justify-center items-center">
+        <div className="max-w-[1200px] pl-4 visible w-full flex flex-col gap-8 justify-center items-center">
+          <div className="w-full pr-4 flex justify-between items-center gap-4">
             <div className="flex flex-col items-center gap-4">
               <h3 className="text-title-h4  text-text-sub-600">
                 pratos em destaque
@@ -225,13 +224,13 @@ export default function Homepage() {
               variant="primary"
               mode="filled"
               size="medium"
-              onClick={() => window.location.href = '/collections/all'}
+              onClick={() => (window.location.href = '/collections/all')}
             >
               abrir cardápio
             </Button.Root>
           </div>
 
-          <HomepageProductsGrid products={data.homepageProducts} />
+          <ProductsCarousel products={data.homepageProducts} />
         </div>
       </div>
 
@@ -243,6 +242,15 @@ export default function Homepage() {
       {testimonials.length > 0 && (
         <TestimonialsSection testimonials={testimonials} />
       )}
+
+      <LimitedTimeOffer
+        title="oferta por tempo limitado"
+        description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
+        buttonText="peça agora"
+        buttonLink="/collections/limited-offer"
+        imageUrl={limitedTimeOfferImage}
+        deadline="2025-07-30T23:59:59"
+      />
 
       <AboutUs />
 
@@ -260,12 +268,12 @@ export default function Homepage() {
       </div> */}
 
       <div className="w-full px-4 flex flex-col justify-center items-center">
-        <div className="max-w-[1200px] w-full flex gap-4 justify-center items-start">
+        <div className="max-w-[1200px] w-full flex flex-col md:flex-row gap-4 justify-center items-start">
           <div className="w-full flex flex-col justify-center items-start">
-            <div className="text-label-lg bg-yellow-500 px-8 py-2 rounded-full">
+            <div className="hidden md:block text-label-lg bg-yellow-500 px-8 py-2 rounded-full">
               faq
             </div>
-            <h2 className="text-title-h2 text-text-sub-600">
+            <h2 className="text-title-h3 text-center md:text-left text-text-sub-600">
               perguntas frequentes
             </h2>
           </div>
@@ -357,18 +365,18 @@ function FeaturedCollections({
 }) {
   const {setColor, setBorderColor} = useCursorColor();
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-  
+
   if (!collections?.length) return null;
 
   const autoplayOptions = {
@@ -386,8 +394,8 @@ function FeaturedCollections({
             <h4 className="text-title-h4">encontre sua refeição ideal</h4>
           </div>
           <div className="relative">
-            <Carousel 
-              className="w-full max-w-[964px] mx-auto"
+            <Carousel
+              className="w-full max-w-[964px] mx-auto group/featured"
               plugins={isMobile ? [Autoplay(autoplayOptions)] : []}
             >
               <CarouselContent className="min-h-[524px]">
@@ -395,7 +403,7 @@ function FeaturedCollections({
                   <CarouselItem key={collection.id} className="md:basis-full">
                     <div className="p-1">
                       <div className="flex flex-col-reverse md:flex-row bg-transparent rounded-lg overflow-hidden gap-4 h-fit">
-                        <div className="min-h-[400px] flex-1  md:max-w-[424px] bg-yellow-50 rounded-lg p-8 flex flex-col justify-between">
+                        <div className="min-h-[300px] flex-1  md:max-w-[424px] bg-yellow-50 rounded-lg p-4 md:p-8 flex flex-col justify-between">
                           <div className="flex flex-col justify-between items-start h-full">
                             <h3 className="text-[2.5rem] lowercase font-medium text-text-sub-600 mb-4 font-serif">
                               {collection.title}
@@ -425,25 +433,15 @@ function FeaturedCollections({
                 ))}
               </CarouselContent>
               <CarouselPrevious
-                className={`w-left-0 md:-left-16  text-white ${isMobile ? 'hidden' : ''}`}
-                iconSize={48}
+                className={`bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/featured:opacity-100 transition-opacity duration-300 left-4 top-1/2 -translate-y-1/2 ${isMobile ? 'hidden' : ''}`}
               />
               <CarouselNext
-                className={`w-9 h-9 right-0 md:-right-16  text-white ${isMobile ? 'hidden' : ''}`}
-                iconSize={48}
+                className={`bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/featured:opacity-100 transition-opacity duration-300 right-4 top-1/2 -translate-y-1/2 ${isMobile ? 'hidden' : ''}`}
               />
               <CarouselDots />
             </Carousel>
           </div>
         </div>
-        <LimitedTimeOffer
-          title="oferta por tempo limitado"
-          description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
-          buttonText="peça agora"
-          buttonLink="/collections/limited-offer"
-          imageUrl={limitedTimeOfferImage}
-          deadline="2025-07-30T23:59:59"
-        />
       </div>
     </div>
   );
@@ -515,15 +513,31 @@ const SHOP_TESTIMONIALS_QUERY = `#graphql
 `;
 
 // Componente para grid de produtos na home
-function HomepageProductsGrid({products}: {products: any[]}) {
+function ProductsCarousel({products}: {products: any[]}) {
   if (!products?.length) return null;
   return (
-    <div className="">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <Product key={product.id} product={product} />
-        ))}
-      </div>
+    <div className="visible w-full">
+      <Carousel
+        opts={{
+          align: 'start',
+        }}
+        className="w-full visible group/carousel"
+      >
+        <CarouselContent>
+          {products.map((product) => (
+            <CarouselItem
+              key={product.id}
+              className="basis-4/5 md:basis-1/2 lg:basis-1/4"
+            >
+              <div className="p-1">
+                <Product product={product} />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 left-4" />
+        <CarouselNext className="bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 right-4" />
+      </Carousel>
     </div>
   );
 }

@@ -89,7 +89,7 @@ function SearchResultsPredictiveArticles({
 
   return (
     <div className="predictive-search-result" key="articles">
-      <h5>Articles</h5>
+      <h5 className='text-title-h5 text-text-sub-600'>artigos</h5>
       <ul>
         {articles.map((article) => {
           const articleUrl = urlWithTrackingParams({
@@ -130,7 +130,7 @@ function SearchResultsPredictiveCollections({
 
   return (
     <div className="predictive-search-result" key="collections">
-      <h5>Collections</h5>
+      <h5 className='text-title-h5 text-text-sub-600 lowercase'>coleções</h5>
       <ul>
         {collections.map((collection) => {
           const collectionUrl = urlWithTrackingParams({
@@ -150,7 +150,7 @@ function SearchResultsPredictiveCollections({
                     height={50}
                   />
                 )}
-                <div>
+                <div className='text-label-md text-text-sub-600'>
                   <span>{collection.title}</span>
                 </div>
               </Link>
@@ -171,7 +171,7 @@ function SearchResultsPredictivePages({
 
   return (
     <div className="predictive-search-result" key="pages">
-      <h5>Pages</h5>
+      <h5 className='text-title-h5 text-text-sub-600 lowercase'>páginas</h5>
       <ul>
         {pages.map((page) => {
           const pageUrl = urlWithTrackingParams({
@@ -204,7 +204,7 @@ function SearchResultsPredictiveProducts({
 
   return (
     <div className="predictive-search-result" key="products">
-      <h5>Products</h5>
+      <h5 className='text-title-h5 text-text-sub-600'>produtos</h5>
       <ul>
         {products.map((product) => {
           const productUrl = urlWithTrackingParams({
@@ -216,18 +216,18 @@ function SearchResultsPredictiveProducts({
           const price = product?.selectedOrFirstAvailableVariant?.price;
           const image = product?.selectedOrFirstAvailableVariant?.image;
           return (
-            <li className="predictive-search-result-item" key={product.id}>
+            <li className="predictive-search-result-item pb-6 border-b border-stroke-soft-200" key={product.id}>
               <Link to={productUrl} onClick={closeSearch}>
                 {image && (
                   <Image
                     alt={image.altText ?? ''}
                     src={image.url}
-                    width={50}
-                    height={50}
+                    width={75}
+                    height={75}
                   />
                 )}
-                <div>
-                  <p>{product.title}</p>
+                <div className='text-text-sub-600'>
+                  <p className='text-label-md'>{product.title}</p>
                   <small>{price && <Money data={price} />}</small>
                 </div>
               </Link>
@@ -268,8 +268,8 @@ function SearchResultsPredictiveEmpty({
   }
 
   return (
-    <p>
-      No results found for <q>{term.current}</q>
+    <p className='text-text-sub-600'>
+      Não encontramos resultados para <q>{term.current}</q>
     </p>
   );
 }

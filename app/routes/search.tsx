@@ -11,7 +11,7 @@ import {
   type PredictiveSearchReturn,
   getEmptyPredictiveSearchResult,
 } from '~/lib/search';
-
+import * as  Button  from '~/components/align-ui/ui/button';
 export const meta: MetaFunction = () => {
   return [{title: `Hydrogen | Search`}];
 };
@@ -40,21 +40,28 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
-      <h1>Search</h1>
+    <div className="pt-[100px] px-4 flex flex-col gap-4 search">
+      <div className='flex flex-col gap-1'>
+        <h3 className='text-title-h3 text-text-sub-600'>busca</h3>
+        <div className='text-paragraph-md text-text-sub-600'>procure por produtos, coleções, artigos e páginas</div>
+      </div>
       <SearchForm>
         {({inputRef}) => (
-          <>
+          <div className='flex flex-row items-center gap-1'>
             <input
               defaultValue={term}
               name="q"
               placeholder="Search…"
               ref={inputRef}
               type="search"
+              className="w-full border-stroke-soft-200 rounded-full"
             />
             &nbsp;
-            <button type="submit">Search</button>
-          </>
+            
+            <Button.Root variant="primary" mode="lighter" className="" type="submit">
+                buscar
+              </Button.Root>
+          </div>
         )}
       </SearchForm>
       {error && <p style={{color: 'red'}}>{error}</p>}

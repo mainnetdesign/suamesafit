@@ -172,7 +172,10 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                   </span>
                 )}
               </Link>
-              <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
+              {/* Botão de busca */}
+              <button onClick={() => open('search')} className="p-2">
+                <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
+              </button>
               {!isMobile && (
                 <div className="relative">
                   <ProfileDropdown

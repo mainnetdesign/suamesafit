@@ -44,7 +44,7 @@ export default function SearchPage() {
       <div className="max-w-[1200px] flex flex-col gap-4">
         <div className="flex flex-col justify-center items-center gap-1">
           <h3 className="text-title-h3 text-text-sub-600">busca</h3>
-          <div className="text-paragraph-md text-text-sub-600">
+          <div className="text-paragraph-md text-center text-text-sub-600">
             procure por produtos, coleções, artigos e páginas
           </div>
         </div>

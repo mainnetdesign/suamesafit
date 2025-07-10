@@ -74,12 +74,12 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
 function SearchAside() {
   const queriesDatalistId = useId();
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside type="search" heading="busca">
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
-            <>
+            <div className="flex flex-row gap-2">
               <input
                 name="q"
                 onChange={fetchResults}
@@ -91,7 +91,7 @@ function SearchAside() {
               />
               &nbsp;
               <button onClick={goToSearch}>Search</button>
-            </>
+            </div>
           )}
         </SearchFormPredictive>
 

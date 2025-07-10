@@ -55,6 +55,7 @@ export function ProductImage({
           key={selectedImage.id}
           sizes="(min-width: 45em) 50vw, 100vw"
           className={`absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-[600ms] ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+          style={{width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center'}} // força o cover
           onLoad={() => setIsLoaded(true)}
         />
       </div>

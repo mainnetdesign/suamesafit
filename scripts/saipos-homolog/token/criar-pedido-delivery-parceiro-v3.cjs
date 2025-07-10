@@ -6,8 +6,9 @@ dotenv.config();
 const SAIPOS_AUTH_URL = 'https://homolog-order-api.saipos.com/auth';
 
 // Credenciais fornecidas
-const ID_PARTNER = process.env.SAIPOS_ID_PARTNER;
-const SECRET = process.env.SAIPOS_SECRET;
+// Caso as variáveis de ambiente não estejam configuradas, usa os valores padrão da Sua Mesa Fit
+const ID_PARTNER = process.env.SAIPOS_ID_PARTNER || '3f8a028b73ef542e4a37f77e81be7477e';
+const SECRET = process.env.SAIPOS_SECRET || '7f2cd14dc1982bba14d7fc00d506a0ac';
 
 async function getAuthToken() {
   try {
@@ -61,12 +62,14 @@ async function criarPedidoDeliveryParceiro(token) {
         document_number: "11122233344"
       },
       order_method: {
-        mode: "DELIVERY",
-        delivery_by: "PARTNER",
+        mode: process.env.SAIPOS_ORDER_MODE || "DELIVERY",
+        delivery_by: process.env.SAIPOS_DELIVERY_BY || "PARTNER",
         delivery_fee: 7.00,
         scheduled: true,
         delivery_date_time: entregaEm.toISOString()
       },
+      // Adiciona identificador de mesa se for TABLE
+      ...(process.env.SAIPOS_ORDER_MODE === 'TABLE' ? { table: { desc_table: '1' } } : {}),
       delivery_address: {
         country: "BR",
         state: "SP", 
@@ -105,12 +108,10 @@ async function criarPedidoDeliveryParceiro(token) {
     console.log('📋 Estrutura do pedido:');
     console.log(JSON.stringify(pedido, null, 2));
 
-    // Headers baseados no exemplo que funcionou
+    // Headers conforme orientação da Saipos: usar apenas Authorization e Content-Type
     const headers = {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'x-id-partner': ID_PARTNER,
-      'x-secret-key': SECRET
+      Authorization: token, // sem prefixo "Bearer"
+      'Content-Type': 'application/json'
     };
 
     console.log('\n📤 Headers da requisição:');
@@ -125,10 +126,10 @@ const options = {
   url: 'https://homolog-order-api.saipos.com/order',
   headers,
   data: {
-    order_id: '54515487548787',
-    display_id: '5457',
-    cod_store: '123',
-    created_at: '2020-10-08T01:25:49.992093Z',
+    order_id: `OPTS_${Date.now()}`,
+    display_id: `${Math.floor(Math.random() * 9999)}`,
+    cod_store: process.env.SAIPOS_COD_STORE || '123',
+    created_at: new Date().toISOString(),
     notes: '',
     total_increase: 10,
     total_discount: 10,
@@ -183,14 +184,26 @@ const options = {
         ]
       }
     ],
-    payment_types: [{code: 'DIN', amount: 3, change_for: 0}]
+    // Pagamento dinâmico conforme variável de ambiente
+    payment_types: [
+      {
+        code: process.env.SAIPOS_PAYMENT_CODE || 'DIN',
+        amount: 10,
+        change_for: 0,
+        ...(process.env.SAIPOS_PAYMENT_CODE === 'PARTNER_PAYMENT_ONLINE' ? { complement: 'pix' } : {})
+      }
+    ]
   }
 };
 
-const response = await axios
-  .request(options)
-  .then(res => console.log(res))
-  .catch(err => console.error(err));
+// Executa requisição
+let response;
+try {
+  response = await axios.request(options);
+} catch (err) {
+  console.error('❌ Erro na requisição:', err.response?.data || err.message);
+  throw err;
+}
     //eh aqui
     // const response = await axios.request(SAIPOS_ORDER_URL, pedido, {
     //   headers,

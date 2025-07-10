@@ -103,15 +103,15 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
   const barClasses = collapsed
     ? 'w-24 px-5 py-4'
     : isMobile
-      ? 'w-[90%] px-5 py-4'
-      : 'w-full max-w-[calc(100vw-152px)] px-5 py-4';
+      ? 'w-full px-5 py-4'
+      : 'w-full md:max-w-[calc(100vw-152px)] px-5 py-4';
 
   const barStyle: React.CSSProperties = isMobile
     ? {} // mobile – no minWidth to avoid shrinking below 90%
     : {minWidth: collapsed ? '96px' : '320px'}; // desktop fallback
 
   return (
-    <header className="w-[90%] md:w-full left-1/2 -translate-x-1/2 md:max-w-[934px] h-24 fixed top-[20.28px] z-40">
+    <header className="header-appear w-[90%] md:w-full left-1/2 -translate-x-1/2 md:max-w-[934px] h-24 fixed top-[20.28px] z-40">
       <div className="w-full h-24 relative flex items-center justify-center">
         {/* Animated yellow bar, centered and collapses from center */}
         <div
@@ -172,7 +172,10 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                   </span>
                 )}
               </Link>
-              <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
+              {/* Botão de busca */}
+              <button onClick={() => open('search')} className="p-2">
+                <RiSearch2Line className="w-5 h-5 text-text-sub-600" />
+              </button>
               {!isMobile && (
                 <div className="relative">
                   <ProfileDropdown

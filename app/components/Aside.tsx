@@ -60,18 +60,25 @@ export function Aside({
       role="dialog"
       style={!expanded ? {overflow: 'hidden'} : {}}
     >
-      {expanded && <button className="close-outside" onClick={close} />}
+      <button className="close-outside" onClick={close} />
       <aside className={`bg-yellow-50 ${leftAside ? 'left-aside' : ''} ${!expanded ? 'overflow-hidden' : ''}`} style={!expanded ? {overflow: 'hidden'} : {}}>
-        <header className='border-none'>
-          <h3 className='text-title-h4 text-text-sub-600'>
-            {type === 'cart' && 'carrinho'}
-            {type === 'mobile' && 'menu'}
-            {type !== 'cart' && type !== 'mobile' && heading}
-          </h3>
-          {expanded && (
-            <button className=" close reset" onClick={close} aria-label="Close">
-              <p className='text-title-h4 text-text-sub-600'>&times;</p>
-            </button>
+        <header className='border-none flex items-center justify-between'>
+          {type === 'mobile' ? (
+            <>
+              <button className="close reset" onClick={close} aria-label="Close">
+                <p className='text-title-h4 text-text-sub-600'>&times;</p>
+              </button>
+              <span />
+            </>
+          ) : (
+            <>
+              <h3 className='text-title-h4 text-text-sub-600'>
+                {type === 'cart' ? 'carrinho' : heading}
+              </h3>
+              <button className="close reset" onClick={close} aria-label="Close">
+                <p className='text-title-h4 text-text-sub-600'>&times;</p>
+              </button>
+            </>
           )}
         </header>
         <main className={type === 'cart' ? 'h-full flex flex-col' : ''}>{children}</main>

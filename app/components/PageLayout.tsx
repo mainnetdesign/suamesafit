@@ -16,6 +16,8 @@ import {
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {RiInstagramLine, RiLinkedinBoxFill, RiWhatsappLine} from 'react-icons/ri';
 import {useAside} from '~/components/Aside';
+import ProfileDropdown from '~/assets/components/custom/ProfileDropdown';
+
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -163,17 +165,26 @@ function MobileMenuAside({
     header.menu &&
     header.shop.primaryDomain?.url && (
       <Aside type="mobile" heading="MENU">
-        <nav className="flex flex-col gap-10 p-10">
-          <Link onClick={() => { close(); }} to="/" className="text-title-h3 text-text-sub-600">home</Link>
-          <Link onClick={() => close()} to="/collections/all" className="text-title-h3 text-text-sub-600">cardápio</Link>
-          <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">parcerias</span>
-          <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">blog</span>
-          <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">sobre</span>
-
-          <div className="mt-20 border-t border-gray-300 pt-10">
-            <h4 className="text-title-h4 text-text-sub-600 mb-4">minha conta</h4>
-            {/* poderia adicionar links de conta futuramente */}
+        <nav className="flex flex-col  px-4 py-8">
+          <div className="flex flex-col gap-4">
+            <Link onClick={() => { close(); }} to="/" className="text-title-h3 text-text-sub-600">home</Link>
+            <Link onClick={() => close()} to="/collections/all" className="text-title-h3 text-text-sub-600">cardápio</Link>
+            <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">parcerias</span>
+            <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">blog</span>
+            <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">sobre</span>
           </div>
+
+          <div className="border-t border-gray-300 my-4" />
+
+     
+          <ProfileDropdown 
+            mobile 
+            onLoginClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/login'; }}
+            onOrdersClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/orders'; }}
+            onProfileClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/profile'; }}
+            className="relative" />
+
+          <div className="border-t border-gray-300 my-4" />
 
           <div className="mt-auto flex gap-6 pt-10">
             <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer" className="text-text-sub-600"><RiLinkedinBoxFill size={28}/></a>

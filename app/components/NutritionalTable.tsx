@@ -1,4 +1,6 @@
 import React from 'react';
+import * as Button from './align-ui/ui/button';
+import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
 // Tipos para os dados nutricionais
 export interface NutritionalInfo {
@@ -160,6 +162,8 @@ export function NutritionalTable({
     return null;
   }
 
+  const [showNutrition, setShowNutrition] = React.useState(true);
+
   // Função para formatar valores nutricionais
   const formatNutritionalValue = (item: any): string => {
     if (!item || typeof item.quantidade === 'undefined') {
@@ -189,57 +193,75 @@ export function NutritionalTable({
 
   return (
     <div className={`flex flex-col gap-2 text-paragraph-md ${className}`}>
-      <p className="text-text-sub-600 text-title-h5 mb-2">
-        informações nutricionais
-      </p>
-              
-        <div>
-        {/* Tabela nutricional */}
-        <div className="border border-text-sub-600 rounded-md overflow-hidden">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-text-sub-600 text-text-white-0">
-                <th className="p-3 text-left text-paragraph-md font-semibold">
-                  item
-                </th>
-                <th className="p-3 text-center text-paragraph-md font-semibold">
-                  total
-                </th>
-                <th className="p-3 text-center text-paragraph-md font-semibold">
-                  %VD*
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-text-sub-600">
-              {availableFields.map((field, index) => {
-                const item = nutritionalInfo[field.key];
-                const isLastItem = index === availableFields.length - 1;
-                
-                return (
-                  <tr key={field.key}>
-                    <td className={`p-2 text-paragraph-md ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
-                      {field.label}
-                    </td>
-                    <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
-                      {formatNutritionalValue(item)}
-                    </td>
-                    <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
-                      {formatVD(item)}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        
-        {/* Nota sobre valores diários */}
-        <p className="text-paragraph-xs text-text-sub-600 mt-2">
-          *Valores diários de referência com base em uma dieta de 2000 
-          kcal ou 8400kJ. Seus valores diários podem ser maiores ou 
-          menores dependendo de suas necessidades energéticas. (**) VD 
-          não estabelecido. (***) Informação Não Disponível no momento.
+      <div className="flex items-center gap-4 justify-between">
+        <p className="text-text-sub-600 text-title-h5 mb-0">
+          informações nutricionais
         </p>
+        <Button.Root
+          variant="primary"
+          mode="lighter"
+          size="xsmall"
+          onClick={() => setShowNutrition((prev) => !prev)}
+          className="w-fit"
+        >
+          {showNutrition ? (
+            <Button.Icon as={RiArrowDownSLine} />
+          ) : (
+            <Button.Icon as={RiArrowUpSLine} />
+          )}
+        </Button.Root>
+      </div>
+      <div
+        className={`transition-all duration-300 overflow-hidden ${showNutrition ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        {showNutrition && (
+          <div>
+            {/* Tabela nutricional */}
+            <div className="border border-text-sub-600 rounded-md overflow-hidden">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-text-sub-600 text-text-white-0">
+                    <th className="p-3 text-left text-paragraph-md font-semibold">
+                      item
+                    </th>
+                    <th className="p-3 text-center text-paragraph-md font-semibold">
+                      total
+                    </th>
+                    <th className="p-3 text-center text-paragraph-md font-semibold">
+                      %VD*
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-text-sub-600">
+                  {availableFields.map((field, index) => {
+                    const item = nutritionalInfo[field.key];
+                    const isLastItem = index === availableFields.length - 1;
+                    return (
+                      <tr key={field.key}>
+                        <td className={`p-2 text-paragraph-md ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
+                          {field.label}
+                        </td>
+                        <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
+                          {formatNutritionalValue(item)}
+                        </td>
+                        <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
+                          {formatVD(item)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            {/* Nota sobre valores diários */}
+            <p className="text-paragraph-xs text-text-sub-600 mt-2">
+              *Valores diários de referência com base em uma dieta de 2000 
+              kcal ou 8400kJ. Seus valores diários podem ser maiores ou 
+              menores dependendo de suas necessidades energéticas. (**) VD 
+              não estabelecido. (***) Informação Não Disponível no momento.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

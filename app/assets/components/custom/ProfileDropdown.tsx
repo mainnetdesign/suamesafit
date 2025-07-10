@@ -12,6 +12,7 @@ interface UserProfileDropdownProps {
   onOrdersClick?: () => void
   onProfileClick?: () => void
   className?: string
+  mobile?: boolean
 }
 
 export default function ProfileDropdown({
@@ -19,8 +20,9 @@ export default function ProfileDropdown({
   onOrdersClick,
   onProfileClick,
   className = "",
+  mobile = false,
 }: UserProfileDropdownProps) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(mobile)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const profileButtonRef = useRef<HTMLDivElement>(null)
 
@@ -28,11 +30,11 @@ export default function ProfileDropdown({
   const rootData: any = useRouteLoaderData('root')
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen)
+    if (!mobile) setIsDropdownOpen(!isDropdownOpen)
   }
 
   const closeDropdown = () => {
-    setIsDropdownOpen(false)
+    if (!mobile) setIsDropdownOpen(false)
   }
 
   const handleLoginClick = () => {
@@ -62,12 +64,12 @@ export default function ProfileDropdown({
       }
     }
 
-    if (isDropdownOpen) {
+    if (isDropdownOpen && !mobile) {
       document.addEventListener("mousedown", handleClickOutside)
     }
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
+      if (!mobile) document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isDropdownOpen])
 
@@ -80,29 +82,31 @@ export default function ProfileDropdown({
 
     return (
       <>
-        <div
-          ref={profileButtonRef}
-          onClick={toggleDropdown}
-          className="p-2 text-gray-600 transition-colors rounded cursor-pointer"
-          aria-label="Perfil do usuário"
-          aria-expanded={isDropdownOpen}
-        >
-          {isLoggedIn && initial ? (
-            // Avatar circular com inicial quando logado
-            <div className="w-8 h-8 bg-primary-base text-white rounded-full flex items-center justify-center text-sm font-medium">
-              {initial}
-            </div>
-          ) : (
-            // Ícone padrão quando não logado
-            <RiUser3Line className="w-5 h-5 text-text-sub-600 hover:text-text-strong-950 transition-colors" />
-          )}
-        </div>
+        {!mobile && (
+          <div
+            ref={profileButtonRef}
+            onClick={toggleDropdown}
+            className="p-2 text-gray-600 transition-colors rounded cursor-pointer"
+            aria-label="Perfil do usuário"
+            aria-expanded={isDropdownOpen}
+          >
+            {isLoggedIn && initial ? (
+              // Avatar circular com inicial quando logado
+              <div className="w-8 h-8 bg-primary-base text-white rounded-full flex items-center justify-center text-sm font-medium">
+                {initial}
+              </div>
+            ) : (
+              // Ícone padrão quando não logado
+              <RiUser3Line className="w-5 h-5 text-text-sub-600 hover:text-text-strong-950 transition-colors" />
+            )}
+          </div>
+        )}
 
         {/* Dropdown Overlay */}
-        {isDropdownOpen && (
+        {(isDropdownOpen || mobile) && (
           <div
             ref={dropdownRef}
-            className="absolute right-0 top-full mt-2 w-80 bg-yellow-50 rounded-lg shadow-lg border border-gray-200 p-6 z-50"
+            className={`${mobile ? 'relative mt-0 w-full p-0 border-none' : 'absolute right-0 top-full mt-2 z-50 w-80 p-6 border border-gray-200'} bg-yellow-50 rounded-lg shadow-lg`}
           >
             <h5 className="text-label-xl text-text-sub-600 mb-4">conta</h5>
 

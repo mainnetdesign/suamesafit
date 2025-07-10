@@ -179,14 +179,13 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
     }
   });
 
-  // Garantir que cart.get() nunca lance exceção
-  let cartPromise: Promise<any>;
-  try {
-    cartPromise = Promise.resolve(cart.get());
-  } catch (error) {
-    console.error('Erro ao recuperar carrinho:', error);
-    cartPromise = Promise.resolve(null);
-  }
+  // Garante que qualquer falha na recuperação do carrinho não rejeite a stream deferida
+  const cartPromise: Promise<any> = cart
+    .get()
+    .catch((error) => {
+      console.error('Erro ao recuperar carrinho:', error);
+      return null;
+    });
 
   return {
     cart: cartPromise,

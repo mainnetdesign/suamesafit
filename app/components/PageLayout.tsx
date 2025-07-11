@@ -17,6 +17,7 @@ import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
 import {RiInstagramLine, RiLinkedinBoxFill, RiWhatsappLine} from 'react-icons/ri';
 import {useAside} from '~/components/Aside';
 import ProfileDropdown from '~/assets/components/custom/ProfileDropdown';
+import * as  Button  from './align-ui/ui/button';
 
 
 interface PageLayoutProps {
@@ -74,24 +75,27 @@ function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
 function SearchAside() {
   const queriesDatalistId = useId();
   return (
-    <Aside type="search" heading="SEARCH">
-      <div className="predictive-search">
-        <br />
+    <Aside type="search" heading="busca">
+      <div className="flex flex-col gap-4 px-4 predictive-search">
+        
         <SearchFormPredictive>
           {({fetchResults, goToSearch, inputRef}) => (
-            <>
+            <div className="flex flex-row items-center gap-1">
               <input
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
-                placeholder="Search"
+                placeholder="pesquisar..."
                 ref={inputRef}
                 type="search"
                 list={queriesDatalistId}
+                className="w-full border-stroke-soft-200 rounded-full"
               />
               &nbsp;
-              <button onClick={goToSearch}>Search</button>
-            </>
+              <Button.Root variant="primary" mode="lighter" className="" onClick={goToSearch}>
+                Buscar
+              </Button.Root>
+            </div>
           )}
         </SearchFormPredictive>
 
@@ -138,8 +142,8 @@ function SearchAside() {
                     onClick={closeSearch}
                     to={`${SEARCH_ENDPOINT}?q=${term.current}`}
                   >
-                    <p>
-                      View all results for <q>{term.current}</q>
+                    <p className='text-paragraph-md text-orange-500'>
+                      Ver todos os resultados para <q>{term.current}</q>
                       &nbsp; →
                     </p>
                   </Link>

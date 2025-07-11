@@ -21,8 +21,8 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
 
 function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
   return (
-    <div aria-labelledby="cart-summary" className="cart-summary-aside">
-      <dl className="cart-subtotal flex justify-between">
+    <div aria-labelledby="cart-summary" className="cart-summary-aside mb-16 md:mb-0">
+      <dl className="cart-subtotal flex  justify-between ">
         <dt className='text-title-h5 text-text-sub-600'>subtotal</dt>
         <dd className='text-title-h5 text-text-sub-600'>
           {cart?.cost?.subtotalAmount ? (

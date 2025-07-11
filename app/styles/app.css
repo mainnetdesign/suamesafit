@@ -287,7 +287,7 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .predictive-search-form {
-  background: var(--color-light);
+  
   position: sticky;
   top: 0;
 }
@@ -296,9 +296,7 @@ button.reset:hover:not(:has(> *)) {
   margin-bottom: 2rem;
 }
 
-.predictive-search-result h5 {
-  text-transform: uppercase;
-}
+
 
 .predictive-search-result-item {
   margin-bottom: 0.5rem;

@@ -15,7 +15,7 @@ import { Product } from '~/components/ProductCard';
 import collectionsImage from '~/assets/collections/all.jpg';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  return [{title: `Sua Mesa Fit | ${data?.collection.title ?? ''} Collection`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -168,11 +168,11 @@ function ProductItem({
 }
 
 const PRODUCT_ITEM_FRAGMENT = `#graphql
-  fragment MoneyProductItem on MoneyV2 {
+  fragment CollectionHandleMoneyItem on MoneyV2 {
     amount
     currencyCode
   }
-  fragment ProductItem on Product {
+  fragment CollectionHandleProductItem on Product {
     id
     handle
     title
@@ -194,10 +194,10 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     priceRange {
       minVariantPrice {
-        ...MoneyProductItem
+        ...CollectionHandleMoneyItem
       }
       maxVariantPrice {
-        ...MoneyProductItem
+        ...CollectionHandleMoneyItem
       }
     }
   }
@@ -230,7 +230,7 @@ const COLLECTION_QUERY = `#graphql
         after: $endCursor
       ) {
         nodes {
-          ...ProductItem
+          ...CollectionHandleProductItem
         }
         pageInfo {
           hasPreviousPage

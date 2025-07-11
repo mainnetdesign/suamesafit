@@ -10,7 +10,7 @@ import {
 import {CartMain} from '~/components/CartMain';
 
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Cart`}];
+  return [{title: `Sua Mesa Fit | Carrinho`}];
 };
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
@@ -108,11 +108,11 @@ export async function loader({context}: LoaderFunctionArgs) {
   const collectionHandle = 'pratos-principais'; // ajuste para o handle desejado
   const result = await storefront.query(
     `#graphql
-      fragment MoneyProductItem on MoneyV2 {
+      fragment CartMoneyProductItem on MoneyV2 {
         amount
         currencyCode
       }
-      fragment ProductItem on Product {
+      fragment CartProductItem on Product {
         id
         handle
         title
@@ -124,15 +124,15 @@ export async function loader({context}: LoaderFunctionArgs) {
         }
         priceRange {
           minVariantPrice {
-            ...MoneyProductItem
+            ...CartMoneyProductItem
           }
         }
       }
-      query CollectionProducts($handle: String!, $first: Int) {
+      query CartRelatedProducts($handle: String!, $first: Int) {
         collection(handle: $handle) {
           products(first: $first) {
             nodes {
-              ...ProductItem
+              ...CartProductItem
             }
           }
         }

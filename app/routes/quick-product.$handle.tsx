@@ -50,7 +50,7 @@ export async function loader({context, params, request}: LoaderFunctionArgs) {
 
 // Reaproveitamos o mesmo fragmento utilizado na página de produto para garantir consistência.
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
+  fragment QuickProductVariant on ProductVariant {
     availableForSale
     compareAtPrice {
       amount
@@ -87,7 +87,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
 ` as const;
 
 const PRODUCT_FRAGMENT = `#graphql
-  fragment Product on Product {
+  fragment QuickProduct on Product {
     id
     title
     vendor
@@ -104,7 +104,7 @@ const PRODUCT_FRAGMENT = `#graphql
       optionValues {
         name
         firstSelectableVariant {
-          ...ProductVariant
+          ...QuickProductVariant
         }
         swatch {
           color
@@ -117,10 +117,10 @@ const PRODUCT_FRAGMENT = `#graphql
       }
     }
     selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {
-      ...ProductVariant
+      ...QuickProductVariant
     }
     adjacentVariants (selectedOptions: $selectedOptions) {
-      ...ProductVariant
+      ...QuickProductVariant
     }
     seo {
       description
@@ -137,7 +137,7 @@ const PRODUCT_FRAGMENT = `#graphql
     }
     variants(first: 10) {
       nodes {
-        ...ProductVariant
+        ...QuickProductVariant
       }
     }
   }
@@ -152,7 +152,7 @@ const PRODUCT_QUERY = `#graphql
     $selectedOptions: [SelectedOptionInput!]!
   ) @inContext(country: $country, language: $language) {
     product(handle: $handle) {
-      ...Product
+      ...QuickProduct
     }
   }
   ${PRODUCT_FRAGMENT}

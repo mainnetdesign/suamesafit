@@ -9,6 +9,8 @@ import {
   CarouselDots,
   CarouselCursorNavigation,
   type CarouselApi,
+  CarouselPrevious,
+  CarouselNext,
 } from '~/components/shad-cn/ui/carousel';
 import {useEffect, useState} from 'react';
 import {cn} from '~/lib/utils';
@@ -27,7 +29,19 @@ export function TestimonialsSection({
 }: TestimonialsSectionProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
-  const { setColor, setBorderColor } = useCursorColor();
+  const [isMobile, setIsMobile] = useState(false);
+  const {setColor, setBorderColor} = useCursorColor();
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     if (!api) return;
@@ -40,106 +54,132 @@ export function TestimonialsSection({
   return (
     <section
       className={`bg-[#E69250] py-14 flex justify-center items-center ${className}`}
-      onMouseEnter={() => { setColor('#E69250'); setBorderColor('white'); }}
-      onMouseLeave={() => { setColor('black'); setBorderColor('#303172'); }}
+      onMouseEnter={() => {
+        setColor('#E69250');
+        setBorderColor('white');
+      }}
+      onMouseLeave={() => {
+        setColor('black');
+        setBorderColor('#303172');
+      }}
     >
-      <div className="w-full !max-w-[1024px]">
-        <Carousel
-          opts={{
-            align: 'start',
-            loop: true,
-          }}
-          setApi={setApi}
-          className="relative"
-        >
-          <CarouselCursorNavigation
-            // prevIcon={<RiArrowLeftSLine />}
-            // nextIcon={<RiArrowRightSLine />}
-            cursorColor="rgba(255, 255, 255, 0.9)"
-            cursorSize={48}
+      <div className="w-full !max-w-[1024px] px-4">
+        {isMobile ? (
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true,
+            }}
+            className="w-full"
           >
-            {/* Left Content - Images */}
-            <CarouselContent className="w-full">
-              {testimonials.map((testimonial) => (
-                <CarouselItem key={testimonial.id}>
-                  <div className="aspect-square rounded-lg overflow-hidden">
-                    <img
-                      src={testimonial.image}
-                      alt={`${testimonial.authorName}'s testimonial`}
-                      className="w-full h-full object-cover rounded-lg"
-                      draggable={false}
-                    />
+            <div className="text-white mb-8">
+              <p className="text-title-h4">avaliações</p>
+            </div>
+            <CarouselContent>
+              {testimonials.map((testimonial, index) => (
+                <CarouselItem key={index} className="basis-4/5">
+                  <div className="flex flex-col gap-4">
+                    <div className="aspect-square rounded-lg overflow-hidden">
+                      <img
+                        src={testimonial.image}
+                        alt={`${testimonial.authorName}'s testimonial`}
+                        className="w-full h-full object-cover rounded-lg"
+                        draggable={false}
+                      />
+                    </div>
+                    <div className="flex flex-col items-start gap-4 text-white">
+                      <StarRating rating={testimonial.rating} />
+                      <p className="text-paragraph-xl font-sans min-h-[10rem]">
+                        {testimonial.text}
+                      </p>
+                      <div className="flex items-center justify-between w-full">
+                        <span className="text-label-sm font-sans">
+                          {testimonial.authorName}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
+            <CarouselPrevious className="left-[-1rem] bg-white/20 hover:bg-white/40 text-white" />
+            <CarouselNext className="right-[-1rem] bg-white/20 hover:bg-white/40 text-white" />
+          </Carousel>
+        ) : (
+          <Carousel
+            opts={{
+              align: 'start',
+              loop: true,
+            }}
+            setApi={setApi}
+            className="relative"
+          >
+            <CarouselCursorNavigation
+              // prevIcon={<RiArrowLeftSLine />}
+              // nextIcon={<RiArrowRightSLine />}
+              cursorColor="rgba(255, 255, 255, 0.9)"
+              cursorSize={48}
+            >
+              {/* Left Content - Images */}
+              <CarouselContent className="w-full">
+                {testimonials.map((testimonial) => (
+                  <CarouselItem key={testimonial.id}>
+                    <div className="aspect-square rounded-lg overflow-hidden">
+                      <img
+                        src={testimonial.image}
+                        alt={`${testimonial.authorName}'s testimonial`}
+                        className="w-full h-full object-cover rounded-lg"
+                        draggable={false}
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
 
-            {/* Right Content - Text */}
-            <div className="flex flex-col items-start gap-[20.28px]">
-              <div className="flex flex-col items-start gap-[5.46px] self-stretch">
-                <div className="text-white flex w-full justify-between">
-                  <p className="text-title-h4">
-                    avaliações
-                  </p>
-                  
+              {/* Right Content - Text */}
+              <div className="flex flex-col items-start gap-[20.28px]">
+                <div className="flex flex-col items-start gap-[5.46px] self-stretch">
+                  <div className="text-white flex w-full justify-between">
+                    <p className="text-title-h4">avaliações</p>
+                  </div>
                 </div>
 
-                
-              </div>
+                <div className="relative flex flex-col items-start gap-[8.58px] self-stretch min-h-[300px]">
+                  <div key={testimonials[current].id} className="w-full">
+                    <StarRating
+                      rating={testimonials[current].rating}
+                      className="text-white mb-4"
+                    />
 
-              <div className="relative flex flex-col items-start gap-[8.58px] self-stretch min-h-[300px]">
-                <div key={testimonials[current].id} className="w-full">
-                  <StarRating
-                    rating={testimonials[current].rating}
-                    className="text-white mb-4"
-                  />
-
-                  <TextAnimate
-                    key={`text-${current}`}
-                    animation="blurInUp"
-                    by="line"
-                    duration={0.4}
-                    className="text-paragraph-xl font-sans text-white min-h-32 h-fit"
-                  >
-                    {`${testimonials[current].text}`}
-                  </TextAnimate>
-
-                  <div className="flex items-center justify-between text-white w-full mt-6">
                     <TextAnimate
-                      key={`author-${current}`}
-                      animation="slideRight"
-                      by="word"
-                      duration={0.3}
-                      delay={0.2}
-                      className="text-label-sm font-sans"
+                      key={`text-${current}`}
+                      animation="blurInUp"
+                      by="line"
+                      duration={0.4}
+                      className="text-paragraph-xl font-sans text-white min-h-32 h-fit"
                     >
-                      {testimonials[current].authorName}
+                      {`${testimonials[current].text}`}
                     </TextAnimate>
-                    
-                    {testimonials[current].productLink && (
-                      <Link
-                        to={`/products/${testimonials[current].productLink.handle}`}
-                        className="flex items-center hover:text-white"
+
+                    <div className="flex items-center justify-between text-white w-full mt-6">
+                      <TextAnimate
+                        key={`author-${current}`}
+                        animation="slideRight"
+                        by="word"
+                        duration={0.3}
+                        delay={0.2}
+                        className="text-label-sm font-sans"
                       >
-                        <TextAnimate
-                          key={`product-${current}`}
-                          animation="slideLeft"
-                          by="word"
-                          duration={0.3}
-                          delay={0.2}
-                          className="text-label-sm font-sans"
-                        >
-                          {`${testimonials[current].productLink.title} →`}
-                        </TextAnimate>
-                      </Link>
-                    )}
+                        {testimonials[current].authorName}
+                      </TextAnimate>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </CarouselCursorNavigation>
-          <CarouselDots className="mt-8" />
-        </Carousel>
+            </CarouselCursorNavigation>
+            <CarouselDots className="mt-8" />
+          </Carousel>
+        )}
       </div>
     </section>
   );

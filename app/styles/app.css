@@ -287,7 +287,7 @@ button.reset:hover:not(:has(> *)) {
 }
 
 .predictive-search-form {
-  background: var(--color-light);
+  
   position: sticky;
   top: 0;
 }
@@ -296,9 +296,7 @@ button.reset:hover:not(:has(> *)) {
   margin-bottom: 2rem;
 }
 
-.predictive-search-result h5 {
-  text-transform: uppercase;
-}
+
 
 .predictive-search-result-item {
   margin-bottom: 0.5rem;
@@ -7020,4 +7018,110 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* 
+* --------------------------------------------------
+* Remove scrollbars do site inteiro
+* --------------------------------------------------
+*/
+
+/* Remove scrollbar para WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Remove scrollbar para Firefox */
+html {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Remove scrollbar de todos os elementos que podem ter scroll */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* Remove scrollbar do body */
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* Garante que todos os containers de scroll também não mostrem scrollbar */
+.overflow-auto,
+.overflow-x-auto,
+.overflow-y-auto,
+.overflow-scroll,
+.overflow-x-scroll,
+.overflow-y-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.overflow-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-scroll::-webkit-scrollbar,
+.overflow-x-scroll::-webkit-scrollbar,
+.overflow-y-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+/* ---------- custom left-aside (mobile menu) ---------- */
+.overlay.left-aside .close-outside{
+  left: var(--aside-width);
+}
+
+aside.left-aside{
+  left: calc(-1 * var(--aside-width));
+  right: auto;
+  width: 95vw;
+  min-width: 95vw;
+  max-width: 95vw;
+}
+
+.overlay.expanded aside.left-aside{
+  transform: translateX(var(--aside-width));
+}
+
+/* Header appear animation */
+@keyframes headerSlideDown {
+  from { transform: translate(-50%, -60px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.header-appear {
+  animation: headerSlideDown 0.5s ease-out forwards;
+  animation-delay: 0.5s;
+  opacity: 0;
 }

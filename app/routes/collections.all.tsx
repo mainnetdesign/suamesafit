@@ -81,12 +81,12 @@ export default function Collection() {
         image={collectionsImage}
       />
 
-      <div className="w-full max-w-[1200px] items-center justify-center">
+      <div className="w-full max-w-[1200px] px-4 items-center justify-center">
         <CollectionTab categories={collections.nodes} />
       </div>
 
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
           {products.nodes.map((product: ProductItemFragment) => (
             <Product
               key={product.id}
@@ -100,6 +100,14 @@ export default function Collection() {
                       url: product.featuredImage.url,
                       width: product.featuredImage.width || 0,
                       height: product.featuredImage.height || 0,
+                    }
+                  : undefined,
+                secondaryImage: (product as any).images?.nodes?.[1]
+                  ? {
+                      altText: (product as any).images.nodes[1].altText || undefined,
+                      url: (product as any).images.nodes[1].url,
+                      width: (product as any).images.nodes[1].width || 0,
+                      height: (product as any).images.nodes[1].height || 0,
                     }
                   : undefined,
                 priceRange: product.priceRange
@@ -163,6 +171,15 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
       url
       width
       height
+    }
+    images(first: 2) {
+      nodes {
+        id
+        url
+        altText
+        width
+        height
+      }
     }
     priceRange {
       minVariantPrice {

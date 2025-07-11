@@ -106,27 +106,23 @@ export function ProductForm({
           </div>
         );
       })}
-      <AddToCartButton
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          open('cart');
-        }}
-        lines={
-          selectedVariant
-            ? [
-                {
-                  merchandiseId: selectedVariant.id,
-                  quantity: 1,
-                  selectedVariant,
-                },
-              ]
-            : []
-        }
-      >
-        {selectedVariant?.availableForSale
-          ? 'adicionar ao carrinho'
-          : 'esgotado'}
-      </AddToCartButton>
+      {selectedVariant && (
+        <AddToCartButton
+          disabled={!selectedVariant.availableForSale}
+          onClick={() => {
+            open('cart');
+          }}
+          lines={[
+            {
+              merchandiseId: selectedVariant.id,
+              quantity: 1,
+              selectedVariant,
+            },
+          ]}
+        >
+          {selectedVariant.availableForSale ? 'adicionar ao carrinho' : 'esgotado'}
+        </AddToCartButton>
+      )}
     </div>
   );
 }

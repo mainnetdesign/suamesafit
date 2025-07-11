@@ -1,6 +1,7 @@
 import {Link} from '@remix-run/react';
-import {Image, Money, Pagination} from '@shopify/hydrogen';
+import {Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
+import {Product as ProductCard} from '~/components/ProductCard';
 
 type SearchItems = RegularSearchReturn['result']['items'];
 type PartialSearchResult<ItemType extends keyof SearchItems> = Pick<
@@ -70,7 +71,7 @@ function SearchResultsPages({term, pages}: PartialSearchResult<'pages'>) {
 
   return (
     <div className="search-result">
-      <h2>Pages</h2>
+      <h2>páginas</h2>
       <div>
         {pages?.nodes?.map((page) => {
           const pageUrl = urlWithTrackingParams({
@@ -102,49 +103,39 @@ function SearchResultsProducts({
   }
 
   return (
-    <div className="search-result">
-      <h2>Products</h2>
+    <div className="search-result pt-6">
+      
       <Pagination connection={products}>
         {({nodes, isLoading, NextLink, PreviousLink}) => {
           const ItemsMarkup = nodes.map((product) => {
-            const productUrl = urlWithTrackingParams({
-              baseUrl: `/products/${product.handle}`,
-              trackingParams: product.trackingParameters,
-              term,
-            });
-
+            const featuredImage =
+              product?.selectedOrFirstAvailableVariant?.image;
             const price = product?.selectedOrFirstAvailableVariant?.price;
-            const image = product?.selectedOrFirstAvailableVariant?.image;
 
-            return (
-              <div className="search-results-item" key={product.id}>
-                <Link prefetch="intent" to={productUrl}>
-                  {image && (
-                    <Image data={image} alt={product.title} width={50} />
-                  )}
-                  <div>
-                    <p>{product.title}</p>
-                    <small>{price && <Money data={price} />}</small>
-                  </div>
-                </Link>
-              </div>
-            );
+            const cardProduct = {
+              id: product.id,
+              handle: product.handle,
+              title: product.title,
+              featuredImage: featuredImage ?? undefined,
+              priceRange: price ? {minVariantPrice: price} : undefined,
+            } as any;
+
+            return <ProductCard key={product.id} product={cardProduct} />;
           });
 
           return (
             <div>
               <div>
                 <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  {isLoading ? 'Loading...' : <span>↑ Carregar anteriores</span>}
                 </PreviousLink>
               </div>
-              <div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {ItemsMarkup}
-                <br />
               </div>
               <div>
                 <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                  {isLoading ? 'Loading...' : <span>Carregar mais ↓</span>}
                 </NextLink>
               </div>
             </div>
@@ -157,5 +148,5 @@ function SearchResultsProducts({
 }
 
 function SearchResultsEmpty() {
-  return <p>No results, try a different search.</p>;
+  return <p className='text-paragraph-md text-text-sub-600'>Não encontramos resultados para a sua busca. Tente novamente com outros termos.</p>;
 }

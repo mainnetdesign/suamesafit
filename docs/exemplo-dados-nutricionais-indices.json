@@ -1,0 +1,115 @@
+{
+  "exemplo_produto_com_indices": {
+    "variants": {
+      "0": {
+        "porcao": {
+          "tamanho": "300",
+          "unidade": "g"
+        },
+        "valorEnergetico": {
+          "quantidade": 435,
+          "unidade": "kcal"
+        },
+        "carboidratos": {
+          "quantidade": 32,
+          "unidade": "g"
+        },
+        "proteinas": {
+          "quantidade": 26,
+          "unidade": "g"
+        },
+        "gordurasTotais": {
+          "quantidade": 18,
+          "unidade": "g"
+        },
+        "gordurasSaturadas": {
+          "quantidade": 2.5,
+          "unidade": "g"
+        },
+        "gordurasTrans": {
+          "quantidade": 0,
+          "unidade": "g"
+        },
+        "fibras": {
+          "quantidade": 6,
+          "unidade": "g"
+        },
+        "sodio": {
+          "quantidade": 420,
+          "unidade": "mg"
+        }
+      },
+      "1": {
+        "porcao": {
+          "tamanho": "340",
+          "unidade": "g"
+        },
+        "valorEnergetico": {
+          "quantidade": 525,
+          "unidade": "kcal"
+        },
+        "carboidratos": {
+          "quantidade": 32,
+          "unidade": "g"
+        },
+        "proteinas": {
+          "quantidade": 34,
+          "unidade": "g"
+        },
+        "gordurasTotais": {
+          "quantidade": 24,
+          "unidade": "g"
+        },
+        "gordurasSaturadas": {
+          "quantidade": 3,
+          "unidade": "g"
+        },
+        "gordurasTrans": {
+          "quantidade": 0,
+          "unidade": "g"
+        },
+        "fibras": {
+          "quantidade": 6,
+          "unidade": "g"
+        },
+        "sodio": {
+          "quantidade": 500,
+          "unidade": "mg"
+        }
+      }
+    }
+  },
+  
+  "exemplo_produto_diferentes_pesos": {
+    "variants": {
+      "0": {
+        "porcao": {
+          "tamanho": "250",
+          "unidade": "g"
+        },
+        "valorEnergetico": {
+          "quantidade": 280,
+          "unidade": "kcal"
+        },
+        "proteinas": {
+          "quantidade": 22,
+          "unidade": "g"
+        }
+      },
+      "1": {
+        "porcao": {
+          "tamanho": "400",
+          "unidade": "g"
+        },
+        "valorEnergetico": {
+          "quantidade": 450,
+          "unidade": "kcal"
+        },
+        "proteinas": {
+          "quantidade": 35,
+          "unidade": "g"
+        }
+      }
+    }
+  }
+} 

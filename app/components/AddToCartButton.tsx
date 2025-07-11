@@ -10,28 +10,58 @@ export function AddToCartButton({
   disabled,
   lines,
   onClick,
+  quantity: externalQuantity,
+  onQuantityChange,
+  showQuantityInput = true,
 }: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
   onClick?: () => void;
+  quantity?: number;
+  onQuantityChange?: (quantity: number) => void;
+  showQuantityInput?: boolean;
 }) {
-  const [quantity, setQuantity] = useState(1);
+  // Filtra somente linhas com merchandiseId válido
+  const validLines = (Array.isArray(lines) ? lines : []).filter(
+    (line) => line && typeof (line as any).merchandiseId === 'string',
+  );
 
-  const linesWithQuantity = lines.map(line => ({
+  if (validLines.length === 0) {
+    return null;
+  }
+
+  const [internalQuantity, setInternalQuantity] = useState(1);
+  
+  // Use external quantity if provided, otherwise use internal state
+  const currentQuantity = externalQuantity ?? internalQuantity;
+  
+  const handleQuantityChange = (newQuantity: number) => {
+    if (onQuantityChange) {
+      onQuantityChange(newQuantity);
+    } else {
+      setInternalQuantity(newQuantity);
+    }
+  };
+
+  const linesWithQuantity = validLines.map(line => ({
     ...line,
-    quantity,
+    quantity: currentQuantity,
   }));
 
   return (
     <div className="flex items-center gap-4">
-      <QuantityInput
-        defaultValue={1}
-        minValue={1}
-        maxValue={99}
-        onChange={setQuantity}
-      />
+      {showQuantityInput && (
+        <QuantityInput
+          {...(externalQuantity !== undefined
+            ? { defaultValue: externalQuantity }
+            : { value: currentQuantity })}
+          minValue={1}
+          maxValue={99}
+          onChange={handleQuantityChange}
+        />
+      )}
       <CartForm route="/cart" inputs={{lines: linesWithQuantity}} action={CartForm.ACTIONS.LinesAdd}>
         {(fetcher: FetcherWithComponents<any>) => (
           <>

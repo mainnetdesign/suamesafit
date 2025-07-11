@@ -167,7 +167,7 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
               >
                 <RiShoppingBasketLine className="w-5 h-5 text-text-sub-600" />
                 {typeof cartCount === 'number' && cartCount > 0 && (
-                  <span className="absolute -top-1 left-4 bg-yellow-500 text-text-sub-600 rounded-full px-1.5 py-0.5 text-label-xs  min-w-[16px] text-center overflow-visible ">
+                  <span className="absolute -top-1 left-4 bg-blue-600 text-text-white-0 rounded-full px-1.5 py-0.5 text-label-xs  min-w-[16px] text-center overflow-visible ">
                     {cartCount}
                   </span>
                 )}

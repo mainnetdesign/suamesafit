@@ -7,7 +7,6 @@ import {
   CarouselContent,
   CarouselItem,
   CarouselDots,
-  CarouselCursorNavigation,
   type CarouselApi,
   CarouselPrevious,
   CarouselNext,
@@ -16,6 +15,7 @@ import {useEffect, useState} from 'react';
 import {cn} from '~/lib/utils';
 import {TextAnimate} from '~/components/magic-ui/ui/text-animate';
 import { useCursorColor } from '~/components/shad-cn/ui/CursorContext';
+import Autoplay from 'embla-carousel-autoplay';
 // import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 
 interface TestimonialsSectionProps {
@@ -51,6 +51,12 @@ export function TestimonialsSection({
     });
   }, [api]);
 
+  const autoplayOptions = {
+    delay: 4000,
+    stopOnInteraction: false,
+    stopOnMouseEnter: false,
+  };
+
   return (
     <section
       className={`bg-[#E69250] py-14 flex justify-center items-center ${className}`}
@@ -70,6 +76,7 @@ export function TestimonialsSection({
               align: 'start',
               loop: true,
             }}
+            plugins={[Autoplay(autoplayOptions)]}
             className="w-full"
           >
             <div className="text-white mb-8">
@@ -111,33 +118,31 @@ export function TestimonialsSection({
               align: 'start',
               loop: true,
             }}
+            plugins={[Autoplay(autoplayOptions)]}
             setApi={setApi}
-            className="relative"
+            className="relative group/testimonials"
           >
-            <CarouselCursorNavigation
-              // prevIcon={<RiArrowLeftSLine />}
-              // nextIcon={<RiArrowRightSLine />}
-              cursorColor="rgba(255, 255, 255, 0.9)"
-              cursorSize={48}
-            >
+            <div className="flex gap-8 md:gap-16 items-center">
               {/* Left Content - Images */}
-              <CarouselContent className="w-full">
-                {testimonials.map((testimonial) => (
-                  <CarouselItem key={testimonial.id}>
-                    <div className="aspect-square rounded-lg overflow-hidden">
-                      <img
-                        src={testimonial.image}
-                        alt={`${testimonial.authorName}'s testimonial`}
-                        className="w-full h-full object-cover rounded-lg"
-                        draggable={false}
-                      />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
+              <div className="w-full md:w-1/2">
+                <CarouselContent className="w-full">
+                  {testimonials.map((testimonial) => (
+                    <CarouselItem key={testimonial.id}>
+                      <div className="aspect-square rounded-lg overflow-hidden">
+                        <img
+                          src={testimonial.image}
+                          alt={`${testimonial.authorName}'s testimonial`}
+                          className="w-full h-full object-cover rounded-lg"
+                          draggable={false}
+                        />
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+              </div>
 
               {/* Right Content - Text */}
-              <div className="flex flex-col items-start gap-[20.28px]">
+              <div className="w-full md:w-1/2 flex flex-col items-start gap-[20.28px]">
                 <div className="flex flex-col items-start gap-[5.46px] self-stretch">
                   <div className="text-white flex w-full justify-between">
                     <p className="text-title-h4">avaliações</p>
@@ -176,7 +181,10 @@ export function TestimonialsSection({
                   </div>
                 </div>
               </div>
-            </CarouselCursorNavigation>
+            </div>
+            
+            <CarouselPrevious className="bg-white/20 hover:bg-white/40 text-white rounded-full opacity-0 group-hover/testimonials:opacity-100 transition-opacity duration-300 left-4 top-1/2 -translate-y-1/2" />
+            <CarouselNext className="bg-white/20 hover:bg-white/40 text-white rounded-full opacity-0 group-hover/testimonials:opacity-100 transition-opacity duration-300 right-4 top-1/2 -translate-y-1/2" />
             <CarouselDots className="mt-8" />
           </Carousel>
         )}

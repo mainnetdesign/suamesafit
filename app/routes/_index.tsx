@@ -200,7 +200,7 @@ export default function Homepage() {
             className="z-10 absolute  object-cover w-full h-full"
             src={hero1Image}
           />
-          <div className="z-20 self-stretch h-[461px] p-8 bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
+          <div className="z-20 self-stretch h-[461px] p-6 md:p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 md:bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
             <div className="max-w-[416px] text-text-white-0 text-title-h3">
               refeições saudáveis, frescas e deliciosas.
             </div>

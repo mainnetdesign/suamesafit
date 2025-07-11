@@ -152,31 +152,10 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       return false;
     });
   
-  // Buscar email do cliente quando logado
+  // Simplesmente retorna um valor padrão por enquanto
   const customerEmailPromise = isLoggedInPromise.then(async (isLoggedIn) => {
     if (!isLoggedIn) return null;
-
-    try {
-      const {data, errors} = await customerAccount.query(`#graphql
-        query getCustomer {
-          customer {
-            emailAddress {
-              emailAddress
-            }
-          }
-        }
-      `);
-
-      if (errors?.length || !data?.customer) {
-        console.error('Falha ao buscar email do cliente:', errors);
-        return null;
-      }
-
-      return data.customer.emailAddress?.emailAddress ?? null;
-    } catch (error) {
-      console.error('Erro ao buscar email do cliente:', error);
-      return null;
-    }
+    return null; // Por enquanto não busca o email para evitar erro GraphQL
   });
 
   // Garante que qualquer falha na recuperação do carrinho não rejeite a stream deferida

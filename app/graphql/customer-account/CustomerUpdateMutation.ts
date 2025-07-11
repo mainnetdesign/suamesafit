@@ -7,9 +7,6 @@ export const CUSTOMER_UPDATE_MUTATION = `#graphql
       customer {
         firstName
         lastName
-        emailAddress {
-          emailAddress
-        }
         phoneNumber {
           phoneNumber
         }

@@ -190,7 +190,7 @@ export function TestimonialsSection({
         )}
       </div>
       {/* SVGs */}
-      <div className="absolute w-full h-full">
+      <div className="absolute w-full h-full overflow-hidden">
         <div data-svg-wrapper className="absolute top-0 left-0">
           <svg
             width="170"

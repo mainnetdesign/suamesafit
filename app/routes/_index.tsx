@@ -558,10 +558,10 @@ function FeaturedCollections({
                 ))}
               </CarouselContent>
               <CarouselPrevious
-                className={`bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/featured:opacity-100 transition-opacity duration-300 absolute left-4 top-1/2 -translate-y-1/2 z-10 ${isMobile ? 'hidden' : ''}`}
+                className={`bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/featured:opacity-100 transition-opacity duration-300 absolute left-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 ${isMobile ? 'hidden' : ''}`}
               />
               <CarouselNext
-                className={`bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/featured:opacity-100 transition-opacity duration-300 absolute right-4 top-1/2 -translate-y-1/2 z-10 ${isMobile ? 'hidden' : ''}`}
+                className={`bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/featured:opacity-100 transition-opacity duration-300 absolute right-4 top-1/2 -translate-y-1/2 z-50 w-12 h-12 ${isMobile ? 'hidden' : ''}`}
               />
               <CarouselDots />
             </Carousel>
@@ -660,8 +660,8 @@ function ProductsCarousel({products}: {products: any[]}) {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 left-4" />
-        <CarouselNext className="bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 right-4" />
+        <CarouselPrevious className="bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 left-4 w-12 h-12 z-50" />
+        <CarouselNext className="bg-yellow-50 text-text-sub-600 hover:bg-yellow-100 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 right-4 w-12 h-12 z-50" />
       </Carousel>
     </div>
   );

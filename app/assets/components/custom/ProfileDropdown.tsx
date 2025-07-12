@@ -74,10 +74,11 @@ export default function ProfileDropdown({
   }, [isDropdownOpen])
 
   // Componente interno para renderizar o estado autenticado
-  const AuthenticatedContent = ({ isLoggedIn, customerEmail }: { isLoggedIn: boolean, customerEmail: string | null }) => {
+  const AuthenticatedContent = ({ isLoggedIn, customerData }: { isLoggedIn: boolean, customerData: {id: string; firstName: string; lastName: string; emailAddress?: {emailAddress: string}} | null }) => {
     // Calcular inicial do email de forma segura
-    const initial = customerEmail && typeof customerEmail === 'string' && customerEmail.length > 0
-      ? customerEmail.charAt(0).toUpperCase()
+    const email = customerData?.emailAddress?.emailAddress;
+    const initial = email && typeof email === 'string' && email.length > 0
+      ? email.charAt(0).toUpperCase()
       : ""
 
     return (
@@ -111,10 +112,10 @@ export default function ProfileDropdown({
             <h5 className="text-label-xl text-text-sub-600 mb-4">conta</h5>
 
             <div className="space-y-3">
-              {isLoggedIn && customerEmail ? (
+              {isLoggedIn && customerData && email ? (
                 // Mostrar email quando logado
                 <div className="text-sm text-text-sub-600 rounded">
-                  {customerEmail}
+                  {email}
                 </div>
               ) : (
                 // Botão de login quando não logado
@@ -213,9 +214,9 @@ export default function ProfileDropdown({
       <Suspense fallback={<LoadingFallback />}>
         <Await resolve={rootData?.isLoggedInPromise} errorElement={<LoadingFallback />}>
           {(isLoggedIn) => (
-             <Await resolve={rootData?.customerEmailPromise} errorElement={<AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={null} />}>
-              {(customerEmail) => (
-                <AuthenticatedContent isLoggedIn={isLoggedIn} customerEmail={customerEmail} />
+             <Await resolve={rootData?.customerDataPromise} errorElement={<AuthenticatedContent isLoggedIn={isLoggedIn} customerData={null} />}>
+              {(customerData) => (
+                <AuthenticatedContent isLoggedIn={isLoggedIn} customerData={customerData} />
               )}
             </Await>
           )}

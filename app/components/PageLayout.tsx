@@ -25,7 +25,7 @@ interface PageLayoutProps {
   footer: Promise<FooterQuery | null>;
   header: HeaderQuery;
   isLoggedInPromise: Promise<boolean>;
-  customerEmailPromise: Promise<string | null>;
+  customerDataPromise: Promise<{id: string; firstName: string; lastName: string; emailAddress?: {emailAddress: string}} | null>;
   publicStoreDomain: string;
   children?: React.ReactNode;
 }
@@ -36,7 +36,7 @@ export function PageLayout({
   footer,
   header,
   isLoggedInPromise,
-  customerEmailPromise,
+  customerDataPromise,
   publicStoreDomain,
 }: PageLayoutProps) {
   return (
@@ -183,9 +183,9 @@ function MobileMenuAside({
      
           <ProfileDropdown 
             mobile 
-            onLoginClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/login'; }}
-            onOrdersClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/orders'; }}
-            onProfileClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/profile'; }}
+            onLoginClick={() => { close(); window.location.href='/account/login'; }}
+            onOrdersClick={() => { close(); window.location.href='/account/orders'; }}
+            onProfileClick={() => { close(); window.location.href='/account/profile'; }}
             className="relative" />
 
           <div className="border-t border-gray-300 my-4" />

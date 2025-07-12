@@ -257,26 +257,78 @@ export default function Addresses() {
   const {defaultAddress, addresses} = customer;
 
   return (
-    <div className="account-addresses">
-      <h2>Addresses</h2>
-      <br />
-      {!addresses.nodes.length ? (
-        <p>You have no addresses saved.</p>
-      ) : (
-        <div>
-          <div>
-            <legend>Create address</legend>
-            <NewAddressForm />
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="bg-white rounded-lg shadow-sm">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h1 className="text-2xl font-bold text-gray-900">Meus Endereços</h1>
+            <p className="mt-1 text-sm text-gray-600">
+              Gerencie seus endereços de entrega
+            </p>
           </div>
-          <br />
-          <hr />
-          <br />
-          <ExistingAddresses
-            addresses={addresses}
-            defaultAddress={defaultAddress}
-          />
+          
+          <div className="p-6">
+            {!addresses.nodes.length ? (
+              <EmptyAddresses />
+            ) : (
+              <div className="space-y-8">
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">
+                    Adicionar Novo Endereço
+                  </h2>
+                  <NewAddressForm />
+                </div>
+                
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900 mb-4">
+                    Endereços Salvos
+                  </h2>
+                  <ExistingAddresses
+                    addresses={addresses}
+                    defaultAddress={defaultAddress}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-      )}
+      </div>
+    </div>
+  );
+}
+
+function EmptyAddresses() {
+  return (
+    <div className="text-center py-12">
+      <svg
+        className="mx-auto h-16 w-16 text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        aria-hidden="true"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+        />
+      </svg>
+      <h3 className="mt-4 text-lg font-medium text-gray-900">
+        Nenhum endereço cadastrado
+      </h3>
+      <p className="mt-2 text-sm text-gray-500">
+        Comece adicionando um endereço para facilitar suas compras.
+      </p>
+      <div className="mt-6">
+        <NewAddressForm />
+      </div>
     </div>
   );
 }
@@ -297,23 +349,52 @@ function NewAddressForm() {
   } as CustomerAddressInput;
 
   return (
-    <AddressForm
-      addressId={'NEW_ADDRESS_ID'}
-      address={newAddress}
-      defaultAddress={null}
-    >
-      {({stateForMethod}) => (
-        <div>
-          <button
-            disabled={stateForMethod('POST') !== 'idle'}
-            formMethod="POST"
-            type="submit"
-          >
-            {stateForMethod('POST') !== 'idle' ? 'Creating' : 'Create'}
-          </button>
-        </div>
-      )}
-    </AddressForm>
+    <div className="bg-gray-50 rounded-lg p-6">
+      <AddressForm
+        addressId={'NEW_ADDRESS_ID'}
+        address={newAddress}
+        defaultAddress={null}
+      >
+        {({stateForMethod}) => (
+          <div className="flex justify-end">
+            <button
+              disabled={stateForMethod('POST') !== 'idle'}
+              formMethod="POST"
+              type="submit"
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {stateForMethod('POST') !== 'idle' ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Criando...
+                </>
+              ) : (
+                'Criar Endereço'
+              )}
+            </button>
+          </div>
+        )}
+      </AddressForm>
+    </div>
   );
 }
 
@@ -322,34 +403,60 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div>
-      <legend>Existing addresses</legend>
+    <div className="grid gap-6 md:grid-cols-2">
       {addresses.nodes.map((address) => (
-        <AddressForm
-          key={address.id}
-          addressId={address.id}
-          address={address}
-          defaultAddress={defaultAddress}
-        >
-          {({stateForMethod}) => (
-            <div>
-              <button
-                disabled={stateForMethod('PUT') !== 'idle'}
-                formMethod="PUT"
-                type="submit"
-              >
-                {stateForMethod('PUT') !== 'idle' ? 'Saving' : 'Save'}
-              </button>
-              <button
-                disabled={stateForMethod('DELETE') !== 'idle'}
-                formMethod="DELETE"
-                type="submit"
-              >
-                {stateForMethod('DELETE') !== 'idle' ? 'Deleting' : 'Delete'}
-              </button>
+        <div key={address.id} className="bg-white border border-gray-200 rounded-lg shadow-sm">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-medium text-gray-900">
+                {address.firstName} {address.lastName}
+              </h3>
+              {defaultAddress?.id === address.id && (
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                  Padrão
+                </span>
+              )}
             </div>
-          )}
-        </AddressForm>
+            
+            <div className="text-sm text-gray-600 space-y-1 mb-4">
+              {address.company && <p>{address.company}</p>}
+              <p>{address.address1}</p>
+              {address.address2 && <p>{address.address2}</p>}
+              <p>{address.city}, {address.zoneCode} {address.zip}</p>
+              <p>{address.territoryCode}</p>
+              {address.phoneNumber && <p>{address.phoneNumber}</p>}
+            </div>
+          </div>
+          
+          <div className="bg-gray-50 px-6 py-3 rounded-b-lg">
+            <AddressForm
+              addressId={address.id}
+              address={address}
+              defaultAddress={defaultAddress}
+            >
+              {({stateForMethod}) => (
+                <div className="flex justify-end space-x-3">
+                  <button
+                    disabled={stateForMethod('PUT') !== 'idle'}
+                    formMethod="PUT"
+                    type="submit"
+                    className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {stateForMethod('PUT') !== 'idle' ? 'Salvando...' : 'Salvar'}
+                  </button>
+                  <button
+                    disabled={stateForMethod('DELETE') !== 'idle'}
+                    formMethod="DELETE"
+                    type="submit"
+                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {stateForMethod('DELETE') !== 'idle' ? 'Excluindo...' : 'Excluir'}
+                  </button>
+                </div>
+              )}
+            </AddressForm>
+          </div>
+        </div>
       ))}
     </div>
   );

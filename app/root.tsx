@@ -152,10 +152,30 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       return false;
     });
   
-  // Simplesmente retorna um valor padrão por enquanto
-  const customerEmailPromise = isLoggedInPromise.then(async (isLoggedIn) => {
+  // Buscar dados do cliente quando logado
+  const customerDataPromise = isLoggedInPromise.then(async (isLoggedIn) => {
     if (!isLoggedIn) return null;
-    return null; // Por enquanto não busca o email para evitar erro GraphQL
+    
+    try {
+      // Buscar dados básicos do cliente incluindo email
+      const {data} = await customerAccount.query(`
+        query CustomerDetails {
+          customer {
+            id
+            firstName
+            lastName
+            emailAddress {
+              emailAddress
+            }
+          }
+        }
+      `);
+      
+      return data?.customer || null;
+    } catch (error) {
+      console.error('Erro ao buscar dados do cliente:', error);
+      return null;
+    }
   });
 
   // Garante que qualquer falha na recuperação do carrinho não rejeite a stream deferida
@@ -169,7 +189,7 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   return {
     cart: cartPromise,
     isLoggedInPromise,
-    customerEmailPromise,
+    customerDataPromise,
     footer,
   };
 }

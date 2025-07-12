@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import * as Button from '~/components/align-ui/ui/button';
-import { RiArrowDownSLine, RiArrowUpSLine } from '@remixicon/react';
+import React from 'react';
+import * as Button from './align-ui/ui/button';
+import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri';
 
 // Tipos para os dados nutricionais
 export interface NutritionalInfo {
@@ -79,6 +79,7 @@ export interface NutritionalInfo {
 interface NutritionalTableProps {
   nutritionalInfo?: NutritionalInfo | null;
   className?: string;
+  selectedVariantIndex?: number | null;
 }
 
 // Configuração de campos e seus rótulos
@@ -152,18 +153,16 @@ const NUTRITIONAL_FIELDS = [
 
 export function NutritionalTable({ 
   nutritionalInfo, 
-  className = '' 
+  className = '',
+  selectedVariantIndex 
 }: NutritionalTableProps) {
-  const [showNutrition, setShowNutrition] = useState(true);
-
-  // Debug temporário
-  console.log('NutritionalTable - nutritionalInfo:', nutritionalInfo);
 
   // Se não há informações nutricionais, não renderiza o componente
   if (!nutritionalInfo) {
-    console.log('NutritionalTable - Sem informações nutricionais, não renderizando');
     return null;
   }
+
+  const [showNutrition, setShowNutrition] = React.useState(true);
 
   // Função para formatar valores nutricionais
   const formatNutritionalValue = (item: any): string => {
@@ -212,61 +211,48 @@ export function NutritionalTable({
           )}
         </Button.Root>
       </div>
-      
       <div
-        className={`transition-all duration-300 overflow-hidden ${
-          showNutrition ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
-        }`}
+        className={`transition-all duration-300 overflow-hidden ${showNutrition ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
       >
         {showNutrition && (
-          <>
-            {/* Informação da porção */}
-            {nutritionalInfo.porcao && (
-              <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                <p className="text-paragraph-sm text-text-sub-600">
-                  <strong>Porção:</strong> {nutritionalInfo.porcao.tamanho}
-                  {nutritionalInfo.porcao.unidade && ` ${nutritionalInfo.porcao.unidade}`}
-                </p>
-              </div>
-            )}
-            
+          <div>
             {/* Tabela nutricional */}
-            <table className="w-full border-collapse rounded-md overflow-hidden">
-              <thead>
-                <tr className="bg-[#E86F51] text-text-white-0">
-                  <th className="p-3 text-left text-paragraph-md font-semibold">
-                    Informação Nutricional
-                  </th>
-                  <th className="p-3 text-center text-paragraph-md font-semibold">
-                    Quantidade por porção
-                  </th>
-                  <th className="p-3 text-center text-paragraph-md font-semibold">
-                    %VD*
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-[#2B2B6A]">
-                {availableFields.map((field, index) => {
-                  const item = nutritionalInfo[field.key];
-                  const isLastItem = index === availableFields.length - 1;
-                  
-                  return (
-                    <tr key={field.key}>
-                      <td className={`p-2 text-paragraph-md ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
-                        {field.label}
-                      </td>
-                      <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
-                        {formatNutritionalValue(item)}
-                      </td>
-                      <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
-                        {formatVD(item)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-            
+            <div className="border border-text-sub-600 rounded-md overflow-hidden">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-text-sub-600 text-text-white-0">
+                    <th className="p-3 text-left text-paragraph-md font-semibold">
+                      item
+                    </th>
+                    <th className="p-3 text-center text-paragraph-md font-semibold">
+                      total
+                    </th>
+                    <th className="p-3 text-center text-paragraph-md font-semibold">
+                      %VD*
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-text-sub-600">
+                  {availableFields.map((field, index) => {
+                    const item = nutritionalInfo[field.key];
+                    const isLastItem = index === availableFields.length - 1;
+                    return (
+                      <tr key={field.key}>
+                        <td className={`p-2 text-paragraph-md ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
+                          {field.label}
+                        </td>
+                        <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
+                          {formatNutritionalValue(item)}
+                        </td>
+                        <td className={`p-2 font-bold text-center ${!isLastItem ? 'border-b border-text-sub-600' : ''}`}>
+                          {formatVD(item)}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
             {/* Nota sobre valores diários */}
             <p className="text-paragraph-xs text-text-sub-600 mt-2">
               *Valores diários de referência com base em uma dieta de 2000 
@@ -274,7 +260,7 @@ export function NutritionalTable({
               menores dependendo de suas necessidades energéticas. (**) VD 
               não estabelecido. (***) Informação Não Disponível no momento.
             </p>
-          </>
+          </div>
         )}
       </div>
     </div>
@@ -284,28 +270,27 @@ export function NutritionalTable({
 // Função helper para parse de dados de metafield JSON
 export function parseNutritionalData(
   metafieldValue?: string | null, 
-  selectedVariant?: string | null
+  selectedVariantIndex?: number | null
 ): NutritionalInfo | null {
-  console.log('parseNutritionalData - metafieldValue:', metafieldValue);
-  console.log('parseNutritionalData - selectedVariant:', selectedVariant);
-  
   if (!metafieldValue) {
-    console.log('parseNutritionalData - Sem metafieldValue');
     return null;
   }
 
   try {
     const parsed = JSON.parse(metafieldValue) as any;
-    console.log('parseNutritionalData - parsed:', parsed);
     
     // Verifica se tem estrutura de variantes
     if (parsed.variants) {
-      // Se tem variante selecionada, usa os dados dela
-      if (selectedVariant && parsed.variants[selectedVariant]) {
-        return parsed.variants[selectedVariant] as NutritionalInfo;
+      // Usar índice da variante
+      if (selectedVariantIndex !== null && selectedVariantIndex !== undefined) {
+        const variantKey = selectedVariantIndex.toString();
+        
+        if (parsed.variants[variantKey]) {
+          return parsed.variants[variantKey] as NutritionalInfo;
+        }
       }
       
-      // Se não tem variante específica, usa a primeira disponível
+      // Se não encontrou por índice, usa a primeira disponível
       const firstVariant = Object.keys(parsed.variants)[0];
       if (firstVariant) {
         return parsed.variants[firstVariant] as NutritionalInfo;

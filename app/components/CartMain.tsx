@@ -1,5 +1,6 @@
 import {useOptimisticCart} from '@shopify/hydrogen';
 import {Link} from '@remix-run/react';
+import {useEffect, useState} from 'react';
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
 import {CartLineItem} from '~/components/CartLineItem';
@@ -34,45 +35,94 @@ export function CartMain({
   const withDiscount =
     cart &&
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-  const className = `cart-main ${withDiscount ? 'with-discount' : ''} ${!cart?.totalQuantity ? 'h-full flex flex-col justify-center items-center overflow-hidden' : ''}`;
+  const className = `cart-main ${withDiscount ? 'with-discount' : ''} ${
+    !cart?.totalQuantity
+      ? 'h-full flex flex-col justify-center items-center overflow-hidden'
+      : ''
+  } ${layout === 'page' ? 'h-auto max-h-none overflow-y-visible' : ''}`;
   const cartHasItems = (cart?.totalQuantity ?? 0) > 0;
 
+  /* ---------- MOBILE DETECTION ---------- */
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)');
+    const handleResize = (e: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile(e.matches);
+    };
+
+    // initial
+    handleResize(mediaQuery);
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener('change', handleResize);
+    } else {
+      // Safari
+      /* @ts-ignore */
+      mediaQuery.addListener(handleResize);
+    }
+
+    return () => {
+      if (mediaQuery.removeEventListener) {
+        mediaQuery.removeEventListener('change', handleResize);
+      } else {
+        /* @ts-ignore */
+        mediaQuery.removeListener(handleResize);
+      }
+    };
+  }, []);
+
   return (
-    <div className={className}>
+    <div 
+      className={className}
+      style={layout === 'page' ? {
+        height: 'auto',
+        maxHeight: 'none',
+        overflowY: 'visible'
+      } : undefined}
+    >
       <CartEmpty hidden={linesCount} layout={layout} />
       {cartHasItems && (
         <div
-          className={`cart-details${layout === 'page' ? ' flex gap-8 items-start' : ''}`}
+          className={`cart-details${layout === 'page' ? ' h-fit flex flex-col gap-8 items-start md:flex-row' : ''}`}
         >
-          <div className="overflow-x-auto">
-            <table className="cart-table w-full mb-8">
-              <thead>
-                <tr>
-                  <th className="text-left text-text-sub-600 text-label-lg p-4">
-                    Produto
-                  </th>
-                  <th className="text-center text-text-sub-600 text-label-lg p-4">
-                    Quantidade
-                  </th>
-                  {layout !== 'aside' && (
-                    <th className="text-right text-text-sub-600 text-label-lg p-4">
-                      Total
+          {/* Renderização condicional sem Tailwind breakpoints */}
+          {layout === 'page' && isMobile ? (
+            <ul className="flex flex-col gap-4 w-full">
+              {(cart?.lines?.nodes ?? []).map((line) => (
+                <CartLineItem key={line.id} line={line} layout={layout} />
+              ))}
+            </ul>
+          ) : (
+            <div className="overflow-x-auto w-full">
+              <table className="cart-table w-full mb-8">
+                <thead>
+                  <tr>
+                    <th className="text-left text-text-sub-600 text-label-lg p-4">
+                      Produto
                     </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {(cart?.lines?.nodes ?? []).map((line) => (
-                  <CartLineItemTable
-                    key={line.id}
-                    line={line}
-                    layout={layout}
-                    showTotal={layout !== 'aside'}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    <th className="text-center text-text-sub-600 text-label-lg p-4">
+                      Quantidade
+                    </th>
+                    {layout !== 'aside' && (
+                      <th className="text-right text-text-sub-600 text-label-lg p-4">
+                        Total
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {(cart?.lines?.nodes ?? []).map((line) => (
+                    <CartLineItemTable
+                      key={line.id}
+                      line={line}
+                      layout={layout}
+                      showTotal={layout !== 'aside'}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
           {layout === 'page' && (
             <div className="w-full max-w-[400px]">
               <CartSummary cart={cart} layout={layout} />

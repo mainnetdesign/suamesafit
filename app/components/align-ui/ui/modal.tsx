@@ -56,7 +56,8 @@ const ModalContent = React.forwardRef<
               // animation
               'data-[state=open]:animate-in data-[state=closed]:animate-out',
               'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
-              'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+              // aplica zoom apenas em telas md+ para evitar bug de renderização de input em mobile
+              'md:data-[state=closed]:zoom-out-95 md:data-[state=open]:zoom-in-95',
               className,
             )}
             {...rest}

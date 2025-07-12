@@ -15,7 +15,7 @@ import { Product } from '~/components/ProductCard';
 import collectionsImage from '~/assets/collections/all.jpg';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.collection.title ?? ''} Collection`}];
+  return [{title: `Sua Mesa Fit | ${data?.collection.title ?? ''} Collection`}];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -85,12 +85,12 @@ export default function Collection() {
         description={collection.description} 
         image={collection.image?.url || collectionsImage} 
       />
-      <div className="w-full max-w-[1200px] items-center justify-center">
+      <div className="w-full px-4 max-w-[1200px] items-center justify-center">
         <CollectionTab categories={collections.nodes} />
       </div>
       
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
           {collection.products.nodes.map((product: ProductItemFragment) => (
             <Product
               key={product.id}
@@ -168,11 +168,11 @@ function ProductItem({
 }
 
 const PRODUCT_ITEM_FRAGMENT = `#graphql
-  fragment MoneyProductItem on MoneyV2 {
+  fragment CollectionHandleMoneyItem on MoneyV2 {
     amount
     currencyCode
   }
-  fragment ProductItem on Product {
+  fragment CollectionHandleProductItem on Product {
     id
     handle
     title
@@ -194,10 +194,10 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     priceRange {
       minVariantPrice {
-        ...MoneyProductItem
+        ...CollectionHandleMoneyItem
       }
       maxVariantPrice {
-        ...MoneyProductItem
+        ...CollectionHandleMoneyItem
       }
     }
   }
@@ -230,7 +230,7 @@ const COLLECTION_QUERY = `#graphql
         after: $endCursor
       ) {
         nodes {
-          ...ProductItem
+          ...CollectionHandleProductItem
         }
         pageInfo {
           hasPreviousPage

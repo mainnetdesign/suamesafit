@@ -40,7 +40,7 @@ export function Product({product}: ProductProps) {
         className="flex flex-col group no-underline hover:no-underline flex-1"
         to={`/products/${product.handle}`}
       >
-        <div className="relative aspect-square overflow-hidden">
+        <div className="relative aspect-[4/3] md:aspect-square overflow-hidden">
           {/* Imagem principal */}
           {product.featuredImage && (
             <Image
@@ -54,11 +54,11 @@ export function Product({product}: ProductProps) {
           )}
 
           {/* Segunda imagem exibida no hover */}
-          {hasSecondary && (
+          {hasSecondary && secondaryImage && (
             <Image
-              alt={secondaryImage!.altText || product.title}
+              alt={secondaryImage?.altText || product.title}
               aspectRatio="1/1"
-              data={secondaryImage!}
+              data={secondaryImage}
               loading="lazy"
               sizes="(min-width: 45em) 400px, 100vw"
               className="w-full h-full object-cover absolute inset-0 opacity-0 transition-all duration-500 ease-in-out group-hover:opacity-100 group-hover:scale-105"

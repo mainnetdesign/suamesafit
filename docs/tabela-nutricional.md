@@ -6,45 +6,77 @@ Este projeto implementa uma tabela nutricional dinâmica que utiliza metafields 
 
 A solução utiliza **metafields do Shopify** do tipo JSON para armazenar informações nutricionais estruturadas. Os dados são buscados via GraphQL e renderizados dinamicamente no frontend.
 
+### 🎯 **NOVO SISTEMA: Baseado em Índices**
+
+O sistema agora usa **índices (0, 1, 2...)** ao invés de nomes específicos das variantes. Isso torna o sistema mais genérico e funciona para qualquer produto.
+
 ### Estrutura de Dados
 
 O metafield `nutritional_info` no namespace `custom` armazena um objeto JSON com a seguinte estrutura:
 
 ```json
 {
-  "porcao": {
-    "tamanho": "100",
-    "unidade": "g"
-  },
-  "valorEnergetico": {
-    "quantidade": 120,
-    "unidade": "kcal",
-    "vd": 6
-  },
-  "carboidratos": {
-    "quantidade": 18,
-    "unidade": "g",
-    "vd": 6
-  },
-  "proteinas": {
-    "quantidade": 15,
-    "unidade": "g",
-    "vd": 20
-  },
-  "gordurasTotais": {
-    "quantidade": 2,
-    "unidade": "g",
-    "vd": 4
-  },
-  "fibras": {
-    "quantidade": 5,
-    "unidade": "g",
-    "vd": 20
-  },
-  "sodio": {
-    "quantidade": 0.2,
-    "unidade": "g",
-    "vd": 8
+  "variants": {
+    "0": {
+      "porcao": {
+        "tamanho": "300",
+        "unidade": "g"
+      },
+      "valorEnergetico": {
+        "quantidade": 435,
+        "unidade": "kcal"
+      },
+      "carboidratos": {
+        "quantidade": 32,
+        "unidade": "g"
+      },
+      "proteinas": {
+        "quantidade": 26,
+        "unidade": "g"
+      },
+      "gordurasTotais": {
+        "quantidade": 18,
+        "unidade": "g"
+      },
+      "fibras": {
+        "quantidade": 6,
+        "unidade": "g"
+      },
+      "sodio": {
+        "quantidade": 420,
+        "unidade": "mg"
+      }
+    },
+    "1": {
+      "porcao": {
+        "tamanho": "340",
+        "unidade": "g"
+      },
+      "valorEnergetico": {
+        "quantidade": 525,
+        "unidade": "kcal"
+      },
+      "carboidratos": {
+        "quantidade": 32,
+        "unidade": "g"
+      },
+      "proteinas": {
+        "quantidade": 34,
+        "unidade": "g"
+      },
+      "gordurasTotais": {
+        "quantidade": 24,
+        "unidade": "g"
+      },
+      "fibras": {
+        "quantidade": 6,
+        "unidade": "g"
+      },
+      "sodio": {
+        "quantidade": 500,
+        "unidade": "mg"
+      }
+    }
   }
 }
 ```

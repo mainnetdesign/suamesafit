@@ -11,9 +11,9 @@ import {
   type PredictiveSearchReturn,
   getEmptyPredictiveSearchResult,
 } from '~/lib/search';
-
+import * as Button from '~/components/align-ui/ui/button';
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `Sua Mesa Fit | Busca`}];
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {
@@ -40,38 +40,58 @@ export default function SearchPage() {
   if (type === 'predictive') return null;
 
   return (
-    <div className="search">
-      <h1>Search</h1>
-      <SearchForm>
-        {({inputRef}) => (
-          <>
-            <input
-              defaultValue={term}
-              name="q"
-              placeholder="Search…"
-              ref={inputRef}
-              type="search"
-            />
-            &nbsp;
-            <button type="submit">Search</button>
-          </>
+    <div className="pt-[120px] px-4 justify-center items-center flex flex-col gap-4 search">
+      <div className="max-w-[1200px] flex flex-col gap-4">
+        <div className="flex flex-col justify-center items-center gap-1">
+          <h3 className="text-title-h3 text-text-sub-600">busca</h3>
+          <div className="text-paragraph-md text-center text-text-sub-600">
+            procure por produtos, coleções, artigos e páginas
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 justify-center items-center w-full">
+          <SearchForm className="w-full max-w-[400px]">
+            {({inputRef}) => (
+              <div className="flex flex-row items-center gap-1">
+                <input
+                  defaultValue={term}
+                  name="q"
+                  placeholder="Search…"
+                  ref={inputRef}
+                  type="search"
+                  className="w-full border-stroke-soft-200 rounded-full"
+                />
+                &nbsp;
+                <Button.Root
+                  variant="primary"
+                  mode="lighter"
+                  className=""
+                  type="submit"
+                >
+                  buscar
+                </Button.Root>
+              </div>
+            )}
+          </SearchForm>
+        </div>
+        {error && <p style={{color: 'red'}}>{error}</p>}
+        {!term || !result?.total ? (
+          <SearchResults.Empty />
+        ) : (
+          <SearchResults result={result} term={term}>
+            {({articles, pages, products, term}) => (
+              <div>
+                <SearchResults.Products products={products} term={term} />
+                <SearchResults.Pages pages={pages} term={term} />
+                <SearchResults.Articles articles={articles} term={term} />
+              </div>
+            )}
+          </SearchResults>
         )}
-      </SearchForm>
-      {error && <p style={{color: 'red'}}>{error}</p>}
-      {!term || !result?.total ? (
-        <SearchResults.Empty />
-      ) : (
-        <SearchResults result={result} term={term}>
-          {({articles, pages, products, term}) => (
-            <div>
-              <SearchResults.Products products={products} term={term} />
-              <SearchResults.Pages pages={pages} term={term} />
-              <SearchResults.Articles articles={articles} term={term} />
-            </div>
-          )}
-        </SearchResults>
-      )}
-      <Analytics.SearchView data={{searchTerm: term, searchResults: result}} />
+        <Analytics.SearchView
+          data={{searchTerm: term, searchResults: result}}
+        />
+      </div>
     </div>
   );
 }

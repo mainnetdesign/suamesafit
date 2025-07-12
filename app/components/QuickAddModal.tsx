@@ -5,6 +5,7 @@ import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import type {ProductFragment} from 'storefrontapi.generated';
 import {useFetcher} from '@remix-run/react';
+import {QuantityInput} from '~/components/QuantityInput';
 
 interface QuickAddModalProps {
   /** Objeto completo do produto (de preferência `ProductFragment`) */
@@ -20,6 +21,7 @@ interface QuickAddModalProps {
  */
 export function QuickAddModal({product, children}: QuickAddModalProps) {
   const [open, setOpen] = React.useState(false);
+  const [quantity, setQuantity] = React.useState(1);
   const fetcher = useFetcher<{product: ProductFragment}>();
   const hasFetched = React.useRef(false);
   const {open: openAside} = useAside();
@@ -35,6 +37,13 @@ export function QuickAddModal({product, children}: QuickAddModalProps) {
       fetcher.load(`/quick-product/${product.handle}`);
     }
   }, [open, fetcher, product]);
+
+  // Reset quantity when modal closes
+  React.useEffect(() => {
+    if (!open) {
+      setQuantity(1);
+    }
+  }, [open]);
 
   const fullProduct = (fetcher.data?.product ?? product) as any;
   const selectedVariant =
@@ -106,28 +115,8 @@ export function QuickAddModal({product, children}: QuickAddModalProps) {
                 <Money data={currentVariant.price} />
               </span>
             )}
-            {isLoading ? (
-              <p className="text-paragraph-md text-center opacity-60">carregando…</p>
-            ) : currentVariant ? (
-              <AddToCartButton
-                lines={[
-                  {
-                    merchandiseId: currentVariant?.id,
-                    quantity: 1,
-                    selectedVariant: currentVariant,
-                  } as any,
-                ]}
-                onClick={() => {
-                  setOpen(false);
-                  openAside('cart');
-                }}
-              >
-                adicionar ao carrinho
-              </AddToCartButton>
-            ) : (
-              <p className="text-paragraph-md text-center opacity-60">Produto indisponível</p>
-            )}
-            {/* Selector */}
+            
+            {/* Selector de variante */}
             {weightOptions.length > 1 && (
               <div className="flex gap-3 mt-4">
                 {weightOptions.map((opt) => {
@@ -144,6 +133,41 @@ export function QuickAddModal({product, children}: QuickAddModalProps) {
                   );
                 })}
               </div>
+            )}
+
+            {/* Input de quantidade fora do formulário para evitar bug mobile */}
+            <div className="flex flex-col items-center gap-2 mt-4">
+              <span className="text-label-md text-text-sub-600">quantidade</span>
+              <QuantityInput
+                defaultValue={quantity}
+                minValue={1}
+                maxValue={99}
+                onChange={setQuantity}
+              />
+            </div>
+
+            {isLoading ? (
+              <p className="text-paragraph-md text-center opacity-60">carregando…</p>
+            ) : currentVariant ? (
+              <AddToCartButton
+                lines={[
+                  {
+                    merchandiseId: currentVariant?.id,
+                    quantity: quantity,
+                    selectedVariant: currentVariant,
+                  } as any,
+                ]}
+                showQuantityInput={false}
+                quantity={quantity}
+                onClick={() => {
+                  setOpen(false);
+                  openAside('cart');
+                }}
+              >
+                adicionar ao carrinho
+              </AddToCartButton>
+            ) : (
+              <p className="text-paragraph-md text-center opacity-60">Produto indisponível</p>
             )}
           </div>
         </Modal.Body>

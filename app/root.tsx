@@ -97,21 +97,30 @@ export async function loader(args: LoaderFunctionArgs) {
 async function loadCriticalData({context}: LoaderFunctionArgs) {
   const {storefront} = context;
 
-  const [header, collections] = await Promise.all([
-    storefront.query(HEADER_QUERY, {
-      cache: storefront.CacheLong(),
-      variables: {
-        headerMenuHandle: 'main-menu', // Adjust to your header menu handle
-      },
-    }),
-    storefront.query(FEATURED_COLLECTION_QUERY),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  try {
+    const [header, collections] = await Promise.all([
+      storefront.query(HEADER_QUERY, {
+        cache: storefront.CacheLong(),
+        variables: {
+          headerMenuHandle: 'main-menu', // Adjust to your header menu handle
+        },
+      }),
+      storefront.query(FEATURED_COLLECTION_QUERY),
+    ]);
 
-  return {
-    header,
-    featuredCollections: collections.collections.nodes,
-  };
+    return {
+      header,
+      featuredCollections: collections?.collections?.nodes ?? [],
+    };
+  } catch (error) {
+    console.error('Erro em loadCriticalData (root loader):', error);
+
+    // Retorna valores padrão seguros para evitar 500
+    return {
+      header: null,
+      featuredCollections: [],
+    };
+  }
 }
 
 /**
@@ -131,43 +140,34 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       },
     })
     .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
+      console.error('Erro ao buscar footer:', error);
       return null;
     });
 
   // Verificação de login conforme documentação Shopify
-  const isLoggedInPromise = customerAccount.isLoggedIn();
+  const isLoggedInPromise = customerAccount
+    .isLoggedIn()
+    .catch((error) => {
+      console.error('Erro ao verificar login do cliente:', error);
+      return false;
+    });
   
-  // Buscar email do cliente quando logado
+  // Simplesmente retorna um valor padrão por enquanto
   const customerEmailPromise = isLoggedInPromise.then(async (isLoggedIn) => {
     if (!isLoggedIn) return null;
-    
-    try {
-      const {data, errors} = await customerAccount.query(`#graphql
-        query getCustomer {
-          customer {
-            emailAddress {
-              emailAddress
-            }
-          }
-        }
-      `);
-      
-      if (errors?.length || !data?.customer) {
-        console.error('Failed to fetch customer email:', errors);
-        return null;
-      }
-      
-      return data.customer.emailAddress?.emailAddress ?? null;
-    } catch (error) {
-      console.error('Error fetching customer email:', error);
-      return null;
-    }
+    return null; // Por enquanto não busca o email para evitar erro GraphQL
   });
 
+  // Garante que qualquer falha na recuperação do carrinho não rejeite a stream deferida
+  const cartPromise: Promise<any> = cart
+    .get()
+    .catch((error) => {
+      console.error('Erro ao recuperar carrinho:', error);
+      return null;
+    });
+
   return {
-    cart: cart.get(),
+    cart: cartPromise,
     isLoggedInPromise,
     customerEmailPromise,
     footer,

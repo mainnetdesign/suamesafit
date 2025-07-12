@@ -13,7 +13,7 @@ import {
 } from '~/lib/search';
 import * as Button from '~/components/align-ui/ui/button';
 export const meta: MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+  return [{title: `Sua Mesa Fit | Busca`}];
 };
 
 export async function loader({request, context}: LoaderFunctionArgs) {

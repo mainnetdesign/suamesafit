@@ -5,7 +5,7 @@ import type {OrderLineItemFullFragment} from 'customer-accountapi.generated';
 import {CUSTOMER_ORDER_QUERY} from '~/graphql/customer-account/CustomerOrderQuery';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Order ${data?.order?.name}`}];
+  return [{title: `Sua Mesa Fit | Pedido ${data?.order?.name}`}];
 };
 
 export async function loader({params, context}: LoaderFunctionArgs) {

@@ -49,7 +49,7 @@ export default function AccountLayout() {
         </div>
 
         {/* Navigation */}
-        <div className="mb-8">
+        <div className="">
           <AccountMenu />
         </div>
 

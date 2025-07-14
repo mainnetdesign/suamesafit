@@ -89,17 +89,17 @@ export default function AccountProfile() {
   const customer = action?.customer ?? account?.customer;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Meu Perfil</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Gerencie suas informações pessoais
+    <div className="min-h-screen">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-lg shadow-sm">
+        <div className="py-4">
+            <h5 className="text-title-h5 text-text-sub-600">meu perfil</h5>
+            <p className="mt-1 text-sm text-text-sub-600">
+              gerencie suas informações pessoais
             </p>
           </div>
           
-          <div className="p-6">
+          <div className="p-6 bg-white border border-gray-200 rounded-lg w-fit justify-start items-start">
             <Form method="PUT" className="space-y-6">
               <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
                 <div>
@@ -178,7 +178,7 @@ export default function AccountProfile() {
                 </div>
               )}
 
-              <div className="flex justify-end">
+              <div className="flex justify-start">
                 <button
                   type="submit"
                   disabled={state !== 'idle'}

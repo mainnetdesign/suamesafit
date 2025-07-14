@@ -44,7 +44,7 @@ export default function Orders() {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1200px]">
         <div className="rounded-lg shadow-sm">
           <div className="py-4">
             <h5 className="text-title-h5 text-text-sub-600">meus pedidos</h5>
@@ -53,7 +53,7 @@ export default function Orders() {
             </p>
           </div>
 
-          <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <div className="">
             {orders.nodes.length ? (
               <OrdersTable orders={orders} />
             ) : (

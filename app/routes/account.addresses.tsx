@@ -546,12 +546,12 @@ export default function Addresses() {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1200px]">
         <div className="rounded-lg shadow-sm">
           <div className="py-4">
             <h5 className="text-title-h5 text-text-sub-600">meus endereços</h5>
             <p className="mt-1 text-sm text-text-sub-600">
-              Gerencie seus endereços de entrega
+              gerencie seus endereços de entrega
             </p>
           </div>
 
@@ -559,7 +559,7 @@ export default function Addresses() {
             {!addresses.nodes.length ? (
               <EmptyAddresses />
             ) : (
-              <div className="space-y-8 w-fit">
+              <div className="space-y-8 md:w-fit">
                 <div>
                   <h6 className="text-title-h6 text-text-sub-600 mb-4">
                     adicionar novo endereço
@@ -637,7 +637,7 @@ function NewAddressForm() {
   } as CustomerAddressInput;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6 w-fit">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 md:w-fit">
       <AddressForm
         addressId={'NEW_ADDRESS_ID'}
         address={newAddress}

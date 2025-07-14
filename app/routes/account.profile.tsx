@@ -90,7 +90,7 @@ export default function AccountProfile() {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-[1200px]">
         <div className="rounded-lg shadow-sm">
         <div className="py-4">
             <h5 className="text-title-h5 text-text-sub-600">meu perfil</h5>

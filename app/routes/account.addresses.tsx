@@ -252,22 +252,312 @@ export async function action({request, context}: ActionFunctionArgs) {
   }
 }
 
+export function AddressForm({
+  addressId,
+  address,
+  defaultAddress,
+  children,
+}: {
+  addressId: AddressFragment['id'];
+  address: CustomerAddressInput;
+  defaultAddress: CustomerFragment['defaultAddress'];
+  children: (props: {
+    stateForMethod: (method: 'PUT' | 'POST' | 'DELETE') => Fetcher['state'];
+  }) => React.ReactNode;
+}) {
+  const {state, formMethod} = useNavigation();
+  const action = useActionData<ActionResponse>();
+  const error = action?.error?.[addressId];
+  const isDefaultAddress = defaultAddress?.id === addressId;
+  return (
+    <Form id={addressId}>
+      <fieldset>
+        <input type="hidden" name="addressId" defaultValue={addressId} />
+        <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+          <div>
+            <label
+              htmlFor={`firstName-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Nome*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`firstName-${addressId}`}
+                name="firstName"
+                type="text"
+                autoComplete="given-name"
+                placeholder="Nome"
+                aria-label="Nome"
+                defaultValue={address?.firstName ?? ''}
+                required
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor={`lastName-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Sobrenome*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`lastName-${addressId}`}
+                name="lastName"
+                type="text"
+                autoComplete="family-name"
+                placeholder="Sobrenome"
+                aria-label="Sobrenome"
+                defaultValue={address?.lastName ?? ''}
+                required
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label
+              htmlFor={`company-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Empresa
+            </label>
+            <div className="mt-1">
+              <input
+                id={`company-${addressId}`}
+                name="company"
+                type="text"
+                autoComplete="organization"
+                placeholder="Empresa (opcional)"
+                aria-label="Empresa"
+                defaultValue={address?.company ?? ''}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label
+              htmlFor={`address1-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Endereço*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`address1-${addressId}`}
+                name="address1"
+                type="text"
+                autoComplete="address-line1"
+                placeholder="Rua, número e bairro"
+                aria-label="Endereço"
+                defaultValue={address?.address1 ?? ''}
+                required
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label
+              htmlFor={`address2-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Complemento
+            </label>
+            <div className="mt-1">
+              <input
+                id={`address2-${addressId}`}
+                name="address2"
+                type="text"
+                autoComplete="address-line2"
+                placeholder="Apto, bloco, etc. (opcional)"
+                aria-label="Complemento"
+                defaultValue={address?.address2 ?? ''}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor={`city-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Cidade*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`city-${addressId}`}
+                name="city"
+                type="text"
+                required
+                autoComplete="address-level2"
+                placeholder="Cidade"
+                aria-label="Cidade"
+                defaultValue={address?.city ?? ''}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor={`zoneCode-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Estado*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`zoneCode-${addressId}`}
+                name="zoneCode"
+                type="text"
+                autoComplete="address-level1"
+                placeholder="Estado"
+                aria-label="Estado"
+                defaultValue={address?.zoneCode ?? ''}
+                required
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor={`zip-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              CEP*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`zip-${addressId}`}
+                name="zip"
+                type="text"
+                autoComplete="postal-code"
+                placeholder="CEP"
+                aria-label="CEP"
+                defaultValue={address?.zip ?? ''}
+                required
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor={`territoryCode-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              País*
+            </label>
+            <div className="mt-1">
+              <input
+                id={`territoryCode-${addressId}`}
+                name="territoryCode"
+                type="text"
+                autoComplete="country"
+                placeholder="País"
+                aria-label="País"
+                defaultValue={address?.territoryCode ?? ''}
+                required
+                maxLength={2}
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+          <div className="sm:col-span-2">
+            <label
+              htmlFor={`phoneNumber-${addressId}`}
+              className="block text-sm font-medium text-gray-700"
+            >
+              Telefone
+            </label>
+            <div className="mt-1">
+              <input
+                id={`phoneNumber-${addressId}`}
+                name="phoneNumber"
+                type="tel"
+                autoComplete="tel"
+                placeholder="+55 (11) 99999-9999"
+                aria-label="Telefone"
+                defaultValue={address?.phoneNumber ?? ''}
+                pattern="^\+?[1-9]\d{3,14}$"
+                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center">
+          <input
+            id={`defaultAddress-${addressId}`}
+            name="defaultAddress"
+            type="checkbox"
+            defaultChecked={isDefaultAddress}
+            className="h-4 w-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+          />
+          <label
+            htmlFor={`defaultAddress-${addressId}`}
+            className="ml-2 block text-sm text-gray-900"
+          >
+            Definir como endereço padrão
+          </label>
+        </div>
+
+        {error && (
+          <div className="rounded-md bg-red-50 p-4 mt-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-400"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-red-800">
+                  Ocorreu um erro
+                </h3>
+                <div className="mt-2 text-sm text-red-700">
+                  <p>{error}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="mt-6">
+          {children({
+            stateForMethod: (method) =>
+              formMethod === method ? state : 'idle',
+          })}
+        </div>
+      </fieldset>
+    </Form>
+  );
+}
+
 export default function Addresses() {
   const {customer} = useOutletContext<{customer: CustomerFragment}>();
   const {defaultAddress, addresses} = customer;
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h1 className="text-2xl font-bold text-gray-900">Meus Endereços</h1>
-            <p className="mt-1 text-sm text-gray-600">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-lg shadow-sm">
+          <div className="py-4">
+            <h5 className="text-title-h5 text-text-sub-600">
+              meus endereços
+            </h5>
+            <p className="mt-1 text-sm text-text-sub-600">
               Gerencie seus endereços de entrega
             </p>
           </div>
-          
-          <div className="p-6">
+
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             {!addresses.nodes.length ? (
               <EmptyAddresses />
             ) : (
@@ -349,7 +639,7 @@ function NewAddressForm() {
   } as CustomerAddressInput;
 
   return (
-    <div className="rounded-lg p-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
       <AddressForm
         addressId={'NEW_ADDRESS_ID'}
         address={newAddress}
@@ -403,9 +693,12 @@ function ExistingAddresses({
   defaultAddress,
 }: Pick<CustomerFragment, 'addresses' | 'defaultAddress'>) {
   return (
-    <div className="grid gap-6 md:grid-cols-2">
+    <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2">
       {addresses.nodes.map((address) => (
-        <div key={address.id} className="bg-white border border-gray-200 rounded-lg shadow-sm">
+        <div
+          key={address.id}
+          className="bg-white border border-gray-200 rounded-lg shadow-sm"
+        >
           <div className="p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-gray-900">
@@ -459,161 +752,5 @@ function ExistingAddresses({
         </div>
       ))}
     </div>
-  );
-}
-
-export function AddressForm({
-  addressId,
-  address,
-  defaultAddress,
-  children,
-}: {
-  addressId: AddressFragment['id'];
-  address: CustomerAddressInput;
-  defaultAddress: CustomerFragment['defaultAddress'];
-  children: (props: {
-    stateForMethod: (method: 'PUT' | 'POST' | 'DELETE') => Fetcher['state'];
-  }) => React.ReactNode;
-}) {
-  const {state, formMethod} = useNavigation();
-  const action = useActionData<ActionResponse>();
-  const error = action?.error?.[addressId];
-  const isDefaultAddress = defaultAddress?.id === addressId;
-  return (
-    <Form id={addressId}>
-      <fieldset>
-        <input type="hidden" name="addressId" defaultValue={addressId} />
-        <label htmlFor="firstName">First name*</label>
-        <input
-          aria-label="First name"
-          autoComplete="given-name"
-          defaultValue={address?.firstName ?? ''}
-          id="firstName"
-          name="firstName"
-          placeholder="First name"
-          required
-          type="text"
-        />
-        <label htmlFor="lastName">Last name*</label>
-        <input
-          aria-label="Last name"
-          autoComplete="family-name"
-          defaultValue={address?.lastName ?? ''}
-          id="lastName"
-          name="lastName"
-          placeholder="Last name"
-          required
-          type="text"
-        />
-        <label htmlFor="company">Company</label>
-        <input
-          aria-label="Company"
-          autoComplete="organization"
-          defaultValue={address?.company ?? ''}
-          id="company"
-          name="company"
-          placeholder="Company"
-          type="text"
-        />
-        <label htmlFor="address1">Address line*</label>
-        <input
-          aria-label="Address line 1"
-          autoComplete="address-line1"
-          defaultValue={address?.address1 ?? ''}
-          id="address1"
-          name="address1"
-          placeholder="Address line 1*"
-          required
-          type="text"
-        />
-        <label htmlFor="address2">Address line 2</label>
-        <input
-          aria-label="Address line 2"
-          autoComplete="address-line2"
-          defaultValue={address?.address2 ?? ''}
-          id="address2"
-          name="address2"
-          placeholder="Address line 2"
-          type="text"
-        />
-        <label htmlFor="city">City*</label>
-        <input
-          aria-label="City"
-          autoComplete="address-level2"
-          defaultValue={address?.city ?? ''}
-          id="city"
-          name="city"
-          placeholder="City"
-          required
-          type="text"
-        />
-        <label htmlFor="zoneCode">State / Province*</label>
-        <input
-          aria-label="State/Province"
-          autoComplete="address-level1"
-          defaultValue={address?.zoneCode ?? ''}
-          id="zoneCode"
-          name="zoneCode"
-          placeholder="State / Province"
-          required
-          type="text"
-        />
-        <label htmlFor="zip">Zip / Postal Code*</label>
-        <input
-          aria-label="Zip"
-          autoComplete="postal-code"
-          defaultValue={address?.zip ?? ''}
-          id="zip"
-          name="zip"
-          placeholder="Zip / Postal Code"
-          required
-          type="text"
-        />
-        <label htmlFor="territoryCode">Country Code*</label>
-        <input
-          aria-label="territoryCode"
-          autoComplete="country"
-          defaultValue={address?.territoryCode ?? ''}
-          id="territoryCode"
-          name="territoryCode"
-          placeholder="Country"
-          required
-          type="text"
-          maxLength={2}
-        />
-        <label htmlFor="phoneNumber">Phone</label>
-        <input
-          aria-label="Phone Number"
-          autoComplete="tel"
-          defaultValue={address?.phoneNumber ?? ''}
-          id="phoneNumber"
-          name="phoneNumber"
-          placeholder="+16135551111"
-          pattern="^\+?[1-9]\d{3,14}$"
-          type="tel"
-        />
-        <div>
-          <input
-            defaultChecked={isDefaultAddress}
-            id="defaultAddress"
-            name="defaultAddress"
-            type="checkbox"
-          />
-          <label htmlFor="defaultAddress">Set as default address</label>
-        </div>
-        {error ? (
-          <p>
-            <mark>
-              <small>{error}</small>
-            </mark>
-          </p>
-        ) : (
-          <br />
-        )}
-        {children({
-          stateForMethod: (method) => (formMethod === method ? state : 'idle'),
-        })}
-      </fieldset>
-    </Form>
   );
 }

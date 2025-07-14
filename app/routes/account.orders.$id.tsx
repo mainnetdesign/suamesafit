@@ -77,10 +77,10 @@ export default function OrderRoute() {
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
+        <div className="mb-8 flex flex-col gap-4">
           <Link
             to="/account/orders"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-4"
+            className="inline-flex items-center text-label-lg text-text-sub-600 hover:text-gray-700 mb-4"
           >
             <svg
               className="mr-2 h-4 w-4"
@@ -95,15 +95,15 @@ export default function OrderRoute() {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-            Voltar para Pedidos
+            voltar para pedidos
           </Link>
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                Pedido #{order.name}
-              </h1>
+            <div className="flex flex-col gap-2">
+              <h6 className="text-title-h6 text-text-sub-600">
+                pedido {order.name}
+              </h6>
               <p className="text-gray-600">
-                Feito em {new Date(order.processedAt!).toLocaleDateString('pt-BR', {
+                feito em {new Date(order.processedAt!).toLocaleDateString('pt-BR', {
                   day: '2-digit',
                   month: 'long',
                   year: 'numeric',
@@ -121,9 +121,9 @@ export default function OrderRoute() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">
-                  Itens do Pedido
-                </h2>
+                <h6 className="text-label-lg text-text-sub-600">
+                  itens do pedido
+                </h6>
               </div>
               <div className="p-6">
                 <div className="space-y-6">
@@ -140,9 +140,9 @@ export default function OrderRoute() {
             {/* Resumo Financeiro */}
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">
-                  Resumo Financeiro
-                </h2>
+                <h6 className="text-label-lg text-text-sub-600">
+                  resumo financeiro
+                </h6>
               </div>
               <div className="p-6 space-y-4">
                 <div className="flex justify-between">
@@ -180,9 +180,9 @@ export default function OrderRoute() {
             {/* Endereço de Entrega */}
             <div className="bg-white rounded-lg shadow-sm">
               <div className="px-6 py-4 border-b border-gray-200">
-                <h2 className="text-lg font-medium text-gray-900">
-                  Endereço de Entrega
-                </h2>
+                <h6 className="text-label-lg text-text-sub-600">
+                  endereço de entrega
+                </h6>
               </div>
               <div className="p-6">
                 {order?.shippingAddress ? (
@@ -190,11 +190,16 @@ export default function OrderRoute() {
                     <p className="font-medium text-gray-900">
                       {order.shippingAddress.name}
                     </p>
-                    {order.shippingAddress.formatted && (
-                      <p>{order.shippingAddress.formatted}</p>
-                    )}
+                    {Array.isArray(order.shippingAddress.formatted)
+                      ? order.shippingAddress.formatted.map((line, idx) => (
+                          <p key={idx}>{line}</p>
+                        ))
+                      : (
+                          <p>{order.shippingAddress.formatted}</p>
+                        )
+                    }
                     {order.shippingAddress.formattedArea && (
-                      <p>{order.shippingAddress.formattedArea}</p>
+                      <p className="text-gray-500">{order.shippingAddress.formattedArea}</p>
                     )}
                   </div>
                 ) : (
@@ -239,6 +244,8 @@ export default function OrderRoute() {
 }
 
 function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
+  const precoTotal = Number(lineItem.price?.amount || 0) * (lineItem.quantity || 1);
+  const desconto = Number(lineItem.totalDiscount?.amount || 0);
   return (
     <div className="flex items-center space-x-4">
       {lineItem?.image && (
@@ -261,14 +268,19 @@ function OrderLineRow({lineItem}: {lineItem: OrderLineItemFullFragment}) {
         )}
         <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
           <span>Qtd: {lineItem.quantity}</span>
-          <span>Preço unitário: <Money data={lineItem.price!} /></span>
+          <span>Preço unitário: R${Number(lineItem.price?.amount || 0).toFixed(2)}</span>
         </div>
       </div>
       
       <div className="flex-shrink-0 text-right">
         <p className="text-sm font-medium text-gray-900">
-          <Money data={lineItem.totalDiscount!} />
+          R${precoTotal.toFixed(2)}
         </p>
+        {desconto > 0 && (
+          <p className="text-xs text-green-700">
+            Desconto: -R${desconto.toFixed(2)}
+          </p>
+        )}
       </div>
     </div>
   );

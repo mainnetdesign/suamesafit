@@ -41,19 +41,19 @@ export async function loader({request, context}: LoaderFunctionArgs) {
 export default function Orders() {
   const {customer} = useLoaderData<{customer: CustomerOrdersFragment}>();
   const {orders} = customer;
-  
+
   return (
     <div className="min-h-screen">
-      <div className="">
-        <div className="rounded-lg">
-          <div className="px-6 py-4">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-lg shadow-sm">
+          <div className="py-4">
             <h5 className="text-title-h5 text-text-sub-600">meus pedidos</h5>
             <p className="mt-1 text-sm text-text-sub-600">
               acompanhe o status dos seus pedidos
             </p>
           </div>
-          
-          <div className="p-6">
+
+          <div className="p-6 bg-white border border-gray-200 rounded-lg">
             {orders.nodes.length ? (
               <OrdersTable orders={orders} />
             ) : (
@@ -68,7 +68,7 @@ export default function Orders() {
 
 function OrdersTable({orders}: Pick<CustomerOrdersFragment, 'orders'>) {
   return (
-    <PaginatedResourceSection 
+    <PaginatedResourceSection
       connection={orders}
       resourcesClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr"
     >
@@ -115,7 +115,7 @@ function EmptyOrders() {
 function OrderItem({order}: {order: OrderItemFragment}) {
   const fulfillmentStatus = flattenConnection(order.fulfillments)[0]?.status;
   const lineItems = flattenConnection(order.lineItems);
-  
+
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'fulfilled':
@@ -147,9 +147,7 @@ function OrderItem({order}: {order: OrderItemFragment}) {
       {/* Status Badge */}
       <div className="p-4 border-b border-gray-100 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-900">
-            Confirmado
-          </span>
+          <span className="text-sm font-medium text-gray-900">Confirmado</span>
           <span className="text-sm text-gray-500">
             {new Date(order.processedAt).toLocaleDateString('pt-BR', {
               day: '2-digit',
@@ -161,15 +159,17 @@ function OrderItem({order}: {order: OrderItemFragment}) {
 
       {/* Product Images - Fixed height container */}
       <div className="p-4 flex-grow flex flex-col">
-        <div className={`gap-2 mb-4 ${
-          lineItems.length === 1 
-            ? 'flex h-48' 
-            : lineItems.length === 2 
-              ? 'grid grid-cols-2 h-48' 
-              : lineItems.length === 3 
-                ? 'grid grid-cols-2 h-48' 
-                : 'grid grid-cols-2 h-48'
-        }`}>
+        <div
+          className={`gap-2 mb-4 ${
+            lineItems.length === 1
+              ? 'flex h-48'
+              : lineItems.length === 2
+                ? 'grid grid-cols-2 h-48'
+                : lineItems.length === 3
+                  ? 'grid grid-cols-2 h-48'
+                  : 'grid grid-cols-2 h-48'
+          }`}
+        >
           {lineItems.length === 1 ? (
             // Single item - full width
             <div className="w-full bg-gray-100 rounded-lg overflow-hidden">
@@ -202,7 +202,10 @@ function OrderItem({order}: {order: OrderItemFragment}) {
           ) : lineItems.length <= 4 ? (
             // 2-4 items - show all
             lineItems.map((item, index) => (
-              <div key={item.id} className="bg-gray-100 rounded-lg overflow-hidden">
+              <div
+                key={item.id}
+                className="bg-gray-100 rounded-lg overflow-hidden"
+              >
                 {item.image ? (
                   <Image
                     data={item.image}
@@ -234,7 +237,10 @@ function OrderItem({order}: {order: OrderItemFragment}) {
             // More than 4 items - show first 3 and counter
             <>
               {lineItems.slice(0, 3).map((item, index) => (
-                <div key={item.id} className="bg-gray-100 rounded-lg overflow-hidden">
+                <div
+                  key={item.id}
+                  className="bg-gray-100 rounded-lg overflow-hidden"
+                >
                   {item.image ? (
                     <Image
                       data={item.image}
@@ -279,20 +285,24 @@ function OrderItem({order}: {order: OrderItemFragment}) {
               {lineItems.length} {lineItems.length === 1 ? 'item' : 'itens'}
             </span>
             <span className="text-sm text-gray-600">
-              Pedido #{order.number}
+              Pedido # {order.number}
             </span>
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="text-lg font-bold text-gray-900">
               <Money data={order.totalPrice} />
             </div>
             <div className="flex items-center space-x-2">
-              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getFinancialStatusColor(order.financialStatus)}`}>
+              <span
+                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getFinancialStatusColor(order.financialStatus)}`}
+              >
                 {order.financialStatus}
               </span>
               {fulfillmentStatus && (
-                <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(fulfillmentStatus)}`}>
+                <span
+                  className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(fulfillmentStatus)}`}
+                >
                   {fulfillmentStatus}
                 </span>
               )}
@@ -305,9 +315,9 @@ function OrderItem({order}: {order: OrderItemFragment}) {
       <div className="p-4 border-t border-gray-100 flex-shrink-0">
         <Link
           to={`/account/orders/${btoa(order.id)}`}
-          className="bg-orange-50 w-full inline-flex items-center justify-center px-4 py-2 shadow-sm text-sm font-medium rounded-md text-orange-700 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
+          className="bg-orange-50 w-full inline-flex items-center justify-center px-4 py-2 shadow-sm text-sm font-medium rounded-full text-orange-700 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
         >
-          Ver detalhes
+          ver detalhes
         </Link>
       </div>
     </div>

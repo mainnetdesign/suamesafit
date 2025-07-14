@@ -21,9 +21,9 @@ export function PaginatedResourceSection<NodesType>({
         );
 
         return (
-          <div>
+          <div className="flex flex-col gap-4">
             <PreviousLink>
-              {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+              {isLoading ? 'Carregando...' : <span>↑ Carregar mais</span>}
             </PreviousLink>
             {resourcesClassName ? (
               <div className={resourcesClassName}>{resourcesMarkup}</div>
@@ -31,7 +31,7 @@ export function PaginatedResourceSection<NodesType>({
               resourcesMarkup
             )}
             <NextLink>
-              {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+              {isLoading ? 'Carregando...' : <span>Carregar mais ↓</span>}
             </NextLink>
           </div>
         );

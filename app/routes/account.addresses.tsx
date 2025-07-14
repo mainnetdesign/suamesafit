@@ -257,7 +257,7 @@ export default function Addresses() {
   const {defaultAddress, addresses} = customer;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -349,7 +349,7 @@ function NewAddressForm() {
   } as CustomerAddressInput;
 
   return (
-    <div className="bg-gray-50 rounded-lg p-6">
+    <div className="rounded-lg p-6">
       <AddressForm
         addressId={'NEW_ADDRESS_ID'}
         address={newAddress}
@@ -428,7 +428,7 @@ function ExistingAddresses({
             </div>
           </div>
           
-          <div className="bg-gray-50 px-6 py-3 rounded-b-lg">
+          <div className="px-6 py-3 rounded-b-lg">
             <AddressForm
               addressId={address.id}
               address={address}

@@ -33,18 +33,18 @@ export default function AccountLayout() {
 
   const heading = customer
     ? customer.firstName
-      ? `Olá, ${customer.firstName}!`
-      : `Bem-vindo à sua conta`
-    : 'Detalhes da Conta';
+      ? `olá, ${customer.firstName}!`
+      : `bem-vindo à sua conta`
+    : 'detalhes da conta';
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-yellow-50">
+      <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{heading}</h1>
-          <p className="mt-2 text-gray-600">
-            Gerencie suas informações pessoais e pedidos
+        <div className="flex flex-col gap-2 pt-[100px] pb-12">
+          <h3 className="text-title-h3 text-center text-text-sub-600">{heading}</h3>
+          <p className="mt-2 text-center text-text-sub-600">
+            gerencie suas informações pessoais e pedidos
           </p>
         </div>
 
@@ -66,7 +66,7 @@ function AccountMenu() {
   const menuItems = [
     {
       to: '/account/orders',
-      label: 'Pedidos',
+      label: 'pedidos',
       icon: (
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -80,7 +80,7 @@ function AccountMenu() {
     },
     {
       to: '/account/profile',
-      label: 'Perfil',
+      label: 'perfil',
       icon: (
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -94,7 +94,7 @@ function AccountMenu() {
     },
     {
       to: '/account/addresses',
-      label: 'Endereços',
+      label: 'endereços',
       icon: (
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -115,7 +115,7 @@ function AccountMenu() {
   ];
 
   return (
-    <nav className="bg-white rounded-lg shadow-sm">
+    <nav className="rounded-lg shadow-sm">
       <div className="px-6 py-4">
         <div className="flex flex-wrap items-center justify-between">
           <div className="flex flex-wrap items-center space-x-8">
@@ -124,7 +124,7 @@ function AccountMenu() {
                 key={item.to}
                 to={item.to}
                 className={({isActive}) =>
-                  `flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  `flex items-center space-x-2 px-3 py-2 rounded-full text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-orange-100 text-orange-700'
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
@@ -151,7 +151,7 @@ function Logout() {
     <Form className="account-logout" method="POST" action="/account/logout">
       <button 
         type="submit"
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-red-700 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
       >
         <svg className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
@@ -161,7 +161,7 @@ function Logout() {
             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
           />
         </svg>
-        Sair
+        sair
       </button>
     </Form>
   );

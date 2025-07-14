@@ -549,30 +549,28 @@ export default function Addresses() {
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="rounded-lg shadow-sm">
           <div className="py-4">
-            <h5 className="text-title-h5 text-text-sub-600">
-              meus endereços
-            </h5>
+            <h5 className="text-title-h5 text-text-sub-600">meus endereços</h5>
             <p className="mt-1 text-sm text-text-sub-600">
               Gerencie seus endereços de entrega
             </p>
           </div>
 
-          <div className="p-6 bg-white border border-gray-200 rounded-lg">
+          <div className="">
             {!addresses.nodes.length ? (
               <EmptyAddresses />
             ) : (
-              <div className="space-y-8">
+              <div className="space-y-8 w-fit">
                 <div>
-                  <h2 className="text-lg font-medium text-gray-900 mb-4">
-                    Adicionar Novo Endereço
-                  </h2>
+                  <h6 className="text-title-h6 text-text-sub-600 mb-4">
+                    adicionar novo endereço
+                  </h6>
                   <NewAddressForm />
                 </div>
-                
+
                 <div>
-                  <h2 className="text-lg font-medium text-gray-900 mb-4">
-                    Endereços Salvos
-                  </h2>
+                  <h6 className="text-title-h6 text-text-sub-600 mb-4">
+                    endereços salvos
+                  </h6>
                   <ExistingAddresses
                     addresses={addresses}
                     defaultAddress={defaultAddress}
@@ -639,7 +637,7 @@ function NewAddressForm() {
   } as CustomerAddressInput;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6 w-fit">
       <AddressForm
         addressId={'NEW_ADDRESS_ID'}
         address={newAddress}
@@ -710,17 +708,19 @@ function ExistingAddresses({
                 </span>
               )}
             </div>
-            
+
             <div className="text-sm text-gray-600 space-y-1 mb-4">
               {address.company && <p>{address.company}</p>}
               <p>{address.address1}</p>
               {address.address2 && <p>{address.address2}</p>}
-              <p>{address.city}, {address.zoneCode} {address.zip}</p>
+              <p>
+                {address.city}, {address.zoneCode} {address.zip}
+              </p>
               <p>{address.territoryCode}</p>
               {address.phoneNumber && <p>{address.phoneNumber}</p>}
             </div>
           </div>
-          
+
           <div className="px-6 py-3 rounded-b-lg">
             <AddressForm
               addressId={address.id}
@@ -735,7 +735,9 @@ function ExistingAddresses({
                     type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    {stateForMethod('PUT') !== 'idle' ? 'Salvando...' : 'Salvar'}
+                    {stateForMethod('PUT') !== 'idle'
+                      ? 'Salvando...'
+                      : 'Salvar'}
                   </button>
                   <button
                     disabled={stateForMethod('DELETE') !== 'idle'}
@@ -743,7 +745,9 @@ function ExistingAddresses({
                     type="submit"
                     className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
-                    {stateForMethod('DELETE') !== 'idle' ? 'Excluindo...' : 'Excluir'}
+                    {stateForMethod('DELETE') !== 'idle'
+                      ? 'Excluindo...'
+                      : 'Excluir'}
                   </button>
                 </div>
               )}

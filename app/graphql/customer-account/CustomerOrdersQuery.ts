@@ -14,6 +14,21 @@ export const ORDER_ITEM_FRAGMENT = `#graphql
     id
     number
     processedAt
+    lineItems(first: 3) {
+      nodes {
+        id
+        title
+        quantity
+        image {
+          altText
+          height
+          url
+          id
+          width
+        }
+        variantTitle
+      }
+    }
   }
 ` as const;
 

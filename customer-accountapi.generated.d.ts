@@ -382,6 +382,21 @@ export type OrderItemFragment = Pick<
 > & {
   totalPrice: Pick<CustomerAccountAPI.MoneyV2, 'amount' | 'currencyCode'>;
   fulfillments: {nodes: Array<Pick<CustomerAccountAPI.Fulfillment, 'status'>>};
+  lineItems: {
+    nodes: Array<
+      Pick<
+        CustomerAccountAPI.LineItem,
+        'id' | 'title' | 'quantity' | 'variantTitle'
+      > & {
+        image?: CustomerAccountAPI.Maybe<
+          Pick<
+            CustomerAccountAPI.Image,
+            'altText' | 'height' | 'url' | 'id' | 'width'
+          >
+        >;
+      }
+    >;
+  };
 };
 
 export type CustomerOrdersFragment = {
@@ -394,6 +409,21 @@ export type CustomerOrdersFragment = {
         totalPrice: Pick<CustomerAccountAPI.MoneyV2, 'amount' | 'currencyCode'>;
         fulfillments: {
           nodes: Array<Pick<CustomerAccountAPI.Fulfillment, 'status'>>;
+        };
+        lineItems: {
+          nodes: Array<
+            Pick<
+              CustomerAccountAPI.LineItem,
+              'id' | 'title' | 'quantity' | 'variantTitle'
+            > & {
+              image?: CustomerAccountAPI.Maybe<
+                Pick<
+                  CustomerAccountAPI.Image,
+                  'altText' | 'height' | 'url' | 'id' | 'width'
+                >
+              >;
+            }
+          >;
         };
       }
     >;
@@ -433,6 +463,21 @@ export type CustomerOrdersQuery = {
           >;
           fulfillments: {
             nodes: Array<Pick<CustomerAccountAPI.Fulfillment, 'status'>>;
+          };
+          lineItems: {
+            nodes: Array<
+              Pick<
+                CustomerAccountAPI.LineItem,
+                'id' | 'title' | 'quantity' | 'variantTitle'
+              > & {
+                image?: CustomerAccountAPI.Maybe<
+                  Pick<
+                    CustomerAccountAPI.Image,
+                    'altText' | 'height' | 'url' | 'id' | 'width'
+                  >
+                >;
+              }
+            >;
           };
         }
       >;
@@ -475,7 +520,7 @@ interface GeneratedQueryTypes {
     return: OrderQuery;
     variables: OrderQueryVariables;
   };
-  '#graphql\n  #graphql\n  fragment CustomerOrders on Customer {\n    orders(\n      sortKey: PROCESSED_AT,\n      reverse: true,\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor\n    ) {\n      nodes {\n        ...OrderItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        endCursor\n        startCursor\n      }\n    }\n  }\n  #graphql\n  fragment OrderItem on Order {\n    totalPrice {\n      amount\n      currencyCode\n    }\n    financialStatus\n    fulfillments(first: 1) {\n      nodes {\n        status\n      }\n    }\n    id\n    number\n    processedAt\n  }\n\n\n  query CustomerOrders(\n    $endCursor: String\n    $first: Int\n    $last: Int\n    $startCursor: String\n  ) {\n    customer {\n      ...CustomerOrders\n    }\n  }\n': {
+  '#graphql\n  #graphql\n  fragment CustomerOrders on Customer {\n    orders(\n      sortKey: PROCESSED_AT,\n      reverse: true,\n      first: $first,\n      last: $last,\n      before: $startCursor,\n      after: $endCursor\n    ) {\n      nodes {\n        ...OrderItem\n      }\n      pageInfo {\n        hasPreviousPage\n        hasNextPage\n        endCursor\n        startCursor\n      }\n    }\n  }\n  #graphql\n  fragment OrderItem on Order {\n    totalPrice {\n      amount\n      currencyCode\n    }\n    financialStatus\n    fulfillments(first: 1) {\n      nodes {\n        status\n      }\n    }\n    id\n    number\n    processedAt\n    lineItems(first: 3) {\n      nodes {\n        id\n        title\n        quantity\n        image {\n          altText\n          height\n          url\n          id\n          width\n        }\n        variantTitle\n      }\n    }\n  }\n\n\n  query CustomerOrders(\n    $endCursor: String\n    $first: Int\n    $last: Int\n    $startCursor: String\n  ) {\n    customer {\n      ...CustomerOrders\n    }\n  }\n': {
     return: CustomerOrdersQuery;
     variables: CustomerOrdersQueryVariables;
   };

@@ -41,13 +41,17 @@ export default function Layout() {
             shop={data.shop}
             consent={data.consent}
           >
-            <PageLayout 
-              {...data}
-              isLoggedInPromise={data.isLoggedInPromise}
-              customerEmailPromise={data.customerEmailPromise}
-            >
+            {data.header ? (
+              <PageLayout 
+                {...data}
+                isLoggedInPromise={data.isLoggedInPromise}
+                customerDataPromise={data.customerDataPromise}
+              >
+                <Outlet />
+              </PageLayout>
+            ) : (
               <Outlet />
-            </PageLayout>
+            )}
           </Analytics.Provider>
         ) : (
           <Outlet />

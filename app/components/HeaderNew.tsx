@@ -180,16 +180,13 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                 <div className="relative">
                   <ProfileDropdown
                     onLoginClick={() =>
-                      (window.location.href =
-                        'https://shopify.com/65347551301/account/login')
+                      (window.location.href = '/account/login')
                     }
                     onOrdersClick={() =>
-                      (window.location.href =
-                        'https://shopify.com/65347551301/account/orders')
+                      (window.location.href = '/account/orders')
                     }
                     onProfileClick={() =>
-                      (window.location.href =
-                        'https://shopify.com/65347551301/account/profile')
+                      (window.location.href = '/account/profile')
                     }
                     className="w-8 h-8 flex items-center justify-center cursor-pointer"
                   />

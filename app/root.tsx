@@ -5,10 +5,12 @@ import {
   useRouteError,
   isRouteErrorResponse,
   type ShouldRevalidateFunction,
+  type MetaFunction,
 } from '@remix-run/react';
 import type {LinksFunction} from '@remix-run/node';
 import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY, FEATURED_COLLECTION_QUERY} from '~/lib/fragments';
+import socialImage from '~/assets/home/Social Image.png';
 
 export type RootLoader = typeof loader;
 
@@ -57,6 +59,23 @@ export const links: LinksFunction = () => {
     {rel: 'icon', type: 'image/svg+xml', href: favicon},
   ];
 }
+
+export const meta: MetaFunction = () => {
+  const title = 'Sua Mesa Fit – Marmitas saudáveis todos os dias';
+  const description = 'Cardápios balanceados, práticos e saborosos entregues fresquinhos até você.';
+  return [
+    {title},
+    {name: 'description', content: description},
+    {property: 'og:type', content: 'website'},
+    {property: 'og:title', content: title},
+    {property: 'og:description', content: description},
+    {property: 'og:image', content: socialImage},
+    {name: 'twitter:card', content: 'summary_large_image'},
+    {name: 'twitter:title', content: title},
+    {name: 'twitter:description', content: description},
+    {name: 'twitter:image', content: socialImage},
+  ];
+};
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte

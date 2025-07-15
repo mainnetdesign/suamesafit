@@ -4,5 +4,5 @@ import {redirect, type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 export async function loader({context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
-  return redirect('/account');
+  return redirect('https://perfil.suamesafit.com');
 }

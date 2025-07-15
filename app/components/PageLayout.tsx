@@ -183,9 +183,9 @@ function MobileMenuAside({
      
           <ProfileDropdown 
             mobile 
-            onLoginClick={() => { close(); window.location.href='/account/login'; }}
-            onOrdersClick={() => { close(); window.location.href='/account/orders'; }}
-            onProfileClick={() => { close(); window.location.href='/account/profile'; }}
+            onLoginClick={() => { close(); window.location.href='https://perfil.suamesafit.com'; }}
+            onOrdersClick={() => { close(); window.location.href='https://perfil.suamesafit.com'; }}
+            onProfileClick={() => { close(); window.location.href='https://perfil.suamesafit.com'; }}
             className="relative" />
 
           <div className="border-t border-gray-300 my-4" />

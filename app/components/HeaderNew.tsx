@@ -180,13 +180,13 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                 <div className="relative">
                   <ProfileDropdown
                     onLoginClick={() =>
-                      (window.location.href = '/account/login')
+                      (window.location.href = 'https://perfil.suamesafit.com')
                     }
                     onOrdersClick={() =>
-                      (window.location.href = '/account/orders')
+                      (window.location.href = 'https://perfil.suamesafit.com')
                     }
                     onProfileClick={() =>
-                      (window.location.href = '/account/profile')
+                      (window.location.href = 'https://perfil.suamesafit.com')
                     }
                     className="w-8 h-8 flex items-center justify-center cursor-pointer"
                   />

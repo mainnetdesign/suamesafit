@@ -32,6 +32,15 @@ import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
 import {Header} from '~/components/Header';
 import Autoplay from 'embla-carousel-autoplay';
+import {Teaser} from '~/components/Teaser';
+
+// Configuração do teaser de lançamento
+const TEASER_ENABLED = true; // 👉 Defina como false para desativar manualmente
+const LAUNCH_DATE_ISO = '2025-07-19T09:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
+
+function isTeaserActive() {
+  return TEASER_ENABLED && Date.now() < new Date(LAUNCH_DATE_ISO).getTime();
+}
 
 export const meta: MetaFunction = () => {
   return [{title: 'Sua Mesa Fit | Sua refeição saudável e deliciosa'}];
@@ -248,70 +257,75 @@ export default function Homepage() {
   const {testimonials} = useLoaderData<typeof loader>();
   const data = useLoaderData<typeof loader>();
 
+  const teaserActive = isTeaserActive();
+
   return (
-    <div className="home gap-10  flex flex-col">
-      <div className="w-full px-4 flex justify-center items-center">
-        <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
-          <img
-            className="z-10 absolute  object-cover w-full h-full"
-            src={hero1Image}
-          />
-          <div className="z-20 self-stretch h-[461px] p-6 md:p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 md:bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
-            <div className="max-w-[416px] text-text-white-0 text-title-h3">
-              refeições saudáveis, frescas e deliciosas.
-            </div>
-            <div className="max-w-[416px] text-text-white-0 text-body-sm leading-normal">
-              Monte seu cardápio ou escolha um plano semanal. Receba refeições
-              equilibradas, práticas e deliciosas onde estiver.
+    <>
+      {teaserActive && <Teaser launchDate={LAUNCH_DATE_ISO} overlay />}
+
+      <div className="home gap-10  flex flex-col">
+        <div className="w-full px-4 flex justify-center items-center">
+          <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
+            <img
+              className="z-10 absolute  object-cover w-full h-full"
+              src={hero1Image}
+            />
+            <div className="z-20 self-stretch h-[461px] p-6 md:p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 md:bg-[radial-gradient(ellipse_59.86%_167.30%_at_13.09%_92.08%,_#3D724A_15%,_rgba(61,_114,_74.04,_0.15)_60%,_rgba(61,_114,_74,_0)_100%)] flex flex-col justify-end items-start gap-5">
+              <div className="max-w-[416px] text-text-white-0 text-title-h3">
+                refeições saudáveis, frescas e deliciosas.
+              </div>
+              <div className="max-w-[416px] text-text-white-0 text-body-sm leading-normal">
+                Monte seu cardápio ou escolha um plano semanal. Receba refeições
+                equilibradas, práticas e deliciosas onde estiver.
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="w-full visible flex flex-col justify-center items-center">
-        <div className="max-w-[1200px] pl-4 visible w-full flex flex-col gap-8 justify-center items-center">
-          <div className="w-full pr-4 flex justify-between items-center gap-4">
-            <div className="flex flex-col items-center gap-4">
-              <h3 className="text-title-h4  text-text-sub-600">
-                {data.homepageCollectionTitle || 'pratos em destaque'}
-              </h3>
+        <div className="w-full visible flex flex-col justify-center items-center">
+          <div className="max-w-[1200px] pl-4 visible w-full flex flex-col gap-8 justify-center items-center">
+            <div className="w-full pr-4 flex justify-between items-center gap-4">
+              <div className="flex flex-col items-center gap-4">
+                <h3 className="text-title-h4  text-text-sub-600">
+                  {data.homepageCollectionTitle || 'pratos em destaque'}
+                </h3>
+              </div>
+              <Button.Root
+                variant="primary"
+                mode="filled"
+                size="medium"
+                onClick={() => (window.location.href = '/collections/all')}
+              >
+                abrir cardápio
+              </Button.Root>
             </div>
-            <Button.Root
-              variant="primary"
-              mode="filled"
-              size="medium"
-              onClick={() => (window.location.href = '/collections/all')}
-            >
-              abrir cardápio
-            </Button.Root>
+
+            <ProductsCarousel products={data.homepageProducts} />
           </div>
-
-          <ProductsCarousel products={data.homepageProducts} />
         </div>
-      </div>
 
-      <FeaturedCollections
-        collections={data.featuredCollections}
-        summerProducts={data.summerProducts}
-      />
+        <FeaturedCollections
+          collections={data.featuredCollections}
+          summerProducts={data.summerProducts}
+        />
 
-      {testimonials.length > 0 && (
-        <TestimonialsSection testimonials={testimonials} />
-      )}
+        {testimonials.length > 0 && (
+          <TestimonialsSection testimonials={testimonials} />
+        )}
 
-      <LimitedTimeOffer
-        title="oferta por tempo limitado"
-        description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
-        buttonText="peça agora"
-        buttonLink="/collections/limited-offer"
-        imageUrl={limitedTimeOfferImage}
-        deadline="2025-07-30T23:59:59"
-      />
+        <LimitedTimeOffer
+          title="oferta por tempo limitado"
+          description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
+          buttonText="peça agora"
+          buttonLink="/collections/limited-offer"
+          imageUrl={limitedTimeOfferImage}
+          deadline="2025-07-30T23:59:59"
+        />
 
-      <AboutUs />
+        <AboutUs />
 
-      {/* Seja um Parceiro */}
-      {/* <div className="w-full flex flex-col justify-center items-center">
+        {/* Seja um Parceiro */}
+        {/* <div className="w-full flex flex-col justify-center items-center">
         <div className="max-w-[1200px] p-16 bg-green-700 rounded-3xl w-full flex flex-col justify-center items-center">
           <div className="w-full flex flex-col justify-center items-start">
             <h2 className="text-title-h2">seja um parceiro</h2>
@@ -323,92 +337,93 @@ export default function Homepage() {
         </div>
       </div> */}
 
-      <div className="w-full px-4 flex flex-col justify-center items-center">
-        <div className="max-w-[1200px] w-full flex flex-col md:flex-row gap-4 justify-center items-start">
-          <div className="w-full md:w-fit flex flex-col justify-center items-start">
-            <div className="text-label-lg bg-yellow-500 px-4 py-1 rounded-full">
-              faq
+        <div className="w-full px-4 flex flex-col justify-center items-center">
+          <div className="max-w-[1200px] w-full flex flex-col md:flex-row gap-4 justify-center items-start">
+            <div className="w-full md:w-fit flex flex-col justify-center items-start">
+              <div className="text-label-lg bg-yellow-500 px-4 py-1 rounded-full">
+                faq
+              </div>
+              <h2 className="text-title-h3 max-w-[300px] text-center md:text-left text-text-sub-600">
+                perguntas frequentes
+              </h2>
             </div>
-            <h2 className="text-title-h3 max-w-[300px] text-center md:text-left text-text-sub-600">
-              perguntas frequentes
-            </h2>
-          </div>
-          <div className="bg-orange-100 rounded-3xl w-full max-w-[600px]">
-            <Accordion.Root type="single" collapsible className="">
-              <Accordion.Item value="restricoes">
-                <Accordion.Trigger>
-                  <Accordion.Arrow />
-                  Vocês atendem restrições alimentares e alergias?
-                </Accordion.Trigger>
-                <Accordion.Content className="pl-[30px]">
-                  Sim! Nossas marmitas são preparadas com atenção especial às
-                  restrições alimentares e alergias. Oferecemos opções
-                  vegetarianas, veganas, sem glúten, sem lactose e outras
-                  adaptações conforme sua necessidade.
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item value="personalizacao">
-                <Accordion.Trigger>
-                  <Accordion.Arrow />
-                  Posso personalizar minha marmita?
-                </Accordion.Trigger>
-                <Accordion.Content className="pl-[30px]">
-                  Sim! Você pode personalizar sua marmita escolhendo entre
-                  diferentes opções de proteínas, acompanhamentos e guarnições.
-                  Também oferecemos a possibilidade de montar seu próprio
-                  cardápio semanal.
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item value="frescas">
-                <Accordion.Trigger>
-                  <Accordion.Arrow />
-                  As marmitas chegam frescas ou congeladas?
-                </Accordion.Trigger>
-                <Accordion.Content className="pl-[30px]">
-                  Nossas marmitas são entregues frescas, preparadas no mesmo dia
-                  da entrega. Elas são embaladas em recipientes térmicos para
-                  manter a temperatura ideal até chegarem em você.
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item value="durabilidade">
-                <Accordion.Trigger>
-                  <Accordion.Arrow />
-                  Quanto tempo as marmitas duram no freezer?
-                </Accordion.Trigger>
-                <Accordion.Content className="pl-[30px]">
-                  Nossas marmitas podem ser conservadas no freezer por até 30
-                  dias, mantendo todo o sabor e qualidade. Recomendamos consumir
-                  em até 3 dias quando mantidas na geladeira.
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item value="conservantes">
-                <Accordion.Trigger>
-                  <Accordion.Arrow />
-                  As marmitas contêm conservantes ou aditivos?
-                </Accordion.Trigger>
-                <Accordion.Content className="pl-[30px]">
-                  Não! Nossas marmitas são 100% naturais, sem conservantes ou
-                  aditivos químicos. Utilizamos apenas ingredientes frescos e
-                  naturais para garantir uma alimentação saudável e saborosa.
-                </Accordion.Content>
-              </Accordion.Item>
-              <Accordion.Item value="regioes">
-                <Accordion.Trigger>
-                  <Accordion.Arrow />
-                  Para quais regiões vocês entregam?
-                </Accordion.Trigger>
-                <Accordion.Content className="pl-[30px]">
-                  Atualmente atendemos toda a região metropolitana de São Paulo,
-                  incluindo Zona Sul, Zona Norte, Zona Leste, Zona Oeste e
-                  Grande São Paulo. Entre em contato para verificar a
-                  disponibilidade na sua região.
-                </Accordion.Content>
-              </Accordion.Item>
-            </Accordion.Root>
+            <div className="bg-orange-100 rounded-3xl w-full max-w-[600px]">
+              <Accordion.Root type="single" collapsible className="">
+                <Accordion.Item value="restricoes">
+                  <Accordion.Trigger>
+                    <Accordion.Arrow />
+                    Vocês atendem restrições alimentares e alergias?
+                  </Accordion.Trigger>
+                  <Accordion.Content className="pl-[30px]">
+                    Sim! Nossas marmitas são preparadas com atenção especial às
+                    restrições alimentares e alergias. Oferecemos opções
+                    vegetarianas, veganas, sem glúten, sem lactose e outras
+                    adaptações conforme sua necessidade.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="personalizacao">
+                  <Accordion.Trigger>
+                    <Accordion.Arrow />
+                    Posso personalizar minha marmita?
+                  </Accordion.Trigger>
+                  <Accordion.Content className="pl-[30px]">
+                    Sim! Você pode personalizar sua marmita escolhendo entre
+                    diferentes opções de proteínas, acompanhamentos e guarnições.
+                    Também oferecemos a possibilidade de montar seu próprio
+                    cardápio semanal.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="frescas">
+                  <Accordion.Trigger>
+                    <Accordion.Arrow />
+                    As marmitas chegam frescas ou congeladas?
+                  </Accordion.Trigger>
+                  <Accordion.Content className="pl-[30px]">
+                    Nossas marmitas são entregues frescas, preparadas no mesmo dia
+                    da entrega. Elas são embaladas em recipientes térmicos para
+                    manter a temperatura ideal até chegarem em você.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="durabilidade">
+                  <Accordion.Trigger>
+                    <Accordion.Arrow />
+                    Quanto tempo as marmitas duram no freezer?
+                  </Accordion.Trigger>
+                  <Accordion.Content className="pl-[30px]">
+                    Nossas marmitas podem ser conservadas no freezer por até 30
+                    dias, mantendo todo o sabor e qualidade. Recomendamos consumir
+                    em até 3 dias quando mantidas na geladeira.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="conservantes">
+                  <Accordion.Trigger>
+                    <Accordion.Arrow />
+                    As marmitas contêm conservantes ou aditivos?
+                  </Accordion.Trigger>
+                  <Accordion.Content className="pl-[30px]">
+                    Não! Nossas marmitas são 100% naturais, sem conservantes ou
+                    aditivos químicos. Utilizamos apenas ingredientes frescos e
+                    naturais para garantir uma alimentação saudável e saborosa.
+                  </Accordion.Content>
+                </Accordion.Item>
+                <Accordion.Item value="regioes">
+                  <Accordion.Trigger>
+                    <Accordion.Arrow />
+                    Para quais regiões vocês entregam?
+                  </Accordion.Trigger>
+                  <Accordion.Content className="pl-[30px]">
+                    Atualmente atendemos toda a região metropolitana de São Paulo,
+                    incluindo Zona Sul, Zona Norte, Zona Leste, Zona Oeste e
+                    Grande São Paulo. Entre em contato para verificar a
+                    disponibilidade na sua região.
+                  </Accordion.Content>
+                </Accordion.Item>
+              </Accordion.Root>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

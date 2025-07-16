@@ -76,7 +76,7 @@ function CartSummaryPage({cart}: {cart: OptimisticCart<CartApiQueryFragment | nu
         <Button.Root variant="primary" mode="filled" size="small" className="mt-2 w-full">Buscar</Button.Root>
       </div> */}
       <Button.Root asChild variant="primary" mode="filled" className="w-full">
-        <a href={cart?.checkoutUrl || '#'} target="_self">
+        <a href={fixCheckoutDomain(cart?.checkoutUrl)} target="_self">
           <p>Fechar Pedido</p>
         </a>
       </Button.Root>
@@ -231,4 +231,13 @@ function UpdateGiftCardForm({
       }}
     </CartForm>
   );
+}
+
+// Util para garantir que o checkout use o subdomínio correto
+function fixCheckoutDomain(url?: string | null) {
+  if (!url) return '#';
+  if (url.startsWith('/')) return `https://conta.suamesafit.com${url}`;
+  return url
+    .replace('https://suamesafit.com', 'https://conta.suamesafit.com')
+    .replace('http://suamesafit.com', 'https://conta.suamesafit.com');
 }

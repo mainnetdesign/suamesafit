@@ -3,6 +3,8 @@ import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useRef} from 'react';
 import {FetcherWithComponents} from '@remix-run/react';
+import {DeliveryOptionsForm} from '~/components/DeliveryOptionsForm';
+import {DELIVERY_ZONES} from '~/config/delivery';
 import * as Button from '~/components/align-ui/ui/button';
 import * as Select from '~/components/align-ui/ui/select';
 import * as Input from '~/components/align-ui/ui/input';
@@ -89,12 +91,41 @@ function CartSummaryPage({
         </Input.Root>
         <Button.Root variant="primary" mode="filled" size="small" className="mt-2 w-full">Buscar</Button.Root>
       </div> */}
-      
-      <Button.Root asChild variant="primary" mode="filled" className="w-full">
-        <a href={fixCheckoutDomain(cart?.checkoutUrl)} target="_self">
-          <p>Fechar Pedido</p>
-        </a>
-      </Button.Root>
+
+      {/* Fluxo pré-checkout: CEP + dados de entrega */}
+      <DeliveryOptionsForm onCompleted={() => {}} />
+
+      {/* Botão de checkout bloqueado até o fluxo ser concluído */}
+      {(() => {
+        const attributes = cart?.attributes || [];
+        const hasDeliveryInfo = attributes.some(
+          (a: any) => a?.key === 'delivery_info',
+        );
+        const shippingVariantIds = DELIVERY_ZONES.map((z) => z.shippingVariantId);
+        const hasShippingItem = cart?.lines?.nodes?.some((line: any) =>
+          shippingVariantIds.includes(line.merchandise?.id),
+        );
+        const canCheckout = hasDeliveryInfo && hasShippingItem;
+
+        return (
+          <Button.Root
+            asChild
+            variant="primary"
+            mode="filled"
+            className="w-full"
+            disabled={!canCheckout}
+          >
+            <a
+              href={canCheckout ? fixCheckoutDomain(cart?.checkoutUrl) : '#'}
+              target="_self"
+              style={{pointerEvents: canCheckout ? undefined : 'none'}}
+            >
+              <p>Fechar Pedido</p>
+            </a>
+          </Button.Root>
+        );
+      })()}
+
       <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
         <span className="text-green-700 text-label-md font-bold">
           Você ganha 5% de cashback para seu próximo pedido!

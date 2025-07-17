@@ -19,12 +19,19 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
   return <CartSummaryPage cart={cart} />;
 }
 
-function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
+function CartSummaryAside({
+  cart,
+}: {
+  cart: OptimisticCart<CartApiQueryFragment | null>;
+}) {
   return (
-    <div aria-labelledby="cart-summary" className="cart-summary-aside mb-16 md:mb-0">
+    <div
+      aria-labelledby="cart-summary"
+      className="cart-summary-aside mb-16 md:mb-0"
+    >
       <dl className="cart-subtotal flex  justify-between ">
-        <dt className='text-title-h5 text-text-sub-600'>subtotal</dt>
-        <dd className='text-title-h5 text-text-sub-600'>
+        <dt className="text-title-h5 text-text-sub-600">subtotal</dt>
+        <dd className="text-title-h5 text-text-sub-600">
           {cart?.cost?.subtotalAmount ? (
             <Money data={cart.cost.subtotalAmount} />
           ) : (
@@ -44,12 +51,19 @@ function CartSummaryAside({cart}: {cart: OptimisticCart<CartApiQueryFragment | n
   );
 }
 
-function CartSummaryPage({cart}: {cart: OptimisticCart<CartApiQueryFragment | null>}) {
+function CartSummaryPage({
+  cart,
+}: {
+  cart: OptimisticCart<CartApiQueryFragment | null>;
+}) {
   return (
-    <div aria-labelledby="cart-summary" className="cart-summary-page flex flex-col gap-6 p-6 rounded-2xl bg-bg-white-0 shadow-regular-md min-w-[320px] max-w-[400px] w-full">
+    <div
+      aria-labelledby="cart-summary"
+      className="cart-summary-page flex flex-col gap-6 p-6 rounded-2xl bg-bg-white-0 shadow-regular-md min-w-[320px] max-w-[400px] w-full"
+    >
       <dl className="cart-total flex justify-between items-center">
-        <dt className='text-title-h5 text-text-sub-600'>Total</dt>
-        <dd className='text-title-h4 text-text-sub-600'>
+        <dt className="text-title-h5 text-text-sub-600">Total</dt>
+        <dd className="text-title-h4 text-text-sub-600">
           {cart?.cost?.totalAmount ? (
             <Money data={cart.cost.totalAmount} />
           ) : (
@@ -75,14 +89,20 @@ function CartSummaryPage({cart}: {cart: OptimisticCart<CartApiQueryFragment | nu
         </Input.Root>
         <Button.Root variant="primary" mode="filled" size="small" className="mt-2 w-full">Buscar</Button.Root>
       </div> */}
+      
       <Button.Root asChild variant="primary" mode="filled" className="w-full">
         <a href={fixCheckoutDomain(cart?.checkoutUrl)} target="_self">
           <p>Fechar Pedido</p>
         </a>
       </Button.Root>
       <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
-        <span className="text-green-700 text-label-md font-bold">Você ganha 5% de cashback para seu próximo pedido!</span>
-        <span className="text-green-700 text-paragraph-sm">É o nosso jeito de agradecer por comprar com a gente. Use esse valor no próximo pedido (válido por 60 dias)</span>
+        <span className="text-green-700 text-label-md font-bold">
+          Você ganha 5% de cashback para seu próximo pedido!
+        </span>
+        <span className="text-green-700 text-paragraph-sm">
+          É o nosso jeito de agradecer por comprar com a gente. Use esse valor
+          no próximo pedido (válido por 60 dias)
+        </span>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import * as Input from '~/components/align-ui/ui/input';
 import {Calendar} from '~/components/align-ui/ui/datepicker';
 import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
+import type {AttributeInput} from '@shopify/hydrogen/storefront-api-types';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -66,6 +67,8 @@ function CartSummaryPage({
     'gid://shopify/ProductVariant/43101752295493',
   );
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
+  const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
 
   useEffect(() => {
@@ -81,6 +84,23 @@ function CartSummaryPage({
       console.error('Erro no cálculo de frete:', fetcher.data.error);
     }
   }, [fetcher.data]);
+
+  // Atualizar cart attributes e notes quando os dados mudarem
+  useEffect(() => {
+    if (fetcher.data?.distanceKm && selectedTimeSlot && selectedDeliveryLocation) {
+      // Atualizar cart attributes
+      const attributesForm = document.querySelector('input[name="updateAttributes"]')?.closest('form') as HTMLFormElement;
+      if (attributesForm) {
+        attributesForm.submit();
+      }
+
+      // Atualizar cart note
+      const noteForm = document.querySelector('input[name="updateNote"]')?.closest('form') as HTMLFormElement;
+      if (noteForm) {
+        noteForm.submit();
+      }
+    }
+  }, [fetcher.data?.distanceKm, selectedTimeSlot, selectedDeliveryLocation, selectedDate, cep]);
 
   const handleCepSearch = () => {
     const sanitizedCep = cep.replace(/\D/g, '');
@@ -216,6 +236,52 @@ function CartSummaryPage({
             )}
           </div>
         )}
+
+        {/* Select para horário de entrega */}
+        {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
+          <div className="w-full mt-4">
+            <label className="block text-label-sm text-text-sub-600 mb-2">
+              Horário de entrega
+            </label>
+            <Select.Root value={selectedTimeSlot} onValueChange={setSelectedTimeSlot}>
+              <Select.Trigger>
+                <Select.Value placeholder="Escolha o horário" />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="manha">Manhã (9h às 13h)</Select.Item>
+                <Select.Item value="tarde">Tarde (15h às 18h)</Select.Item>
+                <Select.Item value="noite">Noite (18h às 21h)</Select.Item>
+              </Select.Content>
+            </Select.Root>
+          </div>
+        )}
+
+        {/* Select para local de entrega */}
+        {selectedTimeSlot && (
+          <div className="w-full mt-4">
+            <label className="block text-label-sm text-text-sub-600 mb-2">
+              Como deseja receber?
+            </label>
+            <Select.Root value={selectedDeliveryLocation} onValueChange={setSelectedDeliveryLocation}>
+              <Select.Trigger>
+                <Select.Value placeholder="Escolha o local de entrega" />
+              </Select.Trigger>
+              <Select.Content>
+                <Select.Item value="porta">Na porta</Select.Item>
+                <Select.Item value="recepcao">Na recepção</Select.Item>
+              </Select.Content>
+            </Select.Root>
+            
+            {/* Aviso para recepção */}
+            {selectedDeliveryLocation === 'recepcao' && (
+              <div className="mt-2 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                <p className="text-orange-700 text-label-sm">
+                  ⚠️ Confirme se a recepção aceita produtos congelados
+                </p>
+              </div>
+            )}
+          </div>
+        )}
         
         {fetcher.data?.error && (
           <p className="text-red-600 text-label-sm mt-2">
@@ -223,6 +289,42 @@ function CartSummaryPage({
           </p>
         )}
       </div>
+
+      {/* Formulário para atualizar cart attributes e notes */}
+      <CartForm
+        route="/cart"
+        action={CartForm.ACTIONS.AttributesUpdateInput}
+        inputs={{
+          attributes: [
+            {key: 'CEP', value: cep},
+            {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
+            {key: 'Horário de Entrega', value: selectedTimeSlot},
+            {key: 'Local de Entrega', value: selectedDeliveryLocation},
+            {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
+          ] as AttributeInput[],
+        }}
+      >
+        <input type="hidden" name="updateAttributes" value="true" />
+      </CartForm>
+
+      {/* Formulário para atualizar cart note */}
+      <CartForm
+        route="/cart"
+        action={CartForm.ACTIONS.NoteUpdate}
+      >
+        <input
+          type="hidden"
+          name="note"
+          value={`INFORMAÇÕES DE ENTREGA:
+CEP: ${cep}
+Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
+Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
+Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
+Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
+${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`}
+        />
+        <input type="hidden" name="updateNote" value="true" />
+      </CartForm>
 
       {/* Botão de checkout */}
       <CartForm
@@ -249,12 +351,17 @@ function CartSummaryPage({
           variant="primary"
           mode="filled"
           className="w-full"
-          disabled={!fetcher.data?.distanceKm || !selectedDate || fetcher.state !== 'idle'}
+          disabled={
+            !fetcher.data?.distanceKm || 
+            !selectedTimeSlot || 
+            !selectedDeliveryLocation || 
+            fetcher.state !== 'idle'
+          }
         >
           <p>Fechar Pedido</p>
         </Button.Root>
       </CartForm>
-      <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
+      {/* <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
         <span className="text-green-700 text-label-md font-bold">
           Você ganha 5% de cashback para seu próximo pedido!
         </span>
@@ -262,7 +369,7 @@ function CartSummaryPage({
           É o nosso jeito de agradecer por comprar com a gente. Use esse valor
           no próximo pedido (válido por 60 dias)
         </span>
-      </div>
+      </div> */}
     </div>
   );
 }

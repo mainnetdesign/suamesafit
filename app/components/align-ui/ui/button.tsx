@@ -32,6 +32,7 @@ export const buttonVariants = tv({
       primary: {},
       neutral: {},
       error: {},
+      success: {}, // novo variante verde
     },
     mode: {
       filled: {},
@@ -237,6 +238,56 @@ export const buttonVariants = tv({
           'hover:bg-red-alpha-10',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:shadow-button-error-focus focus-visible:ring-error-base',
+        ],
+      },
+    },
+    //#endregion
+
+    //#region variant=success
+    {
+      variant: 'success',
+      mode: 'filled',
+      class: {
+        root: [
+          // base
+          'bg-green-600 text-static-white',
+          // hover
+          'hover:bg-green-700',
+          // focus
+          'focus-visible:shadow-button-primary-focus',
+        ],
+      },
+    },
+    {
+      variant: 'success',
+      mode: 'stroke',
+      class: {
+        root: [
+          'bg-bg-white-0 text-green-700 ring-green-600',
+          'hover:bg-green-50 hover:ring-transparent hover:no-underline',
+          'focus-visible:shadow-button-primary-focus',
+        ],
+      },
+    },
+    {
+      variant: 'success',
+      mode: 'lighter',
+      class: {
+        root: [
+          'bg-green-100 text-green-700 ring-transparent',
+          'hover:bg-green-200 hover:ring-transparent',
+          'focus-visible:bg-green-200 focus-visible:shadow-button-primary-focus focus-visible:ring-green-700',
+        ],
+      },
+    },
+    {
+      variant: 'success',
+      mode: 'ghost',
+      class: {
+        root: [
+          'bg-transparent text-green-700 ring-transparent',
+          'hover:bg-green-100',
+          'focus-visible:bg-bg-white-0 focus-visible:shadow-button-primary-focus focus-visible:ring-green-700',
         ],
       },
     },

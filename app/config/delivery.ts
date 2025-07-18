@@ -39,10 +39,13 @@ export const DELIVERY_ZONES: DeliveryZone[] = [
     id: 'sao-paulo',
     label: 'São Paulo (raio teste)',
     cepPrefixes: ['010', '011', '012', '013', '014', '015', '016', '017', '018', '019'],
-    // TODO: substitua pelo ID real do variant de frete desta zona
-    shippingVariantId: 'gid://shopify/ProductVariant/REPLACE_ME_SP',
+    // Variante de R$ 5,00 usada para teste
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752295493',
   },
 ];
+
+// Constante para testes locais: sempre usar a variante de R$ 5,00
+export const TEST_FREIGHT_VARIANT_ID = 'gid://shopify/ProductVariant/43101752295493';
 
 /**
  * Very naive CEP validator.

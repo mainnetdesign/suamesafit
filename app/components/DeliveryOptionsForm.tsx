@@ -1,4 +1,4 @@
-import type {OptimisticCartLineInput} from '@shopify/hydrogen';
+import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import {useFetcher} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
@@ -12,6 +12,7 @@ import {
   validateCepLocally,
   DeliveryPeriod,
   DeliveryZone,
+  TEST_FREIGHT_VARIANT_ID,
 } from '~/config/delivery';
 
 interface Props {
@@ -71,39 +72,25 @@ export function DeliveryOptionsForm({onCompleted}: Props) {
     if (!zone || !date || !period || !deliveryType) return;
     const lines: OptimisticCartLineInput[] = [
       {
-        merchandiseId: zone.shippingVariantId,
+        merchandiseId: TEST_FREIGHT_VARIANT_ID, // sempre R$5 para teste
         quantity: 1,
       },
     ];
 
     // 1) Add (or attempt to add) the shipping product line
     addLineFetcher.submit(
-      {lines: JSON.stringify(lines)},
+      {
+        action: CartForm.ACTIONS.LinesAdd,
+        cartAction: CartForm.ACTIONS.LinesAdd,
+        inputs: JSON.stringify({lines}),
+      },
       {
         method: 'post',
-        action: '/cart?form=LinesAdd', // CartForm uses ACTION param, replicate via querystring
+        action: '/cart',
         encType: 'application/x-www-form-urlencoded',
       },
     );
-
-    // 2) Save attributes (all bundled into a single JSON under key `delivery_info`)
-    const payload = {
-      attributes: JSON.stringify({
-        delivery_info: {
-          cep: cepInput,
-          zoneId: zone.id,
-          date: date.toISOString(),
-          period,
-          deliveryType,
-        },
-      }),
-    };
-
-    attrFetcher.submit(payload, {
-      method: 'post',
-      action: '/cart?form=AttributesUpdate',
-      encType: 'application/x-www-form-urlencoded',
-    });
+    // TODO: quando existir action para AttributesUpdate, submeter aqui
 
     if (onCompleted) onCompleted();
   };
@@ -136,7 +123,7 @@ export function DeliveryOptionsForm({onCompleted}: Props) {
         <Button.Root
           variant="success"
           mode="filled"
-          size="small"
+          size="medium"
           className="w-full"
           onClick={handleCepValidate}
         >

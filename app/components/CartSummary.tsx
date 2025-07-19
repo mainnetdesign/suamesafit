@@ -64,7 +64,7 @@ function CartSummaryPage({
   // Estado e fetcher para cálculo de frete
   const [cep, setCep] = useState('');
   const [shippingVariantId, setShippingVariantId] = useState<string>(
-    'gid://shopify/ProductVariant/43101752295493',
+    'gid://shopify/ProductVariant/43101752295493', // ID da variante de R$ 16,50
   );
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
@@ -96,19 +96,30 @@ function CartSummaryPage({
       return;
     }
     
-    if (sanitizedCep.length === 8) {
-      console.log(`🔎 Buscando CEP ${sanitizedCep}`);
-      fetcher.load(`/api-shipping?cep=${sanitizedCep}`);
-      console.log('Fetcher state:', fetcher.state);
-    }
+    console.log(`🔎 Buscando CEP ${sanitizedCep}`);
+    fetcher.load(`/api-shipping?cep=${sanitizedCep}`);
+    console.log('Fetcher state:', fetcher.state);
   };
 
   const handleCheckout = () => {
     // Verificar se todos os dados necessários estão preenchidos
     if (!fetcher.data?.distanceKm || !selectedTimeSlot || !selectedDeliveryLocation) {
-      console.log('Dados incompletos para checkout');
+      console.log('Dados incompletos para checkout:', {
+        distanceKm: fetcher.data?.distanceKm,
+        selectedTimeSlot,
+        selectedDeliveryLocation,
+        shippingVariantId
+      });
       return;
     }
+
+    console.log('Iniciando checkout com dados:', {
+      distanceKm: fetcher.data.distanceKm,
+      selectedTimeSlot,
+      selectedDeliveryLocation,
+      shippingVariantId,
+      cep
+    });
 
     // Primeiro, atualizar os atributos do carrinho
     cartUpdateFetcher.submit(
@@ -155,20 +166,20 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         },
         {method: 'post', action: '/cart'}
       );
-    }, 1000); // Aumentado o timeout para dar tempo das outras operações
+    }, 2000); // Aumentado o timeout para dar tempo das outras operações
   };
 
   const variantPriceMap: Record<string, number> = {
-    'gid://shopify/ProductVariant/43101752295493': 5,
-    'gid://shopify/ProductVariant/43101752328261': 10,
-    'gid://shopify/ProductVariant/43101752361029': 15,
-    'gid://shopify/ProductVariant/43101752393797': 20,
-    'gid://shopify/ProductVariant/43101752426565': 25,
-    'gid://shopify/ProductVariant/43101752459333': 30,
-    'gid://shopify/ProductVariant/43101752492101': 35,
-    'gid://shopify/ProductVariant/43101752524869': 40,
-    'gid://shopify/ProductVariant/43101752557637': 45,
-    'gid://shopify/ProductVariant/43101752590405': 50,
+    'gid://shopify/ProductVariant/43101752295493': 16.50,
+    'gid://shopify/ProductVariant/43101752328261': 21.50,
+    'gid://shopify/ProductVariant/43101752361029': 29.00,
+    'gid://shopify/ProductVariant/43101752393797': 36.50,
+    'gid://shopify/ProductVariant/43101752426565': 44.00,
+    'gid://shopify/ProductVariant/43101752459333': 51.50,
+    'gid://shopify/ProductVariant/43101752492101': 59.00,
+    'gid://shopify/ProductVariant/43101752524869': 66.50,
+    'gid://shopify/ProductVariant/43101752557637': 74.00,
+    'gid://shopify/ProductVariant/43101752590405': 81.50,
   };
 
   return (
@@ -250,7 +261,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <p className="text-text-sub-600 text-label-sm mt-2">
             Distância: {fetcher.data.distanceKm.toFixed(1)} km • Frete estimado: R$
-            {variantPriceMap[shippingVariantId] || '-'},00
+            {variantPriceMap[shippingVariantId] ? variantPriceMap[shippingVariantId].toFixed(2).replace('.', ',') : '-'}
           </p>
         )}
         

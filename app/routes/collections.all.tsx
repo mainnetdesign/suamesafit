@@ -1,7 +1,7 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
 import {getPaginationVariables, Image, Money} from '@shopify/hydrogen';
-import type {ProductItemFragment, CatalogQueryVariables} from 'storefrontapi.generated';
+import type {CatalogQueryVariables} from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {CollectionHeader} from '~/components/collections/CollectionHeader';
@@ -70,8 +70,53 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   return {};
 }
 
+// IDs das variantes de frete que devem ser filtradas
+const SHIPPING_VARIANT_IDS = [
+  'gid://shopify/ProductVariant/43101752295493',
+  'gid://shopify/ProductVariant/43101752328261',
+  'gid://shopify/ProductVariant/43101752361029',
+  'gid://shopify/ProductVariant/43101752393797',
+  'gid://shopify/ProductVariant/43101752426565',
+  'gid://shopify/ProductVariant/43101752459333',
+  'gid://shopify/ProductVariant/43101752492101',
+  'gid://shopify/ProductVariant/43101752524869',
+  'gid://shopify/ProductVariant/43101752557637',
+  'gid://shopify/ProductVariant/43101752590405',
+];
+
+// Função para verificar se um produto é de frete
+function isShippingProduct(product: any): boolean {
+  // Verifica se o produto tem variantes e se alguma delas é de frete
+  if (product.variants?.nodes) {
+    return product.variants.nodes.some((variant: any) => 
+      SHIPPING_VARIANT_IDS.includes(variant.id)
+    );
+  }
+  
+  // Verifica se o produto tem variantes diretas
+  if (product.variants) {
+    return product.variants.some((variant: any) => 
+      SHIPPING_VARIANT_IDS.includes(variant.id)
+    );
+  }
+  
+  // Verifica se o produto tem variantes como array
+  if (Array.isArray(product.variants)) {
+    return product.variants.some((variant: any) => 
+      SHIPPING_VARIANT_IDS.includes(variant.id)
+    );
+  }
+  
+  return false;
+}
+
 export default function Collection() {
   const {products, collections} = useLoaderData<typeof loader>();
+
+  // Filtra produtos de frete
+  const filteredProducts = products.nodes.filter((product: any) => 
+    !isShippingProduct(product)
+  );
 
   return (
     <div className="collection items-center justify-start flex flex-col">
@@ -87,7 +132,7 @@ export default function Collection() {
 
       <div className="max-w-[1200px] w-full items-center justify-center px-4">
         <div className="flex flex-col md:grid md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {products.nodes.map((product: ProductItemFragment) => (
+          {filteredProducts.map((product: any) => (
             <Product
               key={product.id}
               product={{
@@ -128,7 +173,7 @@ function ProductItem({
   product,
   loading,
 }: {
-  product: ProductItemFragment;
+  product: any;
   loading?: 'eager' | 'lazy';
 }) {
   const variantUrl = useVariantUrl(product.handle);

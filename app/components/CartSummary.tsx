@@ -11,6 +11,7 @@ import {Calendar} from '~/components/align-ui/ui/datepicker';
 import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import type {AttributeInput} from '@shopify/hydrogen/storefront-api-types';
+import {useAside} from '~/components/Aside';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -29,6 +30,8 @@ function CartSummaryAside({
 }: {
   cart: OptimisticCart<CartApiQueryFragment | null>;
 }) {
+  const {close} = useAside();
+
   return (
     <div
       aria-labelledby="cart-summary"
@@ -46,7 +49,7 @@ function CartSummaryAside({
       </dl>
       <div>
         <Button.Root asChild variant="primary" mode="filled">
-          <Link to="/cart">
+          <Link to="/cart" onClick={close}>
             <p>revisar pedido&rarr;</p>
           </Link>
         </Button.Root>

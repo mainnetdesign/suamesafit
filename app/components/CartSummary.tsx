@@ -128,51 +128,59 @@ function CartSummaryPage({
     // 1. Primeiro, atualizar os atributos do carrinho
     cartUpdateFetcher.submit(
       {
-        action: CartForm.ACTIONS.AttributesUpdateInput,
-        attributes: JSON.stringify([
-          {key: 'CEP', value: cep},
-          {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
-          {key: 'Horário de Entrega', value: selectedTimeSlot},
-          {key: 'Local de Entrega', value: selectedDeliveryLocation},
-          {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
-        ]),
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.AttributesUpdateInput,
+          inputs: {
+            attributes: [
+              {key: 'CEP', value: cep},
+              {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
+              {key: 'Horário de Entrega', value: selectedTimeSlot},
+              {key: 'Local de Entrega', value: selectedDeliveryLocation},
+              {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
+            ],
+          },
+        }),
       },
       {method: 'post', action: '/cart'}
     );
 
-    // 2. Depois de 1 segundo, atualizar a nota do carrinho
-    setTimeout(() => {
-      cartNoteFetcher.submit(
-        {
+    // 2. Imediatamente após, atualizar a nota do carrinho
+    cartNoteFetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
           action: CartForm.ACTIONS.NoteUpdate,
-          note: `INFORMAÇÕES DE ENTREGA:
+          inputs: {
+            note: `INFORMAÇÕES DE ENTREGA:
 CEP: ${cep}
 Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
 Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
 Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
 Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
 ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`,
-        },
-        {method: 'post', action: '/cart'}
-      );
-    }, 1000);
+          },
+        }),
+      },
+      {method: 'post', action: '/cart'}
+    );
 
-    // 3. Por fim, após 3 segundos, adicionar o item de frete e redirecionar
-    setTimeout(() => {
-      cartLinesFetcher.submit(
-        {
+    // 3. Por fim, adicionar o item de frete e redirecionar imediatamente
+    cartLinesFetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
           action: CartForm.ACTIONS.LinesAdd,
-          lines: JSON.stringify([
-            {
-              merchandiseId: shippingVariantId || 'gid://shopify/ProductVariant/43101752295493',
-              quantity: 1,
-            },
-          ]),
-          redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
-        },
-        {method: 'post', action: '/cart'}
-      );
-    }, 3000); // Tempo suficiente para evitar conflitos entre as operações
+          inputs: {
+            lines: [
+              {
+                merchandiseId: shippingVariantId || 'gid://shopify/ProductVariant/43101752295493',
+                quantity: 1,
+              },
+            ],
+          },
+        }),
+        redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
+      },
+      {method: 'post', action: '/cart'}
+    );
   };
 
   // Mapeamento dos IDs das variantes com os preços atualizados

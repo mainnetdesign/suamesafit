@@ -38,17 +38,18 @@ export function getShippingVariantId(distanceKm: number): string {
     50: 81.50,
   };
 
+  // Mapeamento de preços para IDs das variantes do Shopify
   const variantIds: Record<number, string> = {
-    16.50: 'gid://shopify/ProductVariant/43101752295493',
-    21.50: 'gid://shopify/ProductVariant/43101752328261',
-    29.00: 'gid://shopify/ProductVariant/43101752361029',
-    36.50: 'gid://shopify/ProductVariant/43101752393797',
-    44.00: 'gid://shopify/ProductVariant/43101752426565',
-    51.50: 'gid://shopify/ProductVariant/43101752459333',
-    59.00: 'gid://shopify/ProductVariant/43101752492101',
-    66.50: 'gid://shopify/ProductVariant/43101752524869',
-    74.00: 'gid://shopify/ProductVariant/43101752557637',
-    81.50: 'gid://shopify/ProductVariant/43101752590405',
+    16.50: 'gid://shopify/ProductVariant/43101752295493', // 5 km
+    21.50: 'gid://shopify/ProductVariant/43101752328261', // 10 km
+    29.00: 'gid://shopify/ProductVariant/43101752361029', // 15 km
+    36.50: 'gid://shopify/ProductVariant/43101752393797', // 20 km
+    44.00: 'gid://shopify/ProductVariant/43101752426565', // 25 km
+    51.50: 'gid://shopify/ProductVariant/43101752459333', // 30 km
+    59.00: 'gid://shopify/ProductVariant/43101752492101', // 35 km
+    66.50: 'gid://shopify/ProductVariant/43101752524869', // 40 km
+    74.00: 'gid://shopify/ProductVariant/43101752557637', // 45 km
+    81.50: 'gid://shopify/ProductVariant/43101752590405', // 50+ km
   } as const;
 
   // Determina o preço baseado na distância

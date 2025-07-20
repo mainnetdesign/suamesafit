@@ -2,7 +2,7 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
-import {useFetcher} from '@remix-run/react';
+import {useFetcher, Link} from '@remix-run/react';
 import {FetcherWithComponents} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
 import * as Select from '~/components/align-ui/ui/select';
@@ -46,9 +46,9 @@ function CartSummaryAside({
       </dl>
       <div>
         <Button.Root asChild variant="primary" mode="filled">
-          <a href="/cart" target="_self">
+          <Link to="/cart">
             <p>revisar pedido&rarr;</p>
-          </a>
+          </Link>
         </Button.Root>
         <br />
       </div>
@@ -70,7 +70,11 @@ function CartSummaryPage({
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
+  
+  // Fetchers separados para evitar conflitos de ação no checkout
   const cartUpdateFetcher = useFetcher();
+  const cartNoteFetcher = useFetcher();
+  const cartLinesFetcher = useFetcher();
 
   useEffect(() => {
     if (fetcher.data?.variantId) {
@@ -121,7 +125,7 @@ function CartSummaryPage({
       cep
     });
 
-    // Primeiro, atualizar os atributos do carrinho
+    // 1. Primeiro, atualizar os atributos do carrinho
     cartUpdateFetcher.submit(
       {
         action: CartForm.ACTIONS.AttributesUpdateInput,
@@ -136,24 +140,26 @@ function CartSummaryPage({
       {method: 'post', action: '/cart'}
     );
 
-    // Depois, atualizar a nota do carrinho
-    cartUpdateFetcher.submit(
-      {
-        action: CartForm.ACTIONS.NoteUpdate,
-        note: `INFORMAÇÕES DE ENTREGA:
+    // 2. Depois de 1 segundo, atualizar a nota do carrinho
+    setTimeout(() => {
+      cartNoteFetcher.submit(
+        {
+          action: CartForm.ACTIONS.NoteUpdate,
+          note: `INFORMAÇÕES DE ENTREGA:
 CEP: ${cep}
 Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
 Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
 Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
 Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
 ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`,
-      },
-      {method: 'post', action: '/cart'}
-    );
+        },
+        {method: 'post', action: '/cart'}
+      );
+    }, 1000);
 
-    // Por fim, adicionar o item de frete e redirecionar
+    // 3. Por fim, após 3 segundos, adicionar o item de frete e redirecionar
     setTimeout(() => {
-      cartUpdateFetcher.submit(
+      cartLinesFetcher.submit(
         {
           action: CartForm.ACTIONS.LinesAdd,
           lines: JSON.stringify([
@@ -166,20 +172,21 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         },
         {method: 'post', action: '/cart'}
       );
-    }, 2000); // Aumentado o timeout para dar tempo das outras operações
+    }, 3000); // Tempo suficiente para evitar conflitos entre as operações
   };
 
+  // Mapeamento dos IDs das variantes com os preços atualizados
   const variantPriceMap: Record<string, number> = {
-    'gid://shopify/ProductVariant/43101752295493': 16.50,
-    'gid://shopify/ProductVariant/43101752328261': 21.50,
-    'gid://shopify/ProductVariant/43101752361029': 29.00,
-    'gid://shopify/ProductVariant/43101752393797': 36.50,
-    'gid://shopify/ProductVariant/43101752426565': 44.00,
-    'gid://shopify/ProductVariant/43101752459333': 51.50,
-    'gid://shopify/ProductVariant/43101752492101': 59.00,
-    'gid://shopify/ProductVariant/43101752524869': 66.50,
-    'gid://shopify/ProductVariant/43101752557637': 74.00,
-    'gid://shopify/ProductVariant/43101752590405': 81.50,
+    'gid://shopify/ProductVariant/43101752295493': 16.50, // 5 km
+    'gid://shopify/ProductVariant/43101752328261': 21.50, // 10 km
+    'gid://shopify/ProductVariant/43101752361029': 29.00, // 15 km
+    'gid://shopify/ProductVariant/43101752393797': 36.50, // 20 km
+    'gid://shopify/ProductVariant/43101752426565': 44.00, // 25 km
+    'gid://shopify/ProductVariant/43101752459333': 51.50, // 30 km
+    'gid://shopify/ProductVariant/43101752492101': 59.00, // 35 km
+    'gid://shopify/ProductVariant/43101752524869': 66.50, // 40 km
+    'gid://shopify/ProductVariant/43101752557637': 74.00, // 45 km
+    'gid://shopify/ProductVariant/43101752590405': 81.50, // 50+ km
   };
 
   return (
@@ -354,12 +361,16 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
           !selectedTimeSlot || 
           !selectedDeliveryLocation || 
           fetcher.state !== 'idle' ||
-          cartUpdateFetcher.state !== 'idle'
+          cartUpdateFetcher.state !== 'idle' ||
+          cartNoteFetcher.state !== 'idle' ||
+          cartLinesFetcher.state !== 'idle'
         }
         onClick={handleCheckout}
       >
         <p>
-          {cartUpdateFetcher.state === 'loading' || cartUpdateFetcher.state === 'submitting'
+          {cartUpdateFetcher.state !== 'idle' || 
+           cartNoteFetcher.state !== 'idle' || 
+           cartLinesFetcher.state !== 'idle'
             ? 'Processando...'
             : 'Fechar Pedido'}
         </p>

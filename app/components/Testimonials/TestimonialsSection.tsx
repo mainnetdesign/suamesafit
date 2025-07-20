@@ -223,7 +223,7 @@ export function TestimonialsSection({
             />
           </svg>
         </div>
-        <div data-svg-wrapper className="absolute bottom-0 right-[-25px]">
+        <div data-svg-wrapper className="hidden md:block absolute bottom-0 right-[-25px]">
           <svg
             width="187"
             height="203"
@@ -239,7 +239,7 @@ export function TestimonialsSection({
             />
           </svg>
         </div>
-        <div data-svg-wrapper className="absolute bottom-0 left-[-25px]">
+        <div data-svg-wrapper className="hidden md:block absolute bottom-0 left-[-25px]">
           <svg
             width="121"
             height="192"

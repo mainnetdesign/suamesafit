@@ -156,11 +156,11 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
         </svg>
       </div>
       
-      <h4 className="text-title-h4 text-text-sub-600">sua mesa fit</h4>
+      <h4 className="text-title-h4 text-text-sub-600 z-20">sua mesa fit</h4>
       
-      <h2 className="text-title-h2 text-text-sub-600">save the date</h2>
+      <h2 className="text-title-h2 text-text-sub-600 z-20">save the date</h2>
 
-      <div className="flex flex-col px-2 items-center gap-2">
+      <div className="flex flex-col px-2 items-center gap-2 z-20">
         <p className="text-paragraph-xl w-full max-w-[400px] text-text-sub-600">falta exatamente</p>
 
         <div className="bg-[#E7C06A] w-full rounded-[20px] px-4 md:px-12 py-8 md:py-10 flex items-end justify-between gap-4 md:gap-10 overflow-x-auto">
@@ -179,7 +179,7 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
       </div>
 
       {/* Botão para mostrar formulário de senha */}
-      <div className="mt-8">
+      <div className="mt-8 z-20">
         <Button.Root
           variant="neutral"
           mode="stroke"

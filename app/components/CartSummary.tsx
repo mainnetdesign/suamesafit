@@ -2,7 +2,7 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useState, useEffect, useRef} from 'react';
-import {useFetcher} from '@remix-run/react';
+import {useFetcher, Link} from '@remix-run/react';
 import {FetcherWithComponents} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
 import * as Select from '~/components/align-ui/ui/select';
@@ -46,9 +46,9 @@ function CartSummaryAside({
       </dl>
       <div>
         <Button.Root asChild variant="primary" mode="filled">
-          <a href="/cart" target="_self">
+          <Link to="/cart">
             <p>revisar pedido&rarr;</p>
-          </a>
+          </Link>
         </Button.Root>
         <br />
       </div>
@@ -64,12 +64,17 @@ function CartSummaryPage({
   // Estado e fetcher para cálculo de frete
   const [cep, setCep] = useState('');
   const [shippingVariantId, setShippingVariantId] = useState<string>(
-    'gid://shopify/ProductVariant/43101752295493',
+    'gid://shopify/ProductVariant/43101752295493', // ID da variante de R$ 16,50
   );
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
+  
+  // Fetchers separados para evitar conflitos de ação no checkout
+  const cartUpdateFetcher = useFetcher();
+  const cartNoteFetcher = useFetcher();
+  const cartLinesFetcher = useFetcher();
 
   useEffect(() => {
     if (fetcher.data?.variantId) {
@@ -85,22 +90,8 @@ function CartSummaryPage({
     }
   }, [fetcher.data]);
 
-  // Atualizar cart attributes e notes quando os dados mudarem
-  useEffect(() => {
-    if (fetcher.data?.distanceKm && selectedTimeSlot && selectedDeliveryLocation) {
-      // Atualizar cart attributes
-      const attributesForm = document.querySelector('input[name="updateAttributes"]')?.closest('form') as HTMLFormElement;
-      if (attributesForm) {
-        attributesForm.submit();
-      }
-
-      // Atualizar cart note
-      const noteForm = document.querySelector('input[name="updateNote"]')?.closest('form') as HTMLFormElement;
-      if (noteForm) {
-        noteForm.submit();
-      }
-    }
-  }, [fetcher.data?.distanceKm, selectedTimeSlot, selectedDeliveryLocation, selectedDate, cep]);
+  // Removido o useEffect que causava recarregamento automático
+  // Os formulários agora serão submetidos apenas quando o usuário clicar em "Fechar Pedido"
 
   const handleCepSearch = () => {
     const sanitizedCep = cep.replace(/\D/g, '');
@@ -109,24 +100,101 @@ function CartSummaryPage({
       return;
     }
     
-    if (sanitizedCep.length === 8) {
-      console.log(`🔎 Buscando CEP ${sanitizedCep}`);
-      fetcher.load(`/api-shipping?cep=${sanitizedCep}`);
-      console.log('Fetcher state:', fetcher.state);
-    }
+    console.log(`🔎 Buscando CEP ${sanitizedCep}`);
+    fetcher.load(`/api-shipping?cep=${sanitizedCep}`);
+    console.log('Fetcher state:', fetcher.state);
   };
 
+  const handleCheckout = () => {
+    // Verificar se todos os dados necessários estão preenchidos
+    if (!fetcher.data?.distanceKm || !selectedTimeSlot || !selectedDeliveryLocation) {
+      console.log('Dados incompletos para checkout:', {
+        distanceKm: fetcher.data?.distanceKm,
+        selectedTimeSlot,
+        selectedDeliveryLocation,
+        shippingVariantId
+      });
+      return;
+    }
+
+    console.log('Iniciando checkout com dados:', {
+      distanceKm: fetcher.data.distanceKm,
+      selectedTimeSlot,
+      selectedDeliveryLocation,
+      shippingVariantId,
+      cep
+    });
+
+    // 1. Primeiro, atualizar os atributos do carrinho
+    cartUpdateFetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.AttributesUpdateInput,
+          inputs: {
+            attributes: [
+              {key: 'CEP', value: cep},
+              {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
+              {key: 'Horário de Entrega', value: selectedTimeSlot},
+              {key: 'Local de Entrega', value: selectedDeliveryLocation},
+              {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
+            ],
+          },
+        }),
+      },
+      {method: 'post', action: '/cart'}
+    );
+
+    // 2. Imediatamente após, atualizar a nota do carrinho
+    cartNoteFetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.NoteUpdate,
+          inputs: {
+            note: `INFORMAÇÕES DE ENTREGA:
+CEP: ${cep}
+Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
+Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
+Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
+Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
+${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`,
+          },
+        }),
+      },
+      {method: 'post', action: '/cart'}
+    );
+
+    // 3. Por fim, adicionar o item de frete e redirecionar imediatamente
+    cartLinesFetcher.submit(
+      {
+        [CartForm.INPUT_NAME]: JSON.stringify({
+          action: CartForm.ACTIONS.LinesAdd,
+          inputs: {
+            lines: [
+              {
+                merchandiseId: shippingVariantId || 'gid://shopify/ProductVariant/43101752295493',
+                quantity: 1,
+              },
+            ],
+          },
+        }),
+        redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
+      },
+      {method: 'post', action: '/cart'}
+    );
+  };
+
+  // Mapeamento dos IDs das variantes com os preços atualizados
   const variantPriceMap: Record<string, number> = {
-    'gid://shopify/ProductVariant/43101752295493': 5,
-    'gid://shopify/ProductVariant/43101752328261': 10,
-    'gid://shopify/ProductVariant/43101752361029': 15,
-    'gid://shopify/ProductVariant/43101752393797': 20,
-    'gid://shopify/ProductVariant/43101752426565': 25,
-    'gid://shopify/ProductVariant/43101752459333': 30,
-    'gid://shopify/ProductVariant/43101752492101': 35,
-    'gid://shopify/ProductVariant/43101752524869': 40,
-    'gid://shopify/ProductVariant/43101752557637': 45,
-    'gid://shopify/ProductVariant/43101752590405': 50,
+    'gid://shopify/ProductVariant/43101752295493': 16.50, // 5 km
+    'gid://shopify/ProductVariant/43101752328261': 21.50, // 10 km
+    'gid://shopify/ProductVariant/43101752361029': 29.00, // 15 km
+    'gid://shopify/ProductVariant/43101752393797': 36.50, // 20 km
+    'gid://shopify/ProductVariant/43101752426565': 44.00, // 25 km
+    'gid://shopify/ProductVariant/43101752459333': 51.50, // 30 km
+    'gid://shopify/ProductVariant/43101752492101': 59.00, // 35 km
+    'gid://shopify/ProductVariant/43101752524869': 66.50, // 40 km
+    'gid://shopify/ProductVariant/43101752557637': 74.00, // 45 km
+    'gid://shopify/ProductVariant/43101752590405': 81.50, // 50+ km
   };
 
   return (
@@ -208,7 +276,7 @@ function CartSummaryPage({
         {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <p className="text-text-sub-600 text-label-sm mt-2">
             Distância: {fetcher.data.distanceKm.toFixed(1)} km • Frete estimado: R$
-            {variantPriceMap[shippingVariantId] || '-'},00
+            {variantPriceMap[shippingVariantId] ? variantPriceMap[shippingVariantId].toFixed(2).replace('.', ',') : '-'}
           </p>
         )}
         
@@ -290,77 +358,31 @@ function CartSummaryPage({
         )}
       </div>
 
-      {/* Formulário para atualizar cart attributes e notes */}
-      <CartForm
-        route="/cart"
-        action={CartForm.ACTIONS.AttributesUpdateInput}
-        inputs={{
-          attributes: [
-            {key: 'CEP', value: cep},
-            {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
-            {key: 'Horário de Entrega', value: selectedTimeSlot},
-            {key: 'Local de Entrega', value: selectedDeliveryLocation},
-            {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
-          ] as AttributeInput[],
-        }}
-      >
-        <input type="hidden" name="updateAttributes" value="true" />
-      </CartForm>
-
-      {/* Formulário para atualizar cart note */}
-      <CartForm
-        route="/cart"
-        action={CartForm.ACTIONS.NoteUpdate}
-      >
-        <input
-          type="hidden"
-          name="note"
-          value={`INFORMAÇÕES DE ENTREGA:
-CEP: ${cep}
-Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
-Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
-Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
-Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
-${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`}
-        />
-        <input type="hidden" name="updateNote" value="true" />
-      </CartForm>
-
       {/* Botão de checkout */}
-      <CartForm
-        route="/cart"
-        action={CartForm.ACTIONS.LinesAdd}
-        inputs={{
-          lines: [
-            {
-              merchandiseId:
-                shippingVariantId ||
-                'gid://shopify/ProductVariant/43101752295493',
-              quantity: 1,
-            },
-          ],
-        }}
+      <Button.Root
+        type="button"
+        variant="primary"
+        mode="filled"
+        className="w-full"
+        disabled={
+          !fetcher.data?.distanceKm || 
+          !selectedTimeSlot || 
+          !selectedDeliveryLocation || 
+          fetcher.state !== 'idle' ||
+          cartUpdateFetcher.state !== 'idle' ||
+          cartNoteFetcher.state !== 'idle' ||
+          cartLinesFetcher.state !== 'idle'
+        }
+        onClick={handleCheckout}
       >
-        <input
-          type="hidden"
-          name="redirectTo"
-          value={fixCheckoutDomain(cart?.checkoutUrl) || '#'}
-        />
-        <Button.Root
-          type="submit"
-          variant="primary"
-          mode="filled"
-          className="w-full"
-          disabled={
-            !fetcher.data?.distanceKm || 
-            !selectedTimeSlot || 
-            !selectedDeliveryLocation || 
-            fetcher.state !== 'idle'
-          }
-        >
-          <p>Fechar Pedido</p>
-        </Button.Root>
-      </CartForm>
+        <p>
+          {cartUpdateFetcher.state !== 'idle' || 
+           cartNoteFetcher.state !== 'idle' || 
+           cartLinesFetcher.state !== 'idle'
+            ? 'Processando...'
+            : 'Fechar Pedido'}
+        </p>
+      </Button.Root>
       {/* <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
         <span className="text-green-700 text-label-md font-bold">
           Você ganha 5% de cashback para seu próximo pedido!

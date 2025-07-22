@@ -1,3 +1,5 @@
+import {getShippingVariantByDistance} from '~/config/delivery';
+
 export function haversineDistanceKm(
   lat1: number,
   lon1: number,
@@ -21,50 +23,8 @@ export function haversineDistanceKm(
 
 /**
  * Recebe a distância em km e devolve o ID da variante de frete correspondente
- * Tabela de preços atualizada com novos valores
+ * Agora usa a configuração centralizada em delivery.ts
  */
-export function getShippingVariantId(distanceKm: number): string {
-  // Mapeamento de distância para preço baseado na nova tabela
-  const distanceToPriceMap: Record<number, number> = {
-    5: 16.50,
-    10: 21.50,
-    15: 29.00,
-    20: 36.50,
-    25: 44.00,
-    30: 51.50,
-    35: 59.00,
-    40: 66.50,
-    45: 74.00,
-    50: 81.50,
-  };
-
-  // Mapeamento de preços para IDs das variantes do Shopify
-  const variantIds: Record<number, string> = {
-    16.50: 'gid://shopify/ProductVariant/43101752295493', // 5 km
-    21.50: 'gid://shopify/ProductVariant/43101752328261', // 10 km
-    29.00: 'gid://shopify/ProductVariant/43101752361029', // 15 km
-    36.50: 'gid://shopify/ProductVariant/43101752393797', // 20 km
-    44.00: 'gid://shopify/ProductVariant/43101752426565', // 25 km
-    51.50: 'gid://shopify/ProductVariant/43101752459333', // 30 km
-    59.00: 'gid://shopify/ProductVariant/43101752492101', // 35 km
-    66.50: 'gid://shopify/ProductVariant/43101752524869', // 40 km
-    74.00: 'gid://shopify/ProductVariant/43101752557637', // 45 km
-    81.50: 'gid://shopify/ProductVariant/43101752590405', // 50+ km
-  } as const;
-
-  // Determina o preço baseado na distância
-  let price: number;
-  if (distanceKm <= 5) price = 16.50;
-  else if (distanceKm <= 10) price = 21.50;
-  else if (distanceKm <= 15) price = 29.00;
-  else if (distanceKm <= 20) price = 36.50;
-  else if (distanceKm <= 25) price = 44.00;
-  else if (distanceKm <= 30) price = 51.50;
-  else if (distanceKm <= 35) price = 59.00;
-  else if (distanceKm <= 40) price = 66.50;
-  else if (distanceKm <= 45) price = 74.00;
-  else price = 81.50; // 50+ km
-
-  // Garante que temos id; fallback para o preço mais alto
-  return variantIds[price] ?? variantIds[81.50];
+export function getShippingVariantId(distanceKm: number): string | null {
+  return getShippingVariantByDistance(distanceKm);
 } 

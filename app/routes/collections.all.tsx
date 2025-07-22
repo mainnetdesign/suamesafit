@@ -72,39 +72,28 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
 // IDs das variantes de frete que devem ser filtradas
 const SHIPPING_VARIANT_IDS = [
-  'gid://shopify/ProductVariant/43101752295493',
-  'gid://shopify/ProductVariant/43101752328261',
-  'gid://shopify/ProductVariant/43101752361029',
-  'gid://shopify/ProductVariant/43101752393797',
-  'gid://shopify/ProductVariant/43101752426565',
-  'gid://shopify/ProductVariant/43101752459333',
-  'gid://shopify/ProductVariant/43101752492101',
-  'gid://shopify/ProductVariant/43101752524869',
-  'gid://shopify/ProductVariant/43101752557637',
-  'gid://shopify/ProductVariant/43101752590405',
+  'gid://shopify/ProductVariant/43101752361029', // +5km
+  'gid://shopify/ProductVariant/43101752393797', // +10km
+  'gid://shopify/ProductVariant/43134883823685', // +15km
+  'gid://shopify/ProductVariant/43134883856453', // +20km
+  'gid://shopify/ProductVariant/43101752426565', // +25km
+  'gid://shopify/ProductVariant/43101752459333', // +30km
+  'gid://shopify/ProductVariant/43101752492101', // +35km
+  'gid://shopify/ProductVariant/43101752524869', // +40km
+  'gid://shopify/ProductVariant/43101752557637', // +45km
+  'gid://shopify/ProductVariant/43101752590405', // +50km
 ];
 
 // Função para verificar se um produto é de frete
 function isShippingProduct(product: any): boolean {
-  // Verifica se o produto tem variantes e se alguma delas é de frete
-  if (product.variants?.nodes) {
-    return product.variants.nodes.some((variant: any) => 
-      SHIPPING_VARIANT_IDS.includes(variant.id)
-    );
+  // Verifica se o título do produto é "Frete São Paulo"
+  if (product.title === "Frete São Paulo") {
+    return true;
   }
   
-  // Verifica se o produto tem variantes diretas
-  if (product.variants) {
-    return product.variants.some((variant: any) => 
-      SHIPPING_VARIANT_IDS.includes(variant.id)
-    );
-  }
-  
-  // Verifica se o produto tem variantes como array
-  if (Array.isArray(product.variants)) {
-    return product.variants.some((variant: any) => 
-      SHIPPING_VARIANT_IDS.includes(variant.id)
-    );
+  // Verifica se o produto tem a tag "frete"
+  if (product.tags && Array.isArray(product.tags)) {
+    return product.tags.some((tag: string) => tag.toLowerCase() === "frete");
   }
   
   return false;
@@ -210,6 +199,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    tags
     featuredImage {
       id
       altText

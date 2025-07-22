@@ -20,7 +20,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   const formData = await request.formData();
   
-
+  console.log('Cart action incoming', Array.from(formData.entries()));
 
   // Tentativa 1: Usar CartForm.getFormInput
   let parsedResult = CartForm.getFormInput(formData);

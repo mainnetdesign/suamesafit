@@ -1,4 +1,4 @@
-import type {OptimisticCartLineInput} from '@shopify/hydrogen';
+import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
 import {useState, useEffect} from 'react';
 import {useFetcher} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
@@ -9,9 +9,10 @@ import {ptBR} from 'date-fns/locale';
 import * as Tooltip from '~/components/align-ui/ui/tooltip';
 import {
   DELIVERY_PERIODS,
-  validateCepLocally,
+  sanitizeCep,
   DeliveryPeriod,
-  DeliveryZone,
+  getShippingVariantByDistance,
+  isWithinDeliveryArea,
 } from '~/config/delivery';
 
 interface Props {
@@ -22,28 +23,69 @@ interface Props {
   onCompleted?: () => void;
 }
 
+interface ShippingApiResponse {
+  distance?: number;
+  error?: string;
+}
+
 /**
  * Progressive form that:
- * 1. Solicits & validates CEP (postal code)
+ * 1. Solicits & validates CEP (postal code) via distance API
  * 2. Lets the user pick date / period / delivery type
- * 3. Saves everything as cart attributes + adds the correct shipping item
+ * 3. Saves everything as cart attributes + adds the correct shipping item based on distance
  */
 export function DeliveryOptionsForm({onCompleted}: Props) {
   /* ----------------------------- CEP step ----------------------------- */
   const [cepInput, setCepInput] = useState('');
   const [cepError, setCepError] = useState<string | null>(null);
-  const [zone, setZone] = useState<DeliveryZone | null>(null);
+  const [distanceKm, setDistanceKm] = useState<number | null>(null);
+  const [isValidatingCep, setIsValidatingCep] = useState(false);
 
-  const handleCepValidate = () => {
-    const res = validateCepLocally(cepInput);
-    if (!res.valid || !res.zone) {
-      setCepError(res.message || 'CEP inválido ou fora da área de entrega');
-      setZone(null);
+  // Fetcher para validar CEP via API
+  const cepFetcher = useFetcher<ShippingApiResponse>();
+
+  const handleCepValidate = async () => {
+    const sanitized = sanitizeCep(cepInput);
+    if (!sanitized) {
+      setCepError('CEP inválido');
       return;
     }
+
+    setIsValidatingCep(true);
     setCepError(null);
-    setZone(res.zone);
+    
+    // Chama a API de shipping para calcular a distância
+    cepFetcher.submit(
+      { cep: sanitized },
+      { method: 'post', action: '/api-shipping' }
+    );
   };
+
+  // Processa a resposta da API de CEP/distância
+  useEffect(() => {
+    if (cepFetcher.data) {
+      setIsValidatingCep(false);
+      
+      if (cepFetcher.data.error) {
+        setCepError(cepFetcher.data.error);
+        setDistanceKm(null);
+        return;
+      }
+
+      if (cepFetcher.data.distance !== undefined) {
+        const distance = cepFetcher.data.distance;
+        
+        if (!isWithinDeliveryArea(distance)) {
+          setCepError('Fora da área de entrega (máximo 50km)');
+          setDistanceKm(null);
+          return;
+        }
+
+        setDistanceKm(distance);
+        setCepError(null);
+      }
+    }
+  }, [cepFetcher.data]);
 
   /* -------------------------- Details step --------------------------- */
   const [date, setDate] = useState<Date | null>(null);
@@ -60,50 +102,45 @@ export function DeliveryOptionsForm({onCompleted}: Props) {
 
   // Auto-submit once all details are chosen & not yet submitted
   useEffect(() => {
-    if (zone && date && period && deliveryType && !submitted) {
+    if (distanceKm !== null && date && period && deliveryType && !submitted) {
       handleSubmit();
       setSubmitted(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zone, date, period, deliveryType]);
+  }, [distanceKm, date, period, deliveryType]);
 
   const handleSubmit = () => {
-    if (!zone || !date || !period || !deliveryType) return;
+    if (distanceKm === null || !date || !period || !deliveryType) return;
+    
+    // Obtém a variante de frete baseada na distância
+    const shippingVariantId = getShippingVariantByDistance(distanceKm);
+    
+    if (!shippingVariantId) {
+      setCepError('Erro ao determinar frete para esta distância');
+      return;
+    }
+
     const lines: OptimisticCartLineInput[] = [
       {
-        merchandiseId: zone.shippingVariantId,
+        merchandiseId: shippingVariantId,
         quantity: 1,
       },
     ];
 
     // 1) Add (or attempt to add) the shipping product line
     addLineFetcher.submit(
-      {lines: JSON.stringify(lines)},
+      {
+        action: CartForm.ACTIONS.LinesAdd,
+        cartAction: CartForm.ACTIONS.LinesAdd,
+        inputs: JSON.stringify({lines}),
+      },
       {
         method: 'post',
-        action: '/cart?form=LinesAdd', // CartForm uses ACTION param, replicate via querystring
+        action: '/cart',
         encType: 'application/x-www-form-urlencoded',
       },
     );
-
-    // 2) Save attributes (all bundled into a single JSON under key `delivery_info`)
-    const payload = {
-      attributes: JSON.stringify({
-        delivery_info: {
-          cep: cepInput,
-          zoneId: zone.id,
-          date: date.toISOString(),
-          period,
-          deliveryType,
-        },
-      }),
-    };
-
-    attrFetcher.submit(payload, {
-      method: 'post',
-      action: '/cart?form=AttributesUpdate',
-      encType: 'application/x-www-form-urlencoded',
-    });
+    // TODO: quando existir action para AttributesUpdate, submeter aqui
 
     if (onCompleted) onCompleted();
   };
@@ -128,24 +165,31 @@ export function DeliveryOptionsForm({onCompleted}: Props) {
             autoComplete="postal-code"
             value={cepInput}
             onChange={(e) => setCepInput(e.target.value)}
+            disabled={isValidatingCep}
           />
         </Input.Root>
         {cepError && (
           <span className="text-red-600 text-paragraph-sm">{cepError}</span>
         )}
+        {distanceKm !== null && (
+          <span className="text-green-600 text-paragraph-sm">
+            Distância: {distanceKm.toFixed(1)}km - Frete calculado!
+          </span>
+        )}
         <Button.Root
           variant="success"
           mode="filled"
-          size="small"
+          size="medium"
           className="w-full"
           onClick={handleCepValidate}
+          disabled={isValidatingCep}
         >
-          Validar CEP
+          {isValidatingCep ? 'Calculando...' : 'Calcular Frete'}
         </Button.Root>
       </div>
 
       {/* Details step */}
-      {zone && (
+      {distanceKm !== null && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <label className="text-label-sm text-text-sub-600 font-medium">

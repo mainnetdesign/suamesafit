@@ -1,4 +1,6 @@
 import {useEffect, useState} from 'react';
+import * as Input from '~/components/align-ui/ui/input';
+import * as Button from '~/components/align-ui/ui/button';
 
 interface TeaserProps {
   /** ISO string that represents the launch date */
@@ -9,6 +11,9 @@ interface TeaserProps {
 
 // Key para armazenar no localStorage
 const DISMISS_KEY = 'teaserDismissed';
+
+// Senha para desabilitar o teaser
+const TEASER_PASSWORD = '1704';
 
 /**
  * Utilitário para calcular o tempo restante até a data de lançamento.
@@ -35,6 +40,9 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
     if (typeof window === 'undefined') return false;
     return localStorage.getItem(DISMISS_KEY) === 'true';
   });
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   useEffect(() => {
     if (dismissed) return; // não precisa contar se já fechou
@@ -60,6 +68,24 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
     setDismissed(true);
     if (typeof window !== 'undefined') {
       localStorage.setItem(DISMISS_KEY, 'true');
+    }
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+
+    if (password === TEASER_PASSWORD) {
+      handleDismiss();
+    } else {
+      setPasswordError('Senha incorreta');
+    }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    if (passwordError) {
+      setPasswordError('');
     }
   };
 
@@ -115,7 +141,7 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
           />
         </svg>
       </div>
-      <div data-svg-wrapper onClick={handleDismiss} className="absolute bottom-0 left-[-25px]">
+      <div data-svg-wrapper className="absolute bottom-0 left-[-25px]">
         <svg
           width="121"
           height="192"
@@ -129,11 +155,12 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
           />
         </svg>
       </div>
-      <h4 className="text-title-h4 text-text-sub-600">sua mesa fit</h4>
       
-      <h2 className="text-title-h2 text-text-sub-600">save the date</h2>
+      <h4 className="text-title-h4 text-text-sub-600 z-20">sua mesa fit</h4>
+      
+      <h2 className="text-title-h2 text-text-sub-600 z-20">save the date</h2>
 
-      <div className="flex flex-col px-2 items-center gap-2">
+      <div className="flex flex-col px-2 items-center gap-2 z-20">
         <p className="text-paragraph-xl w-full max-w-[400px] text-text-sub-600">falta exatamente</p>
 
         <div className="bg-[#E7C06A] w-full rounded-[20px] px-4 md:px-12 py-8 md:py-10 flex items-end justify-between gap-4 md:gap-10 overflow-x-auto">
@@ -150,6 +177,69 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
           para o lançamento do nosso site
         </p>
       </div>
+
+      {/* Botão para mostrar formulário de senha */}
+      <div className="mt-8 z-20">
+        <Button.Root
+          variant="neutral"
+          mode="stroke"
+          size="medium"
+          onClick={() => setShowPasswordForm(true)}
+        >
+          acessar site
+        </Button.Root>
+      </div>
+
+      {/* Modal do formulário de senha */}
+      {showPasswordForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[200] p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+            <h3 className="text-title-h4 text-text-sub-600 mb-6 text-center">
+              digite a senha para acessar
+            </h3>
+            
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <Input.Root hasError={!!passwordError}>
+                <Input.Wrapper>
+                  <Input.Input
+                    type="password"
+                    placeholder="senha"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    autoFocus
+                  />
+                </Input.Wrapper>
+              </Input.Root>
+              
+              {passwordError && (
+                <p className="text-red-600 text-sm text-center">{passwordError}</p>
+              )}
+              
+              <div className="flex gap-3 pt-4">
+                <Button.Root
+                  type="button"
+                  variant="neutral"
+                  mode="stroke"
+                  size="medium"
+                  onClick={() => setShowPasswordForm(false)}
+                  className="flex-1"
+                >
+                  cancelar
+                </Button.Root>
+                <Button.Root
+                  type="submit"
+                  variant="primary"
+                  mode="filled"
+                  size="medium"
+                  className="flex-1"
+                >
+                  acessar
+                </Button.Root>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

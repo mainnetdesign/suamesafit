@@ -35,7 +35,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import {Teaser} from '~/components/Teaser';
 
 // Configuração do teaser de lançamento
-const TEASER_ENABLED = false; // 👉 Defina como false para desativar manualmente
+const TEASER_ENABLED = true; // 👉 Defina como false para desativar manualmente
 const LAUNCH_DATE_ISO = '2025-07-19T09:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
 
 function isTeaserActive() {
@@ -172,7 +172,7 @@ const HOMEPAGE_PRODUCTS_QUERY = `#graphql
     collection(handle: $handle) {
       id
       title
-      products(first: $first, sortKey: TITLE) {
+      products(first: $first, sortKey: ID) {
         nodes {
           ...HomeProductListItem
         }
@@ -287,7 +287,7 @@ export default function Homepage() {
             <div className="w-full pr-4 flex justify-between items-center gap-4">
               <div className="flex flex-col items-center gap-4">
                 <h3 className="text-title-h4  text-text-sub-600">
-                  {data.homepageCollectionTitle || 'pratos em destaque'}
+                  pratos em destaque
                 </h3>
               </div>
               <Button.Root
@@ -339,8 +339,8 @@ export default function Homepage() {
 
         <div className="w-full px-4 flex flex-col justify-center items-center">
           <div className="max-w-[1200px] w-full flex flex-col md:flex-row gap-4 justify-center items-start">
-            <div className="w-full md:w-fit flex flex-col justify-center items-start">
-              <div className="text-label-lg bg-yellow-500 px-4 py-1 rounded-full">
+            <div className="w-full md:w-fit flex flex-col justify-center items-center md:items-start">
+              <div className="text-label-lg text-text-sub-600 bg-yellow-500 px-4 py-1 rounded-full">
                 faq
               </div>
               <h2 className="text-title-h3 max-w-[300px] text-center md:text-left text-text-sub-600">
@@ -525,7 +525,7 @@ function FeaturedCollections({
               />
             </svg>
           </div>
-          <div className="text-text-white-0 align-center text-center flex items-center flex-col ">
+          <div className="text-text-white-0 align-center text-center flex items-center flex-col z-20">
             <div className="text-label-lg">categorias</div>
             <h4 className="text-title-h4">encontre sua refeição ideal</h4>
           </div>
@@ -653,8 +653,79 @@ const SHOP_TESTIMONIALS_QUERY = `#graphql
 `;
 
 // Componente para grid de produtos na home
+// IDs das variantes de frete que devem ser filtradas
+const SHIPPING_VARIANT_IDS = [
+  'gid://shopify/ProductVariant/43101752295493',
+  'gid://shopify/ProductVariant/43101752328261',
+  'gid://shopify/ProductVariant/43101752361029',
+  'gid://shopify/ProductVariant/43101752393797',
+  'gid://shopify/ProductVariant/43101752426565',
+  'gid://shopify/ProductVariant/43101752459333',
+  'gid://shopify/ProductVariant/43101752492101',
+  'gid://shopify/ProductVariant/43101752524869',
+  'gid://shopify/ProductVariant/43101752557637',
+  'gid://shopify/ProductVariant/43101752590405',
+];
+
+// Função para verificar se um produto é de frete
+function isShippingProduct(product: any): boolean {
+  // Verifica se o produto tem variantes e se alguma delas é de frete
+  if (product.variants?.nodes) {
+    return product.variants.nodes.some((variant: any) => 
+      SHIPPING_VARIANT_IDS.includes(variant.id)
+    );
+  }
+  
+  // Verifica se o produto tem variantes diretas
+  if (product.variants) {
+    return product.variants.some((variant: any) => 
+      SHIPPING_VARIANT_IDS.includes(variant.id)
+    );
+  }
+  
+  // Verifica se o produto tem variantes como array
+  if (Array.isArray(product.variants)) {
+    return product.variants.some((variant: any) => 
+      SHIPPING_VARIANT_IDS.includes(variant.id)
+    );
+  }
+  
+  return false;
+}
+
 function ProductsCarousel({products}: {products: any[]}) {
-  if (!products?.length) return null;
+  // Filtra produtos de frete
+  const filteredProducts = products?.filter(product => !isShippingProduct(product)) || [];
+  
+  // Remove duplicatas por ID e título similar
+  const uniqueProductsMap = new Map();
+  const seenTitles = new Set();
+  
+  filteredProducts.forEach((product: any) => {
+    const productId = product.id;
+    const productTitle = product.title?.toLowerCase().trim();
+    
+    // Se já vimos este ID, pular
+    if (uniqueProductsMap.has(productId)) {
+      return;
+    }
+    
+    // Se já vimos um título muito similar, pular
+    if (productTitle && seenTitles.has(productTitle)) {
+      return;
+    }
+    
+    // Adicionar produto único
+    uniqueProductsMap.set(productId, product);
+    if (productTitle) {
+      seenTitles.add(productTitle);
+    }
+  });
+  
+  const uniqueProducts = Array.from(uniqueProductsMap.values()) as any[];
+  
+  if (!uniqueProducts.length) return null;
+  
   return (
     <div className="visible w-full">
       <Carousel
@@ -664,7 +735,7 @@ function ProductsCarousel({products}: {products: any[]}) {
         className="w-full visible group/carousel"
       >
         <CarouselContent>
-          {products.map((product) => (
+          {uniqueProducts.map((product: any) => (
             <CarouselItem
               key={product.id}
               className="basis-4/5 md:basis-1/2 lg:basis-1/4"

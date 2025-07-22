@@ -277,8 +277,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         
         {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <p className="text-text-sub-600 text-label-sm mt-2">
-            Distância: {fetcher.data.distanceKm.toFixed(1)} km • Frete estimado: R$
-            {getEstimatedShippingPrice()}
+            Distância: {fetcher.data.distanceKm.toFixed(1)} km
           </p>
         )}
         

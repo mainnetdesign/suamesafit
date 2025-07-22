@@ -292,9 +292,34 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
               selected={selectedDate}
               onSelect={setSelectedDate}
               disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
+                // Função para calcular a primeira data disponível (2 dias úteis a partir de hoje)
+                const getFirstAvailableDate = () => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  let daysToAdd = 2; // Começamos com 2 dias úteis
+                  let currentDate = new Date(today);
+                  
+                  while (daysToAdd > 0) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    // Se não for fim de semana (0 = Domingo, 6 = Sábado)
+                    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+                      daysToAdd--;
+                    }
+                  }
+                  
+                  // Se a data calculada cair em um fim de semana, avança para segunda
+                  while (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                  }
+                  
+                  return currentDate;
+                };
+
+                const firstAvailableDate = getFirstAvailableDate();
+                date.setHours(0, 0, 0, 0);
+
+                // Desabilita datas anteriores à primeira data disponível e fins de semana
+                return date < firstAvailableDate || date.getDay() === 0 || date.getDay() === 6;
               }}
               className="rounded-lg"
             />

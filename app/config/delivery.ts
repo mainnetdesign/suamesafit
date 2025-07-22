@@ -9,43 +9,82 @@ export const DELIVERY_PERIODS: DeliveryPeriod[] = [
   '19:00-21:00',
 ];
 
-export interface DeliveryZone {
+/**
+ * Configuração das faixas de distância para entrega.
+ * Os IDs das variantes devem estar na ordem exata das variantes no Shopify.
+ * Os preços são obtidos dinamicamente do Shopify, não hardcoded.
+ */
+export interface DeliveryDistanceRange {
   /**
-   * Unique identifier for the zone.
+   * Distância máxima em km para esta faixa
    */
-  id: string;
+  maxDistanceKm: number;
   /**
-   * Human-friendly label (optional).
+   * Label para exibição
    */
-  label?: string;
+  label: string;
   /**
-   * Accepted CEP (postal‐code) prefixes OR a custom boolean matcher.
-   * Use simple string prefixes for now (e.g. '010', '011'). Later you can
-   * replace this with a radius-based approach via OpenRouteService.
-   */
-  cepPrefixes: string[];
-  /**
-   * Shopify variant ID that represents the shipping/frete item for this zone.
+   * ID da variante do Shopify para esta faixa de distância
    */
   shippingVariantId: string;
 }
 
 /**
- * Update this array to add/remove delivery zones.
- * When you receive the correct variant IDs, just replace the placeholders.
+ * Faixas de distância ordenadas do menor para o maior.
+ * IMPORTANTE: Os IDs devem estar na ordem exata das variantes no produto Shopify.
  */
-export const DELIVERY_ZONES: DeliveryZone[] = [
+export const DELIVERY_DISTANCE_RANGES: DeliveryDistanceRange[] = [
   {
-    id: 'sao-paulo',
-    label: 'São Paulo (raio teste)',
-    cepPrefixes: ['010', '011', '012', '013', '014', '015', '016', '017', '018', '019'],
-    // Variante de R$ 5,00 usada para teste
-    shippingVariantId: 'gid://shopify/ProductVariant/43101752295493',
+    maxDistanceKm: 5,
+    label: '+5km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752361029',
+  },
+  {
+    maxDistanceKm: 10,
+    label: '+10km', 
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752393797',
+  },
+  {
+    maxDistanceKm: 15,
+    label: '+15km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43134883823685',
+  },
+  {
+    maxDistanceKm: 20,
+    label: '+20km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43134883856453',
+  },
+  {
+    maxDistanceKm: 25,
+    label: '+25km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752426565',
+  },
+  {
+    maxDistanceKm: 30,
+    label: '+30km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752459333',
+  },
+  {
+    maxDistanceKm: 35,
+    label: '+35km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752492101',
+  },
+  {
+    maxDistanceKm: 40,
+    label: '+40km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752524869',
+  },
+  {
+    maxDistanceKm: 45,
+    label: '+45km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752557637',
+  },
+  {
+    maxDistanceKm: 50,
+    label: '+50km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43101752590405',
   },
 ];
-
-// Constante para testes locais: sempre usar a variante de R$ 5,00
-export const TEST_FREIGHT_VARIANT_ID = 'gid://shopify/ProductVariant/43101752295493';
 
 /**
  * Very naive CEP validator.
@@ -58,26 +97,26 @@ export function sanitizeCep(raw: string): string | null {
   return digits;
 }
 
-export interface CepValidationResult {
-  valid: boolean;
-  zone?: DeliveryZone;
-  message?: string;
+/**
+ * Encontra a variante de frete baseada na distância calculada.
+ * @param distanceKm Distância em quilômetros
+ * @returns ID da variante de frete ou null se fora da área de entrega
+ */
+export function getShippingVariantByDistance(distanceKm: number): string | null {
+  // Encontra a primeira faixa que comporta a distância
+  const range = DELIVERY_DISTANCE_RANGES.find(
+    range => distanceKm <= range.maxDistanceKm
+  );
+  
+  return range ? range.shippingVariantId : null;
 }
 
 /**
- * Client-side sync validation by CEP prefix.
- * Later you can replace this logic with an async fetch to OpenRouteService
- * to calculate distance & zone dynamically.
+ * Valida se a distância está dentro da área de entrega
+ * @param distanceKm Distância em quilômetros
+ * @returns true se dentro da área de entrega
  */
-export function validateCepLocally(cep: string): CepValidationResult {
-  const sanitized = sanitizeCep(cep);
-  if (!sanitized) {
-    return {valid: false, message: 'CEP inválido'};
-  }
-  const prefix = sanitized.substring(0, 3);
-  const zone = DELIVERY_ZONES.find((z) => z.cepPrefixes.includes(prefix));
-  if (!zone) {
-    return {valid: false, message: 'Fora da área de entrega'};
-  }
-  return {valid: true, zone};
+export function isWithinDeliveryArea(distanceKm: number): boolean {
+  const maxDistance = Math.max(...DELIVERY_DISTANCE_RANGES.map(r => r.maxDistanceKm));
+  return distanceKm <= maxDistance;
 } 

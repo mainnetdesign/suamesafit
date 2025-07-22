@@ -24,7 +24,7 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   // Tentativa 1: Usar CartForm.getFormInput
   let parsedResult = CartForm.getFormInput(formData);
-  let {action, inputs} = parsedResult;
+  let {action, inputs} = parsedResult as {action: any, inputs: any};
   
   // Fallback: Parse manual se CartForm.getFormInput falhar
   if (!action) {
@@ -67,8 +67,45 @@ export async function action({request, context}: ActionFunctionArgs) {
 
   switch (action) {
     case CartForm.ACTIONS.LinesAdd:
+      console.log('🛒 PROCESSANDO LinesAdd no servidor');
+      console.log('📋 FormData entries:', Array.from(formData.entries()));
+      
       try {
+        console.log('➕ Adicionando linhas ao carrinho:', inputs.lines);
         result = await cart.addLines(inputs.lines);
+        console.log('✅ Linhas adicionadas com sucesso');
+        
+        // Se há uma nota na requisição, atualizá-la após adicionar as linhas
+        const note = String(formData.get('note') || '');
+        if (note) {
+          console.log('📝 ENCONTROU NOTA na requisição, atualizando...');
+          console.log('📝 Conteúdo da nota:', note);
+          console.log('📝 Tamanho da nota:', note.length, 'caracteres');
+          result = await cart.updateNote(note);
+          console.log('✅ Nota atualizada com sucesso');
+        } else {
+          console.log('⚠️ NENHUMA NOTA encontrada na requisição');
+        }
+        
+        // Se há atributos na requisição, atualizá-los também
+        const attributes = [];
+        for (const [key, value] of formData.entries()) {
+          if (key.startsWith('attributes[') && key.endsWith(']')) {
+            const attrKey = key.slice(11, -1); // Remove 'attributes[' e ']'
+            if (value) {
+              attributes.push({key: attrKey, value: String(value)});
+            }
+          }
+        }
+        
+        if (attributes.length > 0) {
+          console.log('📋 ENCONTROU ATRIBUTOS na requisição, atualizando...');
+          console.log('📋 Atributos:', attributes);
+          result = await cart.updateAttributes(attributes);
+          console.log('✅ Atributos atualizados com sucesso');
+        } else {
+          console.log('⚠️ NENHUM ATRIBUTO encontrado na requisição');
+        }
       } catch (error) {
         console.error('❌ Erro em LinesAdd:', error);
         throw error;

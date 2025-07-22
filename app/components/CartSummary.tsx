@@ -73,10 +73,8 @@ function CartSummaryPage({
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
   
-  // Fetchers separados para evitar conflitos de ação no checkout
-  const cartUpdateFetcher = useFetcher();
-  const cartNoteFetcher = useFetcher();
-  const cartLinesFetcher = useFetcher();
+  // Fetcher único para todas as operações do checkout
+  const checkoutFetcher = useFetcher();
 
   useEffect(() => {
     if (fetcher.data?.distanceKm !== undefined && !fetcher.data?.error) {
@@ -139,10 +137,12 @@ function CartSummaryPage({
     return range ? range.label : '-';
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
+    console.log('🚀 INICIANDO CHECKOUT - handleCheckout chamado');
+    
     // Verificar se todos os dados necessários estão preenchidos
     if (!fetcher.data?.distanceKm || !selectedTimeSlot || !selectedDeliveryLocation) {
-      console.log('Dados incompletos para checkout:', {
+      console.log('❌ Dados incompletos para checkout:', {
         distanceKm: fetcher.data?.distanceKm,
         selectedTimeSlot,
         selectedDeliveryLocation,
@@ -151,7 +151,7 @@ function CartSummaryPage({
       return;
     }
 
-    console.log('Iniciando checkout com dados:', {
+    console.log('✅ Dados completos, prosseguindo com checkout:', {
       distanceKm: fetcher.data.distanceKm,
       selectedTimeSlot,
       selectedDeliveryLocation,
@@ -159,46 +159,22 @@ function CartSummaryPage({
       cep
     });
 
-    // 1. Primeiro, atualizar os atributos do carrinho
-    cartUpdateFetcher.submit(
-      {
-        [CartForm.INPUT_NAME]: JSON.stringify({
-          action: CartForm.ACTIONS.AttributesUpdateInput,
-          inputs: {
-            attributes: [
-              {key: 'CEP', value: cep},
-              {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
-              {key: 'Horário de Entrega', value: selectedTimeSlot},
-              {key: 'Local de Entrega', value: selectedDeliveryLocation},
-              {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
-            ],
-          },
-        }),
-      },
-      {method: 'post', action: '/cart'}
-    );
-
-    // 2. Imediatamente após, atualizar a nota do carrinho
-    cartNoteFetcher.submit(
-      {
-        [CartForm.INPUT_NAME]: JSON.stringify({
-          action: CartForm.ACTIONS.NoteUpdate,
-          inputs: {
-            note: `INFORMAÇÕES DE ENTREGA:
+    // Preparar o conteúdo da nota
+    const noteContent = `INFORMAÇÕES DE ENTREGA:
 CEP: ${cep}
 Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
 Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
 Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
 Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
-${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`,
-          },
-        }),
-      },
-      {method: 'post', action: '/cart'}
-    );
+${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`;
 
-    // 3. Por fim, adicionar o item de frete e redirecionar imediatamente
-    cartLinesFetcher.submit(
+    console.log('📝 NOTA PREPARADA:');
+    console.log(noteContent);
+    console.log('📝 Tamanho da nota:', noteContent.length, 'caracteres');
+
+    // Atualizar tudo em uma única operação para evitar conflitos
+    console.log('📤 ENVIANDO DADOS PARA O SERVIDOR...');
+    checkoutFetcher.submit(
       {
         [CartForm.INPUT_NAME]: JSON.stringify({
           action: CartForm.ACTIONS.LinesAdd,
@@ -211,6 +187,14 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
             ],
           },
         }),
+        // Incluir a nota diretamente na mesma requisição
+        note: noteContent,
+        // Incluir atributos também
+        'attributes[CEP]': cep,
+        'attributes[Distância]': fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : '',
+        'attributes[Horário de Entrega]': selectedTimeSlot,
+        'attributes[Local de Entrega]': selectedDeliveryLocation,
+        'attributes[Data de Entrega]': selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : '',
         redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
       },
       {method: 'post', action: '/cart'}
@@ -292,9 +276,34 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
               selected={selectedDate}
               onSelect={setSelectedDate}
               disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
+                // Função para calcular a primeira data disponível (2 dias úteis a partir de hoje)
+                const getFirstAvailableDate = () => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  let daysToAdd = 2; // Começamos com 2 dias úteis
+                  let currentDate = new Date(today);
+                  
+                  while (daysToAdd > 0) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    // Se não for fim de semana (0 = Domingo, 6 = Sábado)
+                    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+                      daysToAdd--;
+                    }
+                  }
+                  
+                  // Se a data calculada cair em um fim de semana, avança para segunda
+                  while (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                  }
+                  
+                  return currentDate;
+                };
+
+                const firstAvailableDate = getFirstAvailableDate();
+                date.setHours(0, 0, 0, 0);
+
+                // Desabilita datas anteriores à primeira data disponível e fins de semana
+                return date < firstAvailableDate || date.getDay() === 0 || date.getDay() === 6;
               }}
               className="rounded-lg"
             />
@@ -370,16 +379,12 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
           !selectedTimeSlot || 
           !selectedDeliveryLocation || 
           fetcher.state !== 'idle' ||
-          cartUpdateFetcher.state !== 'idle' ||
-          cartNoteFetcher.state !== 'idle' ||
-          cartLinesFetcher.state !== 'idle'
+          checkoutFetcher.state !== 'idle'
         }
         onClick={handleCheckout}
       >
         <p>
-          {cartUpdateFetcher.state !== 'idle' || 
-           cartNoteFetcher.state !== 'idle' || 
-           cartLinesFetcher.state !== 'idle'
+          {checkoutFetcher.state !== 'idle'
             ? 'Processando...'
             : 'Fechar Pedido'}
         </p>

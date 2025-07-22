@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import * as Input from '~/components/align-ui/ui/input';
 import * as Button from '~/components/align-ui/ui/button';
+import { RiWhatsappFill } from '@remixicon/react';
 
 interface TeaserProps {
   /** ISO string that represents the launch date */
@@ -158,10 +159,10 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
       
       <h4 className="text-title-h4 text-text-sub-600 z-20">sua mesa fit</h4>
       
-      <h2 className="text-title-h2 text-text-sub-600 z-20">save the date</h2>
+      <h2 className="text-title-h2 text-text-sub-600 z-20">estamos em manutenção</h2>
 
       <div className="flex flex-col px-2 items-center gap-2 z-20">
-        <p className="text-paragraph-xl w-full max-w-[400px] text-text-sub-600">falta exatamente</p>
+        <p className="text-paragraph-xl w-full max-w-[400px] text-text-sub-600">volte em</p>
 
         <div className="bg-[#E7C06A] w-full rounded-[20px] px-4 md:px-12 py-8 md:py-10 flex items-end justify-between gap-4 md:gap-10 overflow-x-auto">
           <TimePart value={days} label="dias" />
@@ -174,19 +175,28 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
         </div>
 
         <p className="text-paragraph-xl text-text-sub-600">
-          para o lançamento do nosso site
+          para pedidos use o nosso WhatsApp
         </p>
       </div>
 
       {/* Botão para mostrar formulário de senha */}
-      <div className="mt-8 z-20">
+      <div className="mt-8 z-20 flex  gap-4 items-center">
+        <Button.Root
+          variant="neutral"
+          mode="stroke"
+          size="medium"
+          onClick={() => window.open('https://wa.me/5511941174242', '_blank')}
+        >
+          <RiWhatsappFill />
+          pedir no WhatsApp
+        </Button.Root>
         <Button.Root
           variant="neutral"
           mode="stroke"
           size="medium"
           onClick={() => setShowPasswordForm(true)}
         >
-          acessar site
+          acessar com senha
         </Button.Root>
       </div>
 

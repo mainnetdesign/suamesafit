@@ -264,7 +264,7 @@ export default function Homepage() {
     <>
       {teaserActive && <Teaser launchDate={LAUNCH_DATE_ISO} overlay />}
 
-      <div className="home gap-10  flex flex-col">
+      <div className="home gap-10 flex flex-col">
         <div className="w-full px-4 flex justify-center items-center">
           <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
             <img

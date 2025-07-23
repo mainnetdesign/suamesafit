@@ -39,6 +39,7 @@ export default defineConfig({
       'helping-merely-fish.ngrok-free.app',
       'concrete-willingly-alien.ngrok-free.app',
       'subtly-intense-toucan.ngrok-free.app',
+      '*.ngrok-free.app',
     ],
   },
   ssr: {

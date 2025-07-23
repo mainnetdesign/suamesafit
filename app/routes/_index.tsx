@@ -1,12 +1,12 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {Suspense, useEffect, useState} from 'react';
-import {Image, Money, CartForm} from '@shopify/hydrogen';
+import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
+import { useEffect, useState} from 'react';
+import {Image } from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
-  RecommendedProductsQuery,
+
 } from 'storefrontapi.generated';
-import {DatepickerRangeDemo} from '~/components/daterange';
+
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
@@ -27,16 +27,16 @@ import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import {AboutUs} from '~/components/custom/AboutUs';
 import * as Button from '~/components/align-ui/ui/button';
-import * as Input from '~/components/align-ui/ui/input';
+
 import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
-import {Header} from '~/components/Header';
+
 import Autoplay from 'embla-carousel-autoplay';
 import {Teaser} from '~/components/Teaser';
 
 // Configuração do teaser de lançamento
 const TEASER_ENABLED = true; // 👉 Defina como false para desativar manualmente
-const LAUNCH_DATE_ISO = '2025-07-22T20:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
+const LAUNCH_DATE_ISO = '2025-08-22T12:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
 
 function isTeaserActive() {
   return TEASER_ENABLED && Date.now() < new Date(LAUNCH_DATE_ISO).getTime();

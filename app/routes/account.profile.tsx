@@ -26,7 +26,15 @@ export const meta: MetaFunction = () => {
 export async function loader({context}: LoaderFunctionArgs) {
   await context.customerAccount.handleAuthStatus();
 
-  return {};
+  return data(
+    {}, // dados vazios por enquanto
+    {
+      headers: {
+        // CRÍTICO: Commit da sessão para persistir tokens refreshed
+        'Set-Cookie': await context.session.commit(),
+      },
+    }
+  );
 }
 
 export async function action({request, context}: ActionFunctionArgs) {

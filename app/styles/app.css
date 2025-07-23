@@ -2597,7 +2597,7 @@ deferred-media {
   appearance: none;
   color: rgb(var(--color-foreground));
   background-color: transparent;
-  border: 0.1rem solid rgb(var(--color-border-input));
+  
   border-radius: var(--border-radius-input);
   box-sizing: border-box;
   transition:

@@ -12,6 +12,7 @@ import {format} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import type {AttributeInput} from '@shopify/hydrogen/storefront-api-types';
 import {useAside} from '~/components/Aside';
+import {getShippingVariantByDistance, DELIVERY_DISTANCE_RANGES} from '~/config/delivery';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -66,22 +67,21 @@ function CartSummaryPage({
 }) {
   // Estado e fetcher para cálculo de frete
   const [cep, setCep] = useState('');
-  const [shippingVariantId, setShippingVariantId] = useState<string>(
-    'gid://shopify/ProductVariant/43101752295493', // ID da variante de R$ 16,50
-  );
+  const [shippingVariantId, setShippingVariantId] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
   
-  // Fetchers separados para evitar conflitos de ação no checkout
-  const cartUpdateFetcher = useFetcher();
-  const cartNoteFetcher = useFetcher();
-  const cartLinesFetcher = useFetcher();
+  // Fetcher único para todas as operações do checkout
+  const checkoutFetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.data?.variantId) {
-      setShippingVariantId(fetcher.data.variantId);
+    if (fetcher.data?.distanceKm !== undefined && !fetcher.data?.error) {
+      const variantId = getShippingVariantByDistance(fetcher.data.distanceKm);
+      if (variantId) {
+        setShippingVariantId(variantId);
+      }
     }
     if (fetcher.data?.distanceKm !== undefined) {
       // eslint-disable-next-line no-console
@@ -92,9 +92,6 @@ function CartSummaryPage({
       console.error('Erro no cálculo de frete:', fetcher.data.error);
     }
   }, [fetcher.data]);
-
-  // Removido o useEffect que causava recarregamento automático
-  // Os formulários agora serão submetidos apenas quando o usuário clicar em "Fechar Pedido"
 
   const handleCepSearch = () => {
     const sanitizedCep = cep.replace(/\D/g, '');
@@ -108,10 +105,44 @@ function CartSummaryPage({
     console.log('Fetcher state:', fetcher.state);
   };
 
-  const handleCheckout = () => {
+  // Função para encontrar o preço de uma variante no carrinho
+  const getVariantPrice = (variantId: string): number | null => {
+    if (!cart?.lines?.nodes) return null;
+    
+    const line = cart.lines.nodes.find(
+      (line) => line.merchandise?.id === variantId
+    );
+    
+    if (line?.cost?.amountPerQuantity?.amount) {
+      return parseFloat(line.cost.amountPerQuantity.amount);
+    }
+    
+    return null;
+  };
+
+  // Função para obter o preço estimado do frete baseado na distância
+  const getEstimatedShippingPrice = (): string => {
+    if (!shippingVariantId) return '-';
+    
+    const price = getVariantPrice(shippingVariantId);
+    if (price !== null) {
+      return price.toFixed(2).replace('.', ',');
+    }
+    
+    // Se não encontrou no carrinho, tenta buscar na configuração
+    const range = DELIVERY_DISTANCE_RANGES.find(
+      r => r.shippingVariantId === shippingVariantId
+    );
+    
+    return range ? range.label : '-';
+  };
+
+  const handleCheckout = async () => {
+    console.log('🚀 INICIANDO CHECKOUT - handleCheckout chamado');
+    
     // Verificar se todos os dados necessários estão preenchidos
     if (!fetcher.data?.distanceKm || !selectedTimeSlot || !selectedDeliveryLocation) {
-      console.log('Dados incompletos para checkout:', {
+      console.log('❌ Dados incompletos para checkout:', {
         distanceKm: fetcher.data?.distanceKm,
         selectedTimeSlot,
         selectedDeliveryLocation,
@@ -120,7 +151,7 @@ function CartSummaryPage({
       return;
     }
 
-    console.log('Iniciando checkout com dados:', {
+    console.log('✅ Dados completos, prosseguindo com checkout:', {
       distanceKm: fetcher.data.distanceKm,
       selectedTimeSlot,
       selectedDeliveryLocation,
@@ -128,76 +159,46 @@ function CartSummaryPage({
       cep
     });
 
-    // 1. Primeiro, atualizar os atributos do carrinho
-    cartUpdateFetcher.submit(
-      {
-        [CartForm.INPUT_NAME]: JSON.stringify({
-          action: CartForm.ACTIONS.AttributesUpdateInput,
-          inputs: {
-            attributes: [
-              {key: 'CEP', value: cep},
-              {key: 'Distância', value: fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : ''},
-              {key: 'Horário de Entrega', value: selectedTimeSlot},
-              {key: 'Local de Entrega', value: selectedDeliveryLocation},
-              {key: 'Data de Entrega', value: selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : ''},
-            ],
-          },
-        }),
-      },
-      {method: 'post', action: '/cart'}
-    );
-
-    // 2. Imediatamente após, atualizar a nota do carrinho
-    cartNoteFetcher.submit(
-      {
-        [CartForm.INPUT_NAME]: JSON.stringify({
-          action: CartForm.ACTIONS.NoteUpdate,
-          inputs: {
-            note: `INFORMAÇÕES DE ENTREGA:
+    // Preparar o conteúdo da nota
+    const noteContent = `INFORMAÇÕES DE ENTREGA:
 CEP: ${cep}
 Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : 'N/A'}
 Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
 Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
 Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
-${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`,
-          },
-        }),
-      },
-      {method: 'post', action: '/cart'}
-    );
+${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`;
 
-    // 3. Por fim, adicionar o item de frete e redirecionar imediatamente
-    cartLinesFetcher.submit(
+    console.log('📝 NOTA PREPARADA:');
+    console.log(noteContent);
+    console.log('📝 Tamanho da nota:', noteContent.length, 'caracteres');
+
+    // Atualizar tudo em uma única operação para evitar conflitos
+    console.log('📤 ENVIANDO DADOS PARA O SERVIDOR...');
+    checkoutFetcher.submit(
       {
         [CartForm.INPUT_NAME]: JSON.stringify({
           action: CartForm.ACTIONS.LinesAdd,
           inputs: {
             lines: [
               {
-                merchandiseId: shippingVariantId || 'gid://shopify/ProductVariant/43101752295493',
+                merchandiseId: shippingVariantId,
                 quantity: 1,
               },
             ],
           },
         }),
+        // Incluir a nota diretamente na mesma requisição
+        note: noteContent,
+        // Incluir atributos também
+        'attributes[CEP]': cep,
+        'attributes[Distância]': fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} km` : '',
+        'attributes[Horário de Entrega]': selectedTimeSlot,
+        'attributes[Local de Entrega]': selectedDeliveryLocation,
+        'attributes[Data de Entrega]': selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : '',
         redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
       },
       {method: 'post', action: '/cart'}
     );
-  };
-
-  // Mapeamento dos IDs das variantes com os preços atualizados
-  const variantPriceMap: Record<string, number> = {
-    'gid://shopify/ProductVariant/43101752295493': 16.50, // 5 km
-    'gid://shopify/ProductVariant/43101752328261': 21.50, // 10 km
-    'gid://shopify/ProductVariant/43101752361029': 29.00, // 15 km
-    'gid://shopify/ProductVariant/43101752393797': 36.50, // 20 km
-    'gid://shopify/ProductVariant/43101752426565': 44.00, // 25 km
-    'gid://shopify/ProductVariant/43101752459333': 51.50, // 30 km
-    'gid://shopify/ProductVariant/43101752492101': 59.00, // 35 km
-    'gid://shopify/ProductVariant/43101752524869': 66.50, // 40 km
-    'gid://shopify/ProductVariant/43101752557637': 74.00, // 45 km
-    'gid://shopify/ProductVariant/43101752590405': 81.50, // 50+ km
   };
 
   return (
@@ -215,24 +216,6 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
           )}
         </dd>
       </dl>
-      {/* <div>
-        <Select.Root defaultValue="portaria">
-          <Select.Trigger>
-            <Select.Value placeholder="Escolha como deseja receber" />
-          </Select.Trigger>
-          <Select.Content>
-            <Select.Item value="portaria">Deixar na portaria</Select.Item>
-            <Select.Item value="apartamento">Entregar no apartamento</Select.Item>
-          </Select.Content>
-        </Select.Root>
-      </div>
-      <div>
-        <label className="block text-label-sm text-text-sub-600 mb-1" htmlFor="cep">Informe seu CEP</label>
-        <Input.Root>
-          <Input.Input id="cep" name="cep" placeholder="00000-000" maxLength={9} autoComplete="postal-code" />
-        </Input.Root>
-        <Button.Root variant="primary" mode="filled" size="small" className="mt-2 w-full">Buscar</Button.Root>
-      </div> */}
 
       {/* Bloco de cálculo de frete */}
       <div className="w-full">
@@ -278,8 +261,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         
         {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <p className="text-text-sub-600 text-label-sm mt-2">
-            Distância: {fetcher.data.distanceKm.toFixed(1)} km • Frete estimado: R$
-            {variantPriceMap[shippingVariantId] ? variantPriceMap[shippingVariantId].toFixed(2).replace('.', ',') : '-'}
+            Distância: {fetcher.data.distanceKm.toFixed(1)} km
           </p>
         )}
         
@@ -294,9 +276,34 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
               selected={selectedDate}
               onSelect={setSelectedDate}
               disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
+                // Função para calcular a primeira data disponível (2 dias úteis a partir de hoje)
+                const getFirstAvailableDate = () => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  let daysToAdd = 2; // Começamos com 2 dias úteis
+                  let currentDate = new Date(today);
+                  
+                  while (daysToAdd > 0) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                    // Se não for fim de semana (0 = Domingo, 6 = Sábado)
+                    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+                      daysToAdd--;
+                    }
+                  }
+                  
+                  // Se a data calculada cair em um fim de semana, avança para segunda
+                  while (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
+                    currentDate.setDate(currentDate.getDate() + 1);
+                  }
+                  
+                  return currentDate;
+                };
+
+                const firstAvailableDate = getFirstAvailableDate();
+                date.setHours(0, 0, 0, 0);
+
+                // Desabilita datas anteriores à primeira data disponível e fins de semana
+                return date < firstAvailableDate || date.getDay() === 0 || date.getDay() === 6;
               }}
               className="rounded-lg"
             />
@@ -372,29 +379,16 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
           !selectedTimeSlot || 
           !selectedDeliveryLocation || 
           fetcher.state !== 'idle' ||
-          cartUpdateFetcher.state !== 'idle' ||
-          cartNoteFetcher.state !== 'idle' ||
-          cartLinesFetcher.state !== 'idle'
+          checkoutFetcher.state !== 'idle'
         }
         onClick={handleCheckout}
       >
         <p>
-          {cartUpdateFetcher.state !== 'idle' || 
-           cartNoteFetcher.state !== 'idle' || 
-           cartLinesFetcher.state !== 'idle'
+          {checkoutFetcher.state !== 'idle'
             ? 'Processando...'
             : 'Fechar Pedido'}
         </p>
       </Button.Root>
-      {/* <div className="bg-green-50 rounded-lg p-4 flex flex-col items-center gap-3 mt-2">
-        <span className="text-green-700 text-label-md font-bold">
-          Você ganha 5% de cashback para seu próximo pedido!
-        </span>
-        <span className="text-green-700 text-paragraph-sm">
-          É o nosso jeito de agradecer por comprar com a gente. Use esse valor
-          no próximo pedido (válido por 60 dias)
-        </span>
-      </div> */}
     </div>
   );
 }

@@ -1,12 +1,12 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Await, useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import {Suspense, useEffect, useState} from 'react';
-import {Image, Money, CartForm} from '@shopify/hydrogen';
+import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
+import { useEffect, useState} from 'react';
+import {Image } from '@shopify/hydrogen';
 import type {
   FeaturedCollectionFragment,
-  RecommendedProductsQuery,
+
 } from 'storefrontapi.generated';
-import {DatepickerRangeDemo} from '~/components/daterange';
+
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 
 import limitedTimeOfferImage from '~/assets/limited-offer-image.png';
@@ -27,16 +27,16 @@ import {LimitedTimeOffer} from '~/components/LimitedTimeOffer';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import {AboutUs} from '~/components/custom/AboutUs';
 import * as Button from '~/components/align-ui/ui/button';
-import * as Input from '~/components/align-ui/ui/input';
+
 import * as Accordion from '~/components/align-ui/ui/accordion';
 import {Product} from '~/components/ProductCard';
-import {Header} from '~/components/Header';
+
 import Autoplay from 'embla-carousel-autoplay';
 import {Teaser} from '~/components/Teaser';
 
 // Configuração do teaser de lançamento
 const TEASER_ENABLED = true; // 👉 Defina como false para desativar manualmente
-const LAUNCH_DATE_ISO = '2025-07-19T09:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
+const LAUNCH_DATE_ISO = '2025-08-22T12:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
 
 function isTeaserActive() {
   return TEASER_ENABLED && Date.now() < new Date(LAUNCH_DATE_ISO).getTime();
@@ -56,6 +56,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     id
     handle
     title
+    tags
     featuredImage {
       id
       altText
@@ -655,39 +656,28 @@ const SHOP_TESTIMONIALS_QUERY = `#graphql
 // Componente para grid de produtos na home
 // IDs das variantes de frete que devem ser filtradas
 const SHIPPING_VARIANT_IDS = [
-  'gid://shopify/ProductVariant/43101752295493',
-  'gid://shopify/ProductVariant/43101752328261',
-  'gid://shopify/ProductVariant/43101752361029',
-  'gid://shopify/ProductVariant/43101752393797',
-  'gid://shopify/ProductVariant/43101752426565',
-  'gid://shopify/ProductVariant/43101752459333',
-  'gid://shopify/ProductVariant/43101752492101',
-  'gid://shopify/ProductVariant/43101752524869',
-  'gid://shopify/ProductVariant/43101752557637',
-  'gid://shopify/ProductVariant/43101752590405',
+  'gid://shopify/ProductVariant/43101752361029', // +5km
+  'gid://shopify/ProductVariant/43101752393797', // +10km
+  'gid://shopify/ProductVariant/43134883823685', // +15km
+  'gid://shopify/ProductVariant/43134883856453', // +20km
+  'gid://shopify/ProductVariant/43101752426565', // +25km
+  'gid://shopify/ProductVariant/43101752459333', // +30km
+  'gid://shopify/ProductVariant/43101752492101', // +35km
+  'gid://shopify/ProductVariant/43101752524869', // +40km
+  'gid://shopify/ProductVariant/43101752557637', // +45km
+  'gid://shopify/ProductVariant/43101752590405', // +50km
 ];
 
 // Função para verificar se um produto é de frete
 function isShippingProduct(product: any): boolean {
-  // Verifica se o produto tem variantes e se alguma delas é de frete
-  if (product.variants?.nodes) {
-    return product.variants.nodes.some((variant: any) => 
-      SHIPPING_VARIANT_IDS.includes(variant.id)
-    );
+  // Verifica se o título do produto é "Frete São Paulo"
+  if (product.title === "Frete São Paulo") {
+    return true;
   }
   
-  // Verifica se o produto tem variantes diretas
-  if (product.variants) {
-    return product.variants.some((variant: any) => 
-      SHIPPING_VARIANT_IDS.includes(variant.id)
-    );
-  }
-  
-  // Verifica se o produto tem variantes como array
-  if (Array.isArray(product.variants)) {
-    return product.variants.some((variant: any) => 
-      SHIPPING_VARIANT_IDS.includes(variant.id)
-    );
+  // Verifica se o produto tem a tag "frete"
+  if (product.tags && Array.isArray(product.tags)) {
+    return product.tags.some(tag => tag.toLowerCase() === "frete");
   }
   
   return false;

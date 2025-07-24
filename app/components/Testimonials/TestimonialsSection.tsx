@@ -16,11 +16,46 @@ import {cn} from '~/lib/utils';
 import {TextAnimate} from '~/components/magic-ui/ui/text-animate';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import Autoplay from 'embla-carousel-autoplay';
+import {RiInstagramLine, RiLinkedinFill} from 'react-icons/ri';
 // import {RiArrowLeftSLine, RiArrowRightSLine} from 'react-icons/ri';
 
 interface TestimonialsSectionProps {
   testimonials: TestimonialData[];
   className?: string;
+}
+
+// Função para detectar o tipo de rede social baseado na URL
+function getSocialMediaInfo(socialUrl: string): { type: 'instagram' | 'linkedin' | 'unknown'; handle: string; icon: any } {
+  try {
+    const cleanUrl = socialUrl.replace(/\/$/, '');
+    const handle = cleanUrl.split('/').pop() || '';
+    
+    if (socialUrl.includes('instagram.com')) {
+      return {
+        type: 'instagram',
+        handle,
+        icon: RiInstagramLine
+      };
+    } else if (socialUrl.includes('linkedin.com')) {
+      return {
+        type: 'linkedin',
+        handle,
+        icon: RiLinkedinFill
+      };
+    }
+    
+    return {
+      type: 'unknown',
+      handle,
+      icon: null
+    };
+  } catch {
+    return {
+      type: 'unknown',
+      handle: '',
+      icon: null
+    };
+  }
 }
 
 export function TestimonialsSection({
@@ -99,10 +134,24 @@ export function TestimonialsSection({
                       <p className="text-paragraph-xl font-sans min-h-[10rem]">
                         {testimonial.text}
                       </p>
-                      <div className="flex items-center justify-between w-full">
-                        <span className="text-label-sm font-sans">
+                      <div className="flex flex-col items-start gap-2 w-full">
+                        <span className="text-label-md font-sans">
                           {testimonial.authorName}
                         </span>
+                        {testimonial.socialLink && (() => {
+                          const socialInfo = getSocialMediaInfo(testimonial.socialLink);
+                          return socialInfo.icon ? (
+                            <a
+                              href={testimonial.socialLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+                            >
+                              <socialInfo.icon className="text-paragraph-xs" />
+                              <span className="text-paragraph-xs">@{socialInfo.handle}</span>
+                            </a>
+                          ) : null;
+                        })()}
                       </div>
                     </div>
                   </div>
@@ -166,7 +215,7 @@ export function TestimonialsSection({
                       {`${testimonials[current].text}`}
                     </TextAnimate>
 
-                    <div className="flex items-center justify-between text-white w-full mt-6">
+                    <div className="flex flex-col items-start gap-2 text-white w-full mt-6">
                       <TextAnimate
                         key={`author-${current}`}
                         animation="slideRight"
@@ -177,6 +226,20 @@ export function TestimonialsSection({
                       >
                         {testimonials[current].authorName}
                       </TextAnimate>
+                      {testimonials[current].socialLink && (() => {
+                        const socialInfo = getSocialMediaInfo(testimonials[current].socialLink);
+                        return socialInfo.icon ? (
+                          <a
+                            href={testimonials[current].socialLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors"
+                          >
+                            <socialInfo.icon className="text-sm" />
+                            <span className="text-xs">@{socialInfo.handle}</span>
+                          </a>
+                        ) : null;
+                      })()}
                     </div>
                   </div>
                 </div>

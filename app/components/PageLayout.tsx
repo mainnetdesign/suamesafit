@@ -14,7 +14,7 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
-import {RiInstagramLine, RiLinkedinBoxFill, RiWhatsappLine} from 'react-icons/ri';
+import {RiInstagramLine, RiLinkedinBoxFill, RiWhatsappLine, RiWhatsappFill} from 'react-icons/ri';
 import {useAside} from '~/components/Aside';
 import ProfileDropdown from '~/assets/components/custom/ProfileDropdown';
 import * as  Button  from './align-ui/ui/button';
@@ -53,6 +53,19 @@ export function PageLayout({
         />
       )}
       <main className="bg-[#FAF6EC] py-[32px] gap-10 flex flex-col">{children}</main>
+      
+      {/* Botão fixo do WhatsApp */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <a
+          href="https://wa.me/5511941174242"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-12 h-12 relative bg-green-100 rounded-[685.03px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center justify-center"
+          aria-label="Contatar via WhatsApp"
+        >
+          <RiWhatsappFill size={24} className="text-green-500" />
+        </a>
+      </div>
       
     </Aside.Provider>
   );

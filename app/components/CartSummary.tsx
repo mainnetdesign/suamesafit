@@ -289,7 +289,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         )}
         
         {/* Datepicker para seleção de data de entrega */}
-        {fetcher.data?.distanceKm === undefined && !fetcher.data?.error && (
+        {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <div className="w-full mt-4">
             <label className="block text-label-sm text-text-sub-600 mb-2">
               Data de entrega
@@ -337,7 +337,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         )}
 
         {/* Select para horário de entrega */}
-        {fetcher.data?.distanceKm === undefined && !fetcher.data?.error && (
+        {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <div className="w-full mt-4">
             <label className="block text-label-sm text-text-sub-600 mb-2">
               Horário de entrega

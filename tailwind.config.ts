@@ -258,7 +258,118 @@ export const borderRadii = {
 
 const config = {
   darkMode: ['class'],
-  safelist: ['.dark'],
+  safelist: [
+    '.dark',
+    // React Day Picker classes - essenciais para funcionamento correto
+    // Classes principais do RDP
+    'rdp',
+    'rdp-month',
+    'rdp-table',
+    'rdp-tbody',
+    'rdp-tfoot',
+    'rdp-head',
+    'rdp-head_row',
+    'rdp-head_cell',
+    'rdp-row',
+    'rdp-cell',
+    'rdp-button',
+    'rdp-button_reset',
+    'rdp-day',
+    'rdp-day_today',
+    'rdp-day_outside',
+    'rdp-day_selected',
+    'rdp-day_disabled',
+    'rdp-day_hidden',
+    'rdp-day_range_start',
+    'rdp-day_range_end',  
+    'rdp-day_range_middle',
+    'rdp-caption',
+    'rdp-caption_label',
+    'rdp-caption_dropdowns',
+    'rdp-dropdown',
+    'rdp-dropdown_month',
+    'rdp-dropdown_year',
+    'rdp-months',
+    'rdp-month_grid',
+    'rdp-week',
+    'rdp-weekday',
+    'rdp-weekdays',
+    'rdp-weeknumber',
+    'rdp-nav',
+    'rdp-nav_button',
+    'rdp-nav_button_previous',
+    'rdp-nav_button_next',
+    'rdp-nav_icon',
+    
+    // Classes customizadas do seu projeto que podem ser aplicadas dinamicamente
+    'text-label-sm',
+    'text-text-sub-600',
+    'text-paragraph-sm',
+    'text-paragraph-xs',
+    'rounded-lg',
+    'rounded-md',
+    'rounded-sm',
+    
+    // Classes de hover, focus e estados que podem ser aplicadas dinamicamente
+    'hover:bg-bg-weak-50',
+    'hover:bg-primary-alpha-10',
+    'hover:text-primary-base',
+    'focus:bg-primary-alpha-10',
+    'focus:text-primary-base',
+    'focus:outline-none',
+    'focus:ring-2',
+    'focus:ring-primary-base',
+    'focus:ring-offset-2',
+    
+    // Classes de estado selecionado/desabilitado
+    'bg-primary-base',
+    'bg-primary-alpha-10',
+    'bg-bg-weak-50',
+    'bg-bg-soft-200',
+    'text-white',
+    'text-primary-base',
+    'text-text-disabled-300',
+    'opacity-50',
+    'cursor-not-allowed',
+    'cursor-pointer',
+    
+    // Classes de posicionamento e layout
+    'absolute',
+    'relative',
+    'flex',
+    'inline-flex',
+    'grid',
+    'items-center',
+    'justify-center',
+    'text-center',
+    'w-full',
+    'h-full',
+    'min-w-0',
+    'min-h-0',
+    
+    // Classes de padding e margin que podem ser aplicadas dinamicamente
+    'p-0', 'p-1', 'p-2', 'p-3', 'p-4',
+    'm-0', 'm-1', 'm-2', 'm-3', 'm-4',
+    'px-2', 'px-3', 'py-1', 'py-2',
+    
+    // Padrões regex para classes dinâmicas
+    {
+      pattern: /^rdp-.+/,
+      variants: ['hover', 'focus', 'active', 'disabled']
+    },
+    {
+      pattern: /^day-.+/,
+      variants: ['hover', 'focus', 'active', 'disabled']
+    },
+    {
+      pattern: /^text-(label|paragraph)-(xs|sm|md|lg|xl)$/,
+      variants: ['hover', 'focus']
+    },
+    {
+      pattern: /^(bg|text|border)-(primary|text|bg|stroke)-.+$/,
+      variants: ['hover', 'focus', 'active']
+    }
+  ],
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',

@@ -35,8 +35,8 @@ import Autoplay from 'embla-carousel-autoplay';
 import {Teaser} from '~/components/Teaser';
 
 // Configuração do teaser de lançamento
-const TEASER_ENABLED = false; // 👉 Defina como false para desativar manualmente
-const LAUNCH_DATE_ISO = '2025-07-24T09:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
+const TEASER_ENABLED = true; // 👉 Defina como false para desativar manualmente
+const LAUNCH_DATE_ISO = '2025-07-24T13:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
 
 function isTeaserActive() {
   return TEASER_ENABLED && Date.now() < new Date(LAUNCH_DATE_ISO).getTime();

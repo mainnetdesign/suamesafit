@@ -280,7 +280,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
                 const getFirstAvailableDate = () => {
                   const today = new Date();
                   today.setHours(0, 0, 0, 0);
-                  let daysToAdd = 2; // Começamos com 2 dias úteis
+                  let daysToAdd = 3; // Começamos com 2 dias úteis
                   let currentDate = new Date(today);
                   
                   while (daysToAdd > 0) {

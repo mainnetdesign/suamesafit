@@ -266,7 +266,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         )}
         
         {/* Datepicker para seleção de data de entrega */}
-        {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
+        {fetcher.data?.distanceKm === undefined && !fetcher.data?.error && (
           <div className="w-full mt-4">
             <label className="block text-label-md text-text-sub-600 mb-4">
               Escolha a data de entrega

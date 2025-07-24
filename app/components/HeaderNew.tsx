@@ -149,9 +149,12 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                 <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                   blog
                 </div>
-                <Link to="/about" className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
+                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                   sobre
-                </Link>
+                </div>
+                {/* <Link to="/about" className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
+                  sobre
+                </Link> */}
               </div>
             )}
 

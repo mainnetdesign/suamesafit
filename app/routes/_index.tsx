@@ -677,7 +677,7 @@ function isShippingProduct(product: any): boolean {
   
   // Verifica se o produto tem a tag "frete"
   if (product.tags && Array.isArray(product.tags)) {
-    return product.tags.some(tag => tag.toLowerCase() === "frete");
+    return product.tags.some((tag: string) => tag.toLowerCase() === "frete");
   }
   
   return false;

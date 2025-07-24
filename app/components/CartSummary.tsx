@@ -7,8 +7,10 @@ import {FetcherWithComponents} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
 import * as Select from '~/components/align-ui/ui/select';
 import * as Input from '~/components/align-ui/ui/input';
-import {Calendar} from '~/components/align-ui/ui/datepicker';
-import {format} from 'date-fns';
+import * as Popover from '~/components/align-ui/ui/popover';
+import {Calendar as AlignCalendar} from '~/components/align-ui/ui/datepicker';
+import {Calendar as ShadCalendar} from '~/components/shad-cn/ui/calendar';
+import {format, addDays, isWeekend, isBefore, startOfToday} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import type {AttributeInput} from '@shopify/hydrogen/storefront-api-types';
 import {useAside} from '~/components/Aside';
@@ -201,6 +203,27 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
     );
   };
 
+  // Função para calcular a data mínima (3 dias úteis a partir de hoje)
+  const calculateMinDeliveryDate = () => {
+    let date = startOfToday();
+    let businessDays = 0;
+    
+    while (businessDays < 3) {
+      date = addDays(date, 1);
+      if (!isWeekend(date)) {
+        businessDays++;
+      }
+    }
+    
+    return date;
+  };
+
+  // Função para verificar se uma data deve ser desabilitada
+  const disableDate = (date: Date) => {
+    const minDate = calculateMinDeliveryDate();
+    return isBefore(date, minDate) || isWeekend(date);
+  };
+
   return (
     <div
       aria-labelledby="cart-summary"
@@ -268,50 +291,48 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         {/* Datepicker para seleção de data de entrega */}
         {fetcher.data?.distanceKm !== undefined && !fetcher.data?.error && (
           <div className="w-full mt-4">
-            <label className="block text-label-md text-text-sub-600 mb-4">
-              Escolha a data de entrega
+            <label className="block text-label-sm text-text-sub-600 mb-2">
+              Data de entrega
             </label>
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              disabled={(date) => {
-                // Função para calcular a primeira data disponível (2 dias úteis a partir de hoje)
-                const getFirstAvailableDate = () => {
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0);
-                  let daysToAdd = 2; // Começamos com 2 dias úteis
-                  let currentDate = new Date(today);
-                  
-                  while (daysToAdd > 0) {
-                    currentDate.setDate(currentDate.getDate() + 1);
-                    // Se não for fim de semana (0 = Domingo, 6 = Sábado)
-                    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-                      daysToAdd--;
+            <Popover.Root>
+              <Popover.Trigger asChild>
+                <Button.Root
+                  variant="neutral"
+                  mode="stroke"
+                  className="w-full justify-start text-left font-normal"
+                >
+                  {selectedDate ? (
+                    format(selectedDate, "dd 'de' MMMM 'de' yyyy", {locale: ptBR})
+                  ) : (
+                    "Escolha a data"
+                  )}
+                </Button.Root>
+              </Popover.Trigger>
+              <Popover.Content className="w-auto p-0" align="start">
+                <ShadCalendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  className="rounded-md [&_.rdp-day]:text-text-sub-600 [&_.rdp-day_button:hover:not([disabled])]:bg-bg-soft-200 [&_.rdp-day_button[aria-selected='true']]:!bg-text-sub-600 [&_.rdp-day_button[aria-selected='true']]:!text-white [&_.rdp-head_cell]:text-text-sub-600 [&_.rdp-button_reset]:w-9 [&_.rdp-button_reset]:h-9 [&_.rdp-button_reset]:rounded-md [&_.rdp-day_selected]:bg-text-sub-600 [&_.rdp-day_selected]:text-white [&_.rdp-button_reset]:flex [&_.rdp-button_reset]:items-center [&_.rdp-button_reset]:justify-center"
+                  captionLayout="dropdown"
+                  locale={ptBR}
+                  disabled={disableDate}
+                  formatters={{
+                    formatDay: (date: Date) => {
+                      return date.getDate().toString();
+                    },
+                    formatCaption: (date: Date) => {
+                      return format(date, 'LLLL yyyy', {locale: ptBR});
+                    },
+                    formatWeekdayName: (date: Date) => {
+                      return format(date, 'EEEEE', {locale: ptBR}).toUpperCase();
                     }
-                  }
-                  
-                  // Se a data calculada cair em um fim de semana, avança para segunda
-                  while (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
-                    currentDate.setDate(currentDate.getDate() + 1);
-                  }
-                  
-                  return currentDate;
-                };
-
-                const firstAvailableDate = getFirstAvailableDate();
-                date.setHours(0, 0, 0, 0);
-
-                // Desabilita datas anteriores à primeira data disponível e fins de semana
-                return date < firstAvailableDate || date.getDay() === 0 || date.getDay() === 6;
-              }}
-              className="rounded-lg"
-            />
-            {selectedDate && (
-              <p className="text-text-sub-600 text-label-sm mt-2">
-                Entrega em: {format(selectedDate, "EEEE, dd 'de' MMMM", {locale: ptBR})}
-              </p>
-            )}
+                  }}
+                />
+              </Popover.Content>
+            </Popover.Root>
+            
+            
           </div>
         )}
 
@@ -345,8 +366,8 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
                 <Select.Value placeholder="Escolha o local de entrega" />
               </Select.Trigger>
               <Select.Content>
-                <Select.Item value="porta">Na porta</Select.Item>
-                <Select.Item value="recepcao">Na recepção</Select.Item>
+                <Select.Item value="porta">na porta</Select.Item>
+                <Select.Item value="recepcao">na recepção</Select.Item>
               </Select.Content>
             </Select.Root>
             

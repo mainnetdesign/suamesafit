@@ -2,10 +2,9 @@
 
 'use client';
 
-import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
 import * as React from 'react';
+import { RiArrowLeftSLine, RiArrowRightSLine } from '@remixicon/react';
 import { DayPicker } from 'react-day-picker';
-import {ptBR} from 'date-fns/locale';
 
 import { compactButtonVariants } from '~/components/align-ui/ui/compact-button';
 import { cn } from '~/utils/cn';
@@ -20,16 +19,15 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
-      locale={ptBR}
       classNames={{
         multiple_months: '',
-        caption_start: '',
-        caption_end: '',
-        months: 'flex divide-x',
+        caption_start: 'p-5',
+        caption_end: 'p-5',
+        months: 'flex divide-x divide-stroke-soft-200',
         month: 'space-y-2',
         caption:
           'flex justify-center items-center relative rounded-lg bg-bg-weak-50 h-9',
-        caption_label: 'text-label-sm text-text-sub-600 select-none capitalize',
+        caption_label: 'text-label-sm text-text-sub-600 select-none',
         nav: 'flex items-center',
         nav_button: compactButtonVariants({
           variant: 'white',
@@ -86,10 +84,12 @@ function Calendar({
         day_hidden: 'invisible',
         ...classNames,
       }}
-      components={{
-        IconLeft: () => <RiArrowLeftSLine className='size-5' />,
-        IconRight: () => <RiArrowRightSLine className='size-5' />,
-      }}
+        components={{
+          Chevron: ({ orientation }) => {
+            if (orientation === 'left') return <RiArrowLeftSLine className='size-5' />;
+            return <RiArrowRightSLine className='size-5' />;
+          }
+        }}
       {...rest}
     />
   );

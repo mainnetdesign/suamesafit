@@ -36,7 +36,7 @@ import {Teaser} from '~/components/Teaser';
 
 // Configuração do teaser de lançamento
 const TEASER_ENABLED = true; // 👉 Defina como false para desativar manualmente
-const LAUNCH_DATE_ISO = '2025-08-22T12:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
+const LAUNCH_DATE_ISO = '2025-07-24T13:00:00-03:00'; // sábado 19/07/2025 09:00 BRT
 
 function isTeaserActive() {
   return TEASER_ENABLED && Date.now() < new Date(LAUNCH_DATE_ISO).getTime();
@@ -264,7 +264,7 @@ export default function Homepage() {
     <>
       {teaserActive && <Teaser launchDate={LAUNCH_DATE_ISO} overlay />}
 
-      <div className="home gap-10  flex flex-col">
+      <div className="home gap-10 flex flex-col">
         <div className="w-full px-4 flex justify-center items-center">
           <div className="w-full max-w-[1200px] relative rounded-3xl inline-flex flex-col justify-center items-center overflow-hidden">
             <img
@@ -677,7 +677,7 @@ function isShippingProduct(product: any): boolean {
   
   // Verifica se o produto tem a tag "frete"
   if (product.tags && Array.isArray(product.tags)) {
-    return product.tags.some(tag => tag.toLowerCase() === "frete");
+    return product.tags.some((tag: string) => tag.toLowerCase() === "frete");
   }
   
   return false;

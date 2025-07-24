@@ -24,8 +24,8 @@ interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
   footer: Promise<FooterQuery | null>;
   header: HeaderQuery;
-  isLoggedInPromise: Promise<boolean>;
-  customerDataPromise: Promise<{id: string; firstName: string; lastName: string; emailAddress?: {emailAddress: string}} | null>;
+  isLoggedIn: boolean;
+  customerData: {id: string; firstName: string; lastName: string; emailAddress?: {emailAddress: string}} | null;
   publicStoreDomain: string;
   children?: React.ReactNode;
 }
@@ -35,8 +35,8 @@ export function PageLayout({
   children = null,
   footer,
   header,
-  isLoggedInPromise,
-  customerDataPromise,
+  isLoggedIn,
+  customerData,
   publicStoreDomain,
 }: PageLayoutProps) {
   return (
@@ -48,7 +48,7 @@ export function PageLayout({
         <Header
           header={header}
           cart={cart}
-          isLoggedIn={isLoggedInPromise}
+          isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}
         />
       )}
@@ -175,7 +175,7 @@ function MobileMenuAside({
             <Link onClick={() => close()} to="/collections/all" className="text-title-h3 text-text-sub-600">cardápio</Link>
             <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">parcerias</span>
             <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">blog</span>
-            <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">sobre</span>
+            <Link onClick={() => close()} to="/about" className="text-title-h3 text-text-sub-600">sobre</Link>
           </div>
 
           <div className="border-t border-gray-300 my-4" />
@@ -184,8 +184,8 @@ function MobileMenuAside({
           <ProfileDropdown 
             mobile 
             onLoginClick={() => { close(); window.location.href='/account/login'; }}
-            onOrdersClick={() => { close(); window.location.href='/account/orders'; }}
-            onProfileClick={() => { close(); window.location.href='/account/profile'; }}
+            onOrdersClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/orders'; }}
+            onProfileClick={() => { close(); window.location.href='https://shopify.com/65347551301/account/profile'; }}
             className="relative" />
 
           <div className="border-t border-gray-300 my-4" />

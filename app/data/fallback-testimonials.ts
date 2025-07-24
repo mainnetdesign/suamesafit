@@ -1,29 +1,29 @@
 import type {TestimonialData} from '~/components/Testimonials/TestimonialCard';
 
-import testimonial1 from '../assets/testimonials/05-home-01.webp';
-import testimonial2 from '../assets/testimonials/05-home-02.webp';
-import testimonial3 from '../assets/testimonials/05-home-03.webp';
+import testimonial1 from '../assets/testimonials/testimonial1.jpeg';
+import testimonial2 from '../assets/testimonials/testimonial2.jpeg';
+import testimonial3 from '../assets/testimonials/testimonial3.jpeg';
 
 export const FALLBACK_TESTIMONIALS: TestimonialData[] = [
   {
     id: '1',
     rating: 5,
     text: 'Eu e meu marido trabalhamos o dia todo e, com as marmitas, ganhamos tempo e continuamos comendo bem. Não trocamos por nada!',
-    authorName: 'Daniela K.',
+    authorName: 'Daniela K. e João V.',
     image: testimonial1,
   },
   {
     id: '2',
     rating: 5,
-    text: 'Adoro a praticidade! Os sabores são incríveis e me dão muita energia. É ótimo saber que estou fazendo uma escolha saudável para o meu dia.',
-    authorName: 'Larissa S.',
+    text: 'Vivia de iFood e não tinha como fazer uma dieta saudável. Agora com as marmitas da Erike e Jana, posso comer bem e continuar com a dieta de forma fácil!',
+    authorName: 'Marcos S.',
     image: testimonial2,
   },
   {
     id: '3',
     rating: 5,
-    text: 'Ingredientes frescos e cheios de vitaminas. Exatamente o que eu preciso para uma recarga de energia no meio da correria. Recomendo!',
-    authorName: 'Fabiana M.',
+    text: 'Eu como nutricionista sempre recomendo pros meus pacientes a comer as marmitas da Erike e Jana. São deliciosas e saudáveis!',
+    authorName: 'João M.',
     image: testimonial3,
   },
 ]; 

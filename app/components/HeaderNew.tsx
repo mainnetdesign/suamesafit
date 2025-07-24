@@ -149,9 +149,9 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                 <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                   blog
                 </div>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
+                <Link to="/about" className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
                   sobre
-                </div>
+                </Link>
               </div>
             )}
 
@@ -180,7 +180,7 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
                 <div className="relative">
                   <ProfileDropdown
                     onLoginClick={() => (window.location.href = '/account/login')}
-                    onOrdersClick={() => (window.location.href = '/account/orders')}
+                    onOrdersClick={() => (window.location.href = 'https://perfil.suamesafit.com/')}
                     onProfileClick={() => (window.location.href = '/account/profile')}
                     className="w-8 h-8 flex items-center justify-center cursor-pointer"
                   />

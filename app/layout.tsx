@@ -44,8 +44,8 @@ export default function Layout() {
             {data.header ? (
               <PageLayout 
                 {...data}
-                isLoggedInPromise={data.isLoggedInPromise}
-                customerDataPromise={data.customerDataPromise}
+                isLoggedIn={data.isLoggedIn}
+                customerData={data.customerData}
               >
                 <Outlet />
               </PageLayout>

@@ -114,9 +114,38 @@ export async function loader(args: LoaderFunctionArgs) {
  * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
  */
 async function loadCriticalData({context}: LoaderFunctionArgs) {
-  const {storefront} = context;
+  const {storefront, customerAccount} = context;
 
   try {
+    // Verificação de login CRÍTICA (não deferred) para garantir persistência
+    const isLoggedIn = await customerAccount
+      .isLoggedIn()
+      .catch((error) => {
+        console.error('Erro ao verificar login do cliente:', error);
+        return false;
+      });
+
+    let customerData = null;
+    if (isLoggedIn) {
+      try {
+        const {data} = await customerAccount.query(`
+          query CustomerDetails {
+            customer {
+              id
+              firstName
+              lastName
+              emailAddress {
+                emailAddress
+              }
+            }
+          }
+        `);
+        customerData = data?.customer || null;
+      } catch (error) {
+        console.error('Erro ao buscar dados do cliente:', error);
+      }
+    }
+
     const [header, collections] = await Promise.all([
       storefront.query(HEADER_QUERY, {
         cache: storefront.CacheLong(),
@@ -130,6 +159,9 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     return {
       header,
       featuredCollections: collections?.collections?.nodes ?? [],
+      // Dados de login agora são críticos
+      isLoggedIn,
+      customerData,
     };
   } catch (error) {
     console.error('Erro em loadCriticalData (root loader):', error);
@@ -138,6 +170,8 @@ async function loadCriticalData({context}: LoaderFunctionArgs) {
     return {
       header: null,
       featuredCollections: [],
+      isLoggedIn: false,
+      customerData: null,
     };
   }
 }
@@ -163,40 +197,6 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       return null;
     });
 
-  // Verificação de login conforme documentação Shopify
-  const isLoggedInPromise = customerAccount
-    .isLoggedIn()
-    .catch((error) => {
-      console.error('Erro ao verificar login do cliente:', error);
-      return false;
-    });
-  
-  // Buscar dados do cliente quando logado
-  const customerDataPromise = isLoggedInPromise.then(async (isLoggedIn) => {
-    if (!isLoggedIn) return null;
-    
-    try {
-      // Buscar dados básicos do cliente incluindo email
-      const {data} = await customerAccount.query(`
-        query CustomerDetails {
-          customer {
-            id
-            firstName
-            lastName
-            emailAddress {
-              emailAddress
-            }
-          }
-        }
-      `);
-      
-      return data?.customer || null;
-    } catch (error) {
-      console.error('Erro ao buscar dados do cliente:', error);
-      return null;
-    }
-  });
-
   // Garante que qualquer falha na recuperação do carrinho não rejeite a stream deferida
   const cartPromise: Promise<any> = cart
     .get()
@@ -207,8 +207,6 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
 
   return {
     cart: cartPromise,
-    isLoggedInPromise,
-    customerDataPromise,
     footer,
   };
 }

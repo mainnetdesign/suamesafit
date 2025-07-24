@@ -314,14 +314,14 @@ export default function Homepage() {
           <TestimonialsSection testimonials={testimonials} />
         )}
 
-        <LimitedTimeOffer
+        {/* <LimitedTimeOffer
           title="oferta por tempo limitado"
           description="aproveite as próximas horas para garantir marmitas saudáveis com preços especiais nos nossos sabores mais vendidos."
           buttonText="peça agora"
           buttonLink="/collections/limited-offer"
           imageUrl={limitedTimeOfferImage}
           deadline="2025-07-30T23:59:59"
-        />
+        /> */}
 
         <AboutUs />
 

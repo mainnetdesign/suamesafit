@@ -52,7 +52,7 @@ export function TestimonialsSection({
   }, [api]);
 
   const autoplayOptions = {
-    delay: 4000,
+    delay: 10000,
     stopOnInteraction: false,
     stopOnMouseEnter: false,
   };

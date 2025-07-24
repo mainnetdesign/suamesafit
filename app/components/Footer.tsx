@@ -9,7 +9,7 @@ export function Footer({
 }) {
   return (
     <footer className="relative overflow-hidden bg-yellow-500 w-full pt-16 pb-24 px-4">
-      <div className="z-20 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+      <div className="relative z-10 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
         {/* Coluna 1 */}
         <div className="flex flex-col gap-6 min-w-[260px]">
           <div className="text-title-h3 text-text-sub-600 leading-none">
@@ -22,13 +22,14 @@ export function Footer({
           </div>
           <div className="flex flex-row gap-4 mt-2">
             {/* Ícones sociais (apenas placeholders) */}
-            <Link
-              to="https://instagram.com/suamesa.fit/"
+            <a
+              href="https://instagram.com/suamesa.fit/"
               target="_blank"
               rel="noopener noreferrer"
+              className="hover:opacity-80 transition-opacity"
             >
               <RiInstagramLine className="w-6 h-6 text-text-sub-600" />
-            </Link>
+            </a>
           </div>
         </div>
         {/* Coluna 2 */}
@@ -37,10 +38,10 @@ export function Footer({
             <div className="text-text-sub-600 text-subheading-xs mb-2">
               HOME
             </div>
-            <div className="text-paragraph-md text-text-sub-600">pratos</div>
-            <div className="text-paragraph-md text-text-sub-600">parcerias</div>
-            <div className="text-paragraph-md text-text-sub-600">blog</div>
-            <div className="text-paragraph-md text-text-sub-600">sobre</div>
+            <Link to="/collections/all" className="text-paragraph-md text-text-sub-600 hover:underline">pratos</Link>
+            <div className="text-paragraph-md text-text-sub-600 opacity-60 cursor-not-allowed">parcerias</div>
+            <div className="text-paragraph-md text-text-sub-600 opacity-60 cursor-not-allowed">blog</div>
+            <Link to="/about" className="text-paragraph-md text-text-sub-600 hover:underline">sobre</Link>
           </div>
           <div className="flex flex-col gap-2 min-w-[120px]">
             <div className="text-text-sub-600  text-subheading-xs mb-2">
@@ -62,7 +63,7 @@ export function Footer({
               </div>
             )}
           </div>
-          <div className="flex opacity-30 flex-col gap-2 min-w-[120px]">
+          {/* <div className="flex opacity-30 flex-col gap-2 min-w-[120px]">
             <div className="text-text-sub-600 text-subheading-xs mb-2">
               SOBRE NÓS
             </div>
@@ -71,8 +72,30 @@ export function Footer({
             </div>
             <div className="text-paragraph-md text-text-sub-600">equipe</div>
             <div className="text-paragraph-md text-text-sub-600">parcerias</div>
-          </div>
+          </div> */}
           <div className="flex flex-col gap-2 min-w-[120px]">
+            <div className="text-text-sub-600 text-subheading-xs mb-2">
+              CONTATO
+            </div>
+            <div className="text-paragraph-md text-text-sub-600">
+            falecom.suamesafit@gmail.com
+            </div>
+            <div className="text-paragraph-md text-text-sub-600">
+            WhatsApp:&nbsp;
+            <a
+              href="https://wa.me/5511975542188"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-text-sub-600"
+            >
+              11 97554-2188
+            </a>
+            </div>
+            <div className="text-paragraph-md text-text-sub-600">
+            Segunda a sexta das 9h às 18h
+            </div>
+          </div>
+          {/* <div className="flex flex-col gap-2 min-w-[120px]">
             <div className="text-text-sub-600 text-subheading-xs mb-2">
               LEGAL
             </div>
@@ -82,10 +105,10 @@ export function Footer({
             <div className="text-paragraph-md text-text-sub-600">
               termos de uso
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
-      <div className="z-20 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-12 gap-4 text-text-sub-600 text-base">
+      <div className="relative z-10 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center mt-12 gap-4 text-text-sub-600 text-base">
         <div>sua marmita fit © 2025. all rights reserved</div>
         <div>
           powered by{' '}
@@ -100,7 +123,7 @@ export function Footer({
         </div>
       </div>
       {/* SVGs */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
         <div data-svg-wrapper className="absolute bottom-[-30px] left-[-30px]">
           <svg
             width="182"

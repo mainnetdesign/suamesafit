@@ -8,13 +8,14 @@ import * as Button from '~/components/align-ui/ui/button';
 import * as Select from '~/components/align-ui/ui/select';
 import * as Input from '~/components/align-ui/ui/input';
 import * as Popover from '~/components/align-ui/ui/popover';
+import * as Checkbox from '~/components/align-ui/ui/checkbox';
 import {Calendar as AlignCalendar} from '~/components/align-ui/ui/datepicker';
 import {Calendar as ShadCalendar} from '~/components/shad-cn/ui/calendar';
 import {format, addDays, isWeekend, isBefore, startOfToday} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import type {AttributeInput} from '@shopify/hydrogen/storefront-api-types';
 import {useAside} from '~/components/Aside';
-import {getShippingVariantByDistance, DELIVERY_DISTANCE_RANGES} from '~/config/delivery';
+import {getShippingVariantByDistance, DELIVERY_DISTANCE_RANGES, DELIVERY_PAYMENT_ON_DELIVERY_RANGES} from '~/config/delivery';
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
@@ -73,18 +74,13 @@ function CartSummaryPage({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
+  const [paymentOnDelivery, setPaymentOnDelivery] = useState<boolean>(false);
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
   
   // Fetcher único para todas as operações do checkout
   const checkoutFetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.data?.distanceKm !== undefined && !fetcher.data?.error) {
-      const variantId = getShippingVariantByDistance(fetcher.data.distanceKm);
-      if (variantId) {
-        setShippingVariantId(variantId);
-      }
-    }
     if (fetcher.data?.distanceKm !== undefined) {
       // eslint-disable-next-line no-console
       console.log(`Distância calculada: ${fetcher.data.distanceKm.toFixed(2)} km`);
@@ -124,16 +120,21 @@ function CartSummaryPage({
 
   // Função para obter o preço estimado do frete baseado na distância
   const getEstimatedShippingPrice = (): string => {
-    if (!shippingVariantId) return '-';
+    if (!fetcher.data?.distanceKm) return '-';
     
-    const price = getVariantPrice(shippingVariantId);
+    // Calcular variante baseada na distância e método de pagamento atual
+    const currentShippingVariantId = getShippingVariantByDistance(fetcher.data.distanceKm, paymentOnDelivery);
+    if (!currentShippingVariantId) return '-';
+    
+    const price = getVariantPrice(currentShippingVariantId);
     if (price !== null) {
       return price.toFixed(2).replace('.', ',');
     }
     
     // Se não encontrou no carrinho, tenta buscar na configuração
-    const range = DELIVERY_DISTANCE_RANGES.find(
-      r => r.shippingVariantId === shippingVariantId
+    const ranges = paymentOnDelivery ? DELIVERY_PAYMENT_ON_DELIVERY_RANGES : DELIVERY_DISTANCE_RANGES;
+    const range = ranges.find(
+      r => r.shippingVariantId === currentShippingVariantId
     );
     
     return range ? range.label : '-';
@@ -147,9 +148,16 @@ function CartSummaryPage({
       console.log('❌ Dados incompletos para checkout:', {
         distanceKm: fetcher.data?.distanceKm,
         selectedTimeSlot,
-        selectedDeliveryLocation,
-        shippingVariantId
+        selectedDeliveryLocation
       });
+      return;
+    }
+
+    // Calcular o shippingVariantId no momento do checkout
+    const calculatedShippingVariantId = getShippingVariantByDistance(fetcher.data.distanceKm, paymentOnDelivery);
+    
+    if (!calculatedShippingVariantId) {
+      console.log('❌ Não foi possível calcular variante de frete');
       return;
     }
 
@@ -157,9 +165,20 @@ function CartSummaryPage({
       distanceKm: fetcher.data.distanceKm,
       selectedTimeSlot,
       selectedDeliveryLocation,
-      shippingVariantId,
+      shippingVariantId: calculatedShippingVariantId,
+      paymentOnDelivery,
       cep
     });
+
+    // Debug adicional para verificar qual array está sendo usado
+    console.log('🔍 DEBUG - Estado do checkbox paymentOnDelivery:', paymentOnDelivery);
+    console.log('🔍 DEBUG - Array sendo usado:', paymentOnDelivery ? 'DELIVERY_PAYMENT_ON_DELIVERY_RANGES' : 'DELIVERY_DISTANCE_RANGES');
+    
+    // Verificar se a variante calculada existe no array correto
+    const ranges = paymentOnDelivery ? DELIVERY_PAYMENT_ON_DELIVERY_RANGES : DELIVERY_DISTANCE_RANGES;
+    const foundRange = ranges.find(r => r.shippingVariantId === calculatedShippingVariantId);
+    console.log('🔍 DEBUG - Range encontrado:', foundRange);
+    console.log('🔍 DEBUG - Todos os ranges disponíveis:', ranges.map(r => ({ maxKm: r.maxDistanceKm, id: r.shippingVariantId })));
 
     // Preparar o conteúdo da nota
     const noteContent = `INFORMAÇÕES DE ENTREGA:
@@ -168,11 +187,13 @@ Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} 
 Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
 Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
 Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
+${paymentOnDelivery ? '💳 PAGAMENTO NA ENTREGA (VR/VA/Cartão)' : ''}
 ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`;
 
     console.log('📝 NOTA PREPARADA:');
     console.log(noteContent);
     console.log('📝 Tamanho da nota:', noteContent.length, 'caracteres');
+    console.log('🚚 Variante de frete selecionada:', calculatedShippingVariantId);
 
     // Atualizar tudo em uma única operação para evitar conflitos
     console.log('📤 ENVIANDO DADOS PARA O SERVIDOR...');
@@ -183,7 +204,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
           inputs: {
             lines: [
               {
-                merchandiseId: shippingVariantId,
+                merchandiseId: calculatedShippingVariantId,
                 quantity: 1,
               },
             ],
@@ -197,6 +218,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         'attributes[Horário de Entrega]': selectedTimeSlot,
         'attributes[Local de Entrega]': selectedDeliveryLocation,
         'attributes[Data de Entrega]': selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : '',
+        'attributes[Método de Pagamento]': paymentOnDelivery ? 'Pagamento na Entrega' : 'Online',
         redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
       },
       {method: 'post', action: '/cart'}
@@ -379,6 +401,22 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Checkbox para pagamento na entrega */}
+        {selectedDeliveryLocation && (
+          <div className="w-full mt-4">
+            <div className="flex items-start gap-3">
+              <Checkbox.Root
+                checked={paymentOnDelivery}
+                onCheckedChange={(checked) => setPaymentOnDelivery(checked === true)}
+                className="mt-0.5"
+              />
+              <label className="text-label-sm text-text-sub-600 cursor-pointer" onClick={() => setPaymentOnDelivery(!paymentOnDelivery)}>
+                Pretendo pagar com VR/VA, Voucher ou cartão/débito na entrega
+              </label>
+            </div>
           </div>
         )}
         

@@ -103,9 +103,11 @@ const COLLECTION_PRODUCTS_QUERY = `#graphql
 // - 'vegetariano' para mostrar produtos vegetarianos
 // - 'low-carb' para mostrar produtos low-carb
 // - 'fitness' para mostrar produtos fitness
+// - 'kits' para mostrar kits de marmitas
 // ============================================================================
 
 const HOMEPAGE_FEATURED_COLLECTION = 'carne-bovina'; // 👈 ALTERE AQUI PARA CUSTOMIZAR
+const KITS_COLLECTION = 'kits'; // 👈 Coleção específica para kits
 
 // ============================================================================
 // CONFIGURAÇÃO AVANÇADA (OPCIONAL)
@@ -204,6 +206,14 @@ export async function loader(args: LoaderFunctionArgs) {
     },
   });
 
+  // Buscar produtos da coleção kits
+  const kitsProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
+    variables: {
+      handle: KITS_COLLECTION,
+      first: 8,
+    },
+  });
+
   // Fetch testimonials
   const {shop} = await storefront.query(SHOP_TESTIMONIALS_QUERY);
   const testimonials = JSON.parse(
@@ -217,6 +227,8 @@ export async function loader(args: LoaderFunctionArgs) {
     summerProducts: summerCollection.collection?.products?.nodes ?? [],
     homepageProducts: homepageProducts.collection?.products?.nodes ?? [],
     homepageCollectionTitle: homepageProducts.collection?.title ?? '',
+    kitsProducts: kitsProducts.collection?.products?.nodes ?? [],
+    kitsCollectionTitle: kitsProducts.collection?.title ?? '',
   };
 }
 
@@ -302,6 +314,27 @@ export default function Homepage() {
             </div>
 
             <ProductsCarousel products={data.homepageProducts} />
+          </div>
+        </div>
+        <div className="w-full visible flex flex-col justify-center items-center">
+          <div className="max-w-[1200px] pl-4 visible w-full flex flex-col gap-8 justify-center items-center">
+            <div className="w-full pr-4 flex justify-between items-center gap-4">
+              <div className="flex flex-col items-center gap-4">
+                <h3 className="text-title-h4  text-text-sub-600">
+                  kits de marmitas
+                </h3>
+              </div>
+              <Button.Root
+                variant="primary"
+                mode="filled"
+                size="medium"
+                onClick={() => (window.location.href = '/collections/all')}
+              >
+                abrir kits
+              </Button.Root>
+            </div>
+
+            <ProductsCarousel products={data.kitsProducts} />
           </div>
         </div>
 

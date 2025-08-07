@@ -147,6 +147,7 @@ const HOMEPAGE_PRODUCTS_QUERY = `#graphql
     id
     handle
     title
+    tags
     featuredImage {
       id
       altText
@@ -184,6 +185,15 @@ const HOMEPAGE_PRODUCTS_QUERY = `#graphql
   }
 ` as const;
 
+// Função para verificar se um produto tem a tag "destaque"
+function isDestaqueProduct(product: any): boolean {
+  if (product.tags && Array.isArray(product.tags)) {
+    return product.tags.some((tag: string) => tag.toLowerCase() === "destaque");
+  }
+  
+  return false;
+}
+
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -220,12 +230,16 @@ export async function loader(args: LoaderFunctionArgs) {
     shop.testimonials?.value || JSON.stringify(FALLBACK_TESTIMONIALS),
   ) as TestimonialData[];
 
+  // Filtrar produtos que têm a tag "destaque"
+  const allHomepageProducts = homepageProducts.collection?.products?.nodes ?? [];
+  const destaqueProducts = allHomepageProducts.filter(isDestaqueProduct);
+
   return {
     ...deferredData,
     ...criticalData,
     testimonials,
     summerProducts: summerCollection.collection?.products?.nodes ?? [],
-    homepageProducts: homepageProducts.collection?.products?.nodes ?? [],
+    homepageProducts: destaqueProducts,
     homepageCollectionTitle: homepageProducts.collection?.title ?? '',
     kitsProducts: kitsProducts.collection?.products?.nodes ?? [],
     kitsCollectionTitle: kitsProducts.collection?.title ?? '',

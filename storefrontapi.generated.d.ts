@@ -386,7 +386,7 @@ export type HomeMoneyItemFragment = Pick<
 
 export type HomeProductListItemFragment = Pick<
   StorefrontAPI.Product,
-  'id' | 'handle' | 'title'
+  'id' | 'handle' | 'title' | 'tags'
 > & {
   featuredImage?: StorefrontAPI.Maybe<
     Pick<StorefrontAPI.Image, 'id' | 'altText' | 'url' | 'width' | 'height'>
@@ -411,7 +411,7 @@ export type HomepageProductsQuery = {
     Pick<StorefrontAPI.Collection, 'id' | 'title'> & {
       products: {
         nodes: Array<
-          Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
+          Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title' | 'tags'> & {
             featuredImage?: StorefrontAPI.Maybe<
               Pick<
                 StorefrontAPI.Image,
@@ -1777,7 +1777,7 @@ interface GeneratedQueryTypes {
     return: CollectionProductsQuery;
     variables: CollectionProductsQueryVariables;
   };
-  '#graphql\n  fragment HomeMoneyItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment HomeProductListItem on Product {\n    id\n    handle\n    title\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        ...HomeMoneyItem\n      }\n    }\n  }\n  query HomepageProducts(\n    $handle: String!\n    $first: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      title\n      products(first: $first, sortKey: ID) {\n        nodes {\n          ...HomeProductListItem\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  fragment HomeMoneyItem on MoneyV2 {\n    amount\n    currencyCode\n  }\n  fragment HomeProductListItem on Product {\n    id\n    handle\n    title\n    tags\n    featuredImage {\n      id\n      altText\n      url\n      width\n      height\n    }\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n      }\n    }\n    priceRange {\n      minVariantPrice {\n        ...HomeMoneyItem\n      }\n    }\n  }\n  query HomepageProducts(\n    $handle: String!\n    $first: Int\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(country: $country, language: $language) {\n    collection(handle: $handle) {\n      id\n      title\n      products(first: $first, sortKey: ID) {\n        nodes {\n          ...HomeProductListItem\n        }\n      }\n    }\n  }\n': {
     return: HomepageProductsQuery;
     variables: HomepageProductsQueryVariables;
   };

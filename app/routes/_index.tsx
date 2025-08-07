@@ -138,7 +138,8 @@ const COLLECTION_OPTIONS = {
 // Para usar a configuração avançada, descomente a linha abaixo e comente a linha acima:
 // const HOMEPAGE_FEATURED_COLLECTION = COLLECTION_OPTIONS['carne-bovina'].handle;
 
-const HOMEPAGE_PRODUCTS_QUERY = `#graphql
+// Query para buscar produtos por tag "destaque"
+const FEATURED_PRODUCTS_BY_TAG_QUERY = `#graphql
   fragment HomeMoneyItem on MoneyV2 {
     amount
     currencyCode
@@ -148,6 +149,52 @@ const HOMEPAGE_PRODUCTS_QUERY = `#graphql
     handle
     title
     tags
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    variants(first: 1) {
+      nodes {
+        id
+        availableForSale
+      }
+    }
+    priceRange {
+      minVariantPrice {
+        ...HomeMoneyItem
+      }
+    }
+  }
+  query FeaturedProductsByTag(
+    $query: String!
+    $first: Int
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(
+      first: $first,
+      query: $query,
+      sortKey: RELEVANCE
+    ) {
+      nodes {
+        ...HomeProductListItem
+      }
+    }
+  }
+` as const;
+
+const HOMEPAGE_PRODUCTS_QUERY = `#graphql
+  fragment HomeMoneyItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+  fragment HomeProductListItem on Product {
+    id
+    handle
+    title
     featuredImage {
       id
       altText
@@ -185,15 +232,6 @@ const HOMEPAGE_PRODUCTS_QUERY = `#graphql
   }
 ` as const;
 
-// Função para verificar se um produto tem a tag "destaque"
-function isDestaqueProduct(product: any): boolean {
-  if (product.tags && Array.isArray(product.tags)) {
-    return product.tags.some((tag: string) => tag.toLowerCase() === "destaque");
-  }
-  
-  return false;
-}
-
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
@@ -208,10 +246,10 @@ export async function loader(args: LoaderFunctionArgs) {
     variables: {handle: 'summer-collection', first: 4},
   });
 
-  // Buscar produtos da coleção em destaque
-  const homepageProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
+  // Buscar produtos com a tag "destaque"
+  const homepageProducts = await storefront.query(FEATURED_PRODUCTS_BY_TAG_QUERY, {
     variables: {
-      handle: HOMEPAGE_FEATURED_COLLECTION,
+      query: 'tag:destaque',
       first: 8,
     },
   });
@@ -230,17 +268,13 @@ export async function loader(args: LoaderFunctionArgs) {
     shop.testimonials?.value || JSON.stringify(FALLBACK_TESTIMONIALS),
   ) as TestimonialData[];
 
-  // Filtrar produtos que têm a tag "destaque"
-  const allHomepageProducts = homepageProducts.collection?.products?.nodes ?? [];
-  const destaqueProducts = allHomepageProducts.filter(isDestaqueProduct);
-
   return {
     ...deferredData,
     ...criticalData,
     testimonials,
     summerProducts: summerCollection.collection?.products?.nodes ?? [],
-    homepageProducts: destaqueProducts,
-    homepageCollectionTitle: homepageProducts.collection?.title ?? '',
+    homepageProducts: homepageProducts.products?.nodes ?? [],
+    homepageCollectionTitle: 'Pratos em Destaque', // Título fixo já que não vem de uma coleção
     kitsProducts: kitsProducts.collection?.products?.nodes ?? [],
     kitsCollectionTitle: kitsProducts.collection?.title ?? '',
   };

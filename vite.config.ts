@@ -40,6 +40,7 @@ export default defineConfig({
       'concrete-willingly-alien.ngrok-free.app',
       'subtly-intense-toucan.ngrok-free.app',
       '*.ngrok-free.app',
+      '6034d8f85dd6.ngrok-free.app'
     ],
   },
   ssr: {

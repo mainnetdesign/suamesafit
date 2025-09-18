@@ -57,7 +57,7 @@ export function PageLayout({
       {/* Botão fixo do WhatsApp */}
       <div className="fixed bottom-6 right-6 z-50">
         <a
-          href="https://wa.me/5511941174242"
+          href="https://wa.me/5527998469639"
           target="_blank"
           rel="noopener noreferrer"
           className="w-12 h-12 relative bg-green-100 rounded-[685.03px] overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex items-center justify-center"

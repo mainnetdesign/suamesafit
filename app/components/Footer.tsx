@@ -83,7 +83,7 @@ export function Footer({
             <div className="text-paragraph-md text-text-sub-600">
             WhatsApp:&nbsp;
             <a
-              href="https://wa.me/5511941174242"
+              href="https://wa.me/5527998469639"
               target="_blank"
               rel="noopener noreferrer"
               className="underline text-text-sub-600"

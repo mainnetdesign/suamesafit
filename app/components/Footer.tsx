@@ -88,7 +88,7 @@ export function Footer({
               rel="noopener noreferrer"
               className="underline text-text-sub-600"
             >
-              11 94117-4242
+              27 99846-9639
             </a>
             </div>
             <div className="text-paragraph-md text-text-sub-600">

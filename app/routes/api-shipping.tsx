@@ -60,7 +60,7 @@ async function geocodeAddress(address: string, city: string, state: string): Pro
     );
     
     if (resp.ok) {
-      const data = await resp.json();
+      const data: any = await resp.json();
       if (data.length > 0 && data[0].lat && data[0].lon) {
         const lat = parseFloat(data[0].lat);
         const lon = parseFloat(data[0].lon);
@@ -84,7 +84,7 @@ async function geocodeAddress(address: string, city: string, state: string): Pro
 /**
  * Busca CEP com fallback entre múltiplas APIs
  */
-async function fetchCepWithFallback(cep: string): Promise<CepData> {
+async function fetchCepWithFallback(cep: string, awesomeApiKey?: string): Promise<CepData> {
   // Verifica cache primeiro
   const cached = getCachedCoords(cep);
   if (cached) {
@@ -95,7 +95,9 @@ async function fetchCepWithFallback(cep: string): Promise<CepData> {
     // API 1: AwesomeAPI (tem coordenadas precisas!)
     {
       name: 'AwesomeAPI',
-      url: `https://cep.awesomeapi.com.br/json/${cep}`,
+      url: awesomeApiKey 
+        ? `https://cep.awesomeapi.com.br/json/${cep}?token=${awesomeApiKey}`
+        : `https://cep.awesomeapi.com.br/json/${cep}`,
       transform: async (data: any): Promise<CepData | null> => {
         const lat = data.lat ? parseFloat(data.lat) : null;
         const lon = data.lng ? parseFloat(data.lng) : null;
@@ -262,9 +264,12 @@ async function fetchCepWithFallback(cep: string): Promise<CepData> {
   throw new Error(`Não foi possível consultar o CEP. Tentativas: ${errors.join('; ')}`);
 }
 
-export async function loader({request}: LoaderFunctionArgs) {
+export async function loader({request, context}: LoaderFunctionArgs) {
   const url = new URL(request.url);
   const cep = (url.searchParams.get('cep') || '').replace(/\D/g, ''); // apenas dígitos
+
+  // Pegar a chave da API AwesomeAPI das variáveis de ambiente
+  const awesomeApiKey = context.env.AWESOME_API_KEY;
 
   console.log(`🚚 API Shipping: Processando CEP ${cep}`);
   console.log(`🌐 Request info:`, {
@@ -272,6 +277,12 @@ export async function loader({request}: LoaderFunctionArgs) {
     userAgent: request.headers.get('user-agent'),
     origin: request.headers.get('origin'),
   });
+  
+  if (awesomeApiKey) {
+    console.log(`🔑 AwesomeAPI: Usando chave API (${awesomeApiKey.substring(0, 8)}...)`);
+  } else {
+    console.log(`⚠️ AwesomeAPI: Sem chave API configurada`);
+  }
 
   if (cep.length !== 8) {
     console.log(`❌ CEP inválido: ${cep} (${cep.length} dígitos)`);
@@ -281,10 +292,10 @@ export async function loader({request}: LoaderFunctionArgs) {
   try {
     // Busca dados do CEP com fallback
     console.log(`🔍 Iniciando busca do CEP ${cep} com fallback`);
-    const cepData = await fetchCepWithFallback(cep);
+    const cepData = await fetchCepWithFallback(cep, awesomeApiKey);
     
     console.log(`📍 CEP ${cep}: ${cepData.city}, ${cepData.state}`);
-    
+
     // Verifica se o CEP é de São Paulo
     if (cepData.state !== 'SP') {
       console.log(`❌ CEP fora de alcance: ${cepData.state} (apenas SP)`);

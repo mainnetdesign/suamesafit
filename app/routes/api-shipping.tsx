@@ -38,33 +38,44 @@ function setCachedCoords(cep: string, data: CepData) {
 
 /**
  * Função auxiliar para geocoding se necessário
+ * Agora aceita endereço completo para melhor precisão
  */
-async function geocodeAddress(city: string, state: string): Promise<{lat: number; lon: number} | null> {
+async function geocodeAddress(address: string, city: string, state: string): Promise<{lat: number; lon: number} | null> {
   try {
-    console.log(`🌍 Tentando geocoding para ${city}, ${state}`);
-    const query = encodeURIComponent(`${city}, ${state}, Brazil`);
-    const resp = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`,
+    // Delay para respeitar rate limit do Nominatim (max 1 req/segundo)
+    await new Promise(resolve => setTimeout(resolve, 1100));
+    
+    // Primeira tentativa: endereço completo
+    console.log(`🌍 Tentando geocoding para ${address}, ${city}, ${state}`);
+    const fullQuery = encodeURIComponent(`${address}, ${city}, ${state}, Brazil`);
+    let resp = await fetch(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${fullQuery}&limit=1&addressdetails=1`,
       {
         headers: {
           'User-Agent': 'SuaMesaFit/1.0',
+          'Accept-Language': 'pt-BR,pt',
         },
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(8000),
       }
     );
     
     if (resp.ok) {
       const data = await resp.json();
       if (data.length > 0 && data[0].lat && data[0].lon) {
-        console.log(`✅ Geocoding bem-sucedido para ${city}, ${state}`);
-        return {
-          lat: parseFloat(data[0].lat),
-          lon: parseFloat(data[0].lon)
-        };
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+        
+        // Verifica se a resposta é específica (não é só a cidade)
+        const importance = parseFloat(data[0].importance || '0');
+        console.log(`✅ Geocoding bem-sucedido (endereço completo): lat=${lat}, lon=${lon}, importance=${importance}`);
+        
+        return { lat, lon };
       }
     }
+    
+    console.log(`⚠️ Geocoding com endereço completo não retornou resultados`);
   } catch (error) {
-    console.error(`❌ Geocoding falhou para ${city}, ${state}:`, error);
+    console.error(`❌ Geocoding falhou para ${address}, ${city}, ${state}:`, error);
   }
   
   return null;
@@ -117,9 +128,10 @@ async function fetchCepWithFallback(cep: string): Promise<CepData> {
           };
         }
         
-        // Se não tiver coordenadas, tenta geocoding com mais detalhes
-        if (data.logradouro && data.bairro) {
-          const coords = await geocodeAddress(`${data.logradouro}, ${data.bairro}, ${data.localidade}`, data.uf);
+        // Se não tiver coordenadas, tenta geocoding com endereço completo
+        if (data.logradouro && data.bairro && data.localidade && data.uf) {
+          const address = `${data.logradouro}, ${data.bairro}`;
+          const coords = await geocodeAddress(address, data.localidade, data.uf);
           if (coords) {
             return {
               lat: coords.lat,
@@ -150,9 +162,10 @@ async function fetchCepWithFallback(cep: string): Promise<CepData> {
           };
         }
         
-        // Tenta geocoding com mais detalhes se disponível
-        if (data.street && data.neighborhood) {
-          const coords = await geocodeAddress(`${data.street}, ${data.neighborhood}, ${data.city}`, data.state);
+        // Tenta geocoding com endereço completo
+        if (data.street && data.neighborhood && data.city && data.state) {
+          const address = `${data.street}, ${data.neighborhood}`;
+          const coords = await geocodeAddress(address, data.city, data.state);
           if (coords) {
             return {
               lat: coords.lat,
@@ -174,8 +187,9 @@ async function fetchCepWithFallback(cep: string): Promise<CepData> {
         if (data.erro) return null;
         
         // ViaCEP não retorna coordenadas, usa geocoding com endereço completo
-        if (data.logradouro && data.bairro) {
-          const coords = await geocodeAddress(`${data.logradouro}, ${data.bairro}, ${data.localidade}`, data.uf);
+        if (data.logradouro && data.bairro && data.localidade && data.uf) {
+          const address = `${data.logradouro}, ${data.bairro}`;
+          const coords = await geocodeAddress(address, data.localidade, data.uf);
           if (coords) {
             return {
               lat: coords.lat,
@@ -206,6 +220,13 @@ async function fetchCepWithFallback(cep: string): Promise<CepData> {
       });
       
       console.log(`📡 ${api.name} - Status: ${resp.status}`);
+      
+      // Tratamento especial para rate limit (HTTP 429)
+      if (resp.status === 429) {
+        console.log(`⏳ ${api.name} retornou 429 (rate limit) - pulando para próxima API`);
+        errors.push(`${api.name}: HTTP 429 (rate limit)`);
+        continue; // Tenta a próxima API imediatamente
+      }
       
       if (resp.ok) {
         const rawData = await resp.json();

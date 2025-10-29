@@ -1,6 +1,9 @@
 import {Image, Video} from '@shopify/hydrogen';
 import {useEffect, useState} from 'react';
-import testimonial1 from '../assets/about-us/hero.jpg';
+import testimonial1 from '../assets/about-us/foto-1.jpg';
+import foto3 from '../assets/about-us/foto-3.jpg';
+import foto4 from '../assets/about-us/foto-4.jpg';
+import foto5 from '../assets/about-us/foto-5.jpg';
 import erikaImage from '../assets/about-us/erika.jpg';
 import janainaImage from '../assets/about-us/janaina.jpg';
 
@@ -53,9 +56,7 @@ export default function About() {
             alt="Testimonial 1"
           />
           <p className="text-text-sub-600 text-paragraph-xl text-center mt-4 max-w-[600px] mx-auto">
-            Janaina e Erika são duas profissionais apaixonadas que se uniram em
-            um projeto incrível: a criação de marmitas fitness saudáveis e
-            saborosas
+          Janaina é uma profissional apaixonada que transformou sua dedicação em um projeto incrível: a criação de marmitas fitness saudáveis e saborosas.
           </p>
         </div>
       </div>
@@ -64,40 +65,12 @@ export default function About() {
       <div className="p-8 bg-cream">
         <div className="container max-w-[1200px] mx-auto">
           <h2 className="text-title-h2 text-center text-text-sub-600 mb-12">
-            quem somos nós?
+            Quem sou eu?
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-12 items-start">
-            {/* 1st Person */}
-            <div className="flex flex-col items-center">
-              <div className="w-full h-[300px] rounded-lg overflow-hidden mb-6">
-                <Image
-                  src={erikaImage}
-                  alt="Erika Kenzler - Fundadora e CEO"
-                  className="w-full object-top"
-                />
-              </div>
-              <h4 className="w-full text-title-h5 text-left font-semibold text-text-sub-600 mb-4">
-                Erika Kenzler
-              </h4>
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 text-left">
-                <div>
-                  <p>
-                    Fundadora e CEO, apaixonada por alimentação saudável e
-                    inovação.
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    Lidera o desenvolvimento de novos produtos e a experiência
-                    do cliente.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* 2nd Person */}
-            <div className="flex flex-col  items-center">
+          <div className="flex justify-center">
+             {/* 1nd Person */}
+            <div className="flex flex-col items-center max-w-[600px]">
               <div className="w-full h-[300px] rounded-lg overflow-hidden mb-6">
                 <Image
                   src={janainaImage}
@@ -105,22 +78,13 @@ export default function About() {
                   className="w-full object-top"
                 />
               </div>
-              <h4 className="w-full text-title-h5 text-left font-semibold text-text-sub-600 mb-4">
+              <h4 className="w-full text-title-h5 text-center font-semibold text-text-sub-600 mb-4">
                 Janaína Cipriano
               </h4>
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 text-left">
-                <div>
-                  <p>
-                    Co-fundadora e Diretora de Operações, responsável pela
-                    gestão da produção
-                  </p>
-                </div>
-                <div>
-                  <p>
-                    e logística, garantindo qualidade e pontualidade nas
-                    entregas.
-                  </p>
-                </div>
+              <div className="text-sm text-gray-700 text-center">
+                <p>
+                Co-fundadora e Diretora de Operações, responsável por coordenar a produção e a logística, assegurando a qualidade e a pontualidade de cada entrega.
+                </p>
               </div>
             </div>
           </div>
@@ -175,9 +139,9 @@ export default function About() {
             <section id="saude" className="scroll-mt-28">
               <div className="rounded-2xl overflow-hidden">
                 <Image
-                  src={testimonial1}
+                  src={foto3}
                   alt="Prato saudável"
-                  className="w-full h-[320px] md:h-[460px] object-cover object-top"
+                  className="w-full h-[320px] md:h-[460px] object-cover object-center"
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -196,9 +160,9 @@ export default function About() {
             <section id="praticidade" className="scroll-mt-28">
               <div className="rounded-2xl overflow-hidden">
                 <Image
-                  src={testimonial1}
+                  src={foto4}
                   alt="Praticidade com sabor"
-                  className="w-full h-[320px] md:h-[460px] object-cover object-top"
+                  className="w-full h-[320px] md:h-[460px] object-cover object-[center_35%]"
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -216,9 +180,9 @@ export default function About() {
             <section id="transparencia" className="scroll-mt-28">
               <div className="rounded-2xl overflow-hidden">
                 <Image
-                  src={testimonial1}
+                  src={foto5}
                   alt="Transparência e confiança"
-                  className="w-full h-[320px] md:h-[460px] object-cover object-top"
+                  className="w-full h-[320px] md:h-[460px] object-cover object-center"
                 />
               </div>
               <div className="grid md:grid-cols-2 gap-6 mt-6">

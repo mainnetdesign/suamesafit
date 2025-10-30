@@ -23,6 +23,7 @@ import {
 } from '~/components/NutritionalTable';
 import HeaderNew from '~/components/HeaderNew';
 import type {RootLoader} from '~/root';
+import PoweredBy from '~/components/custom/PoweredBy';
 
 export const meta: MetaFunction<typeof loader> = ({data}) => {
   return [
@@ -231,6 +232,18 @@ export default function Product() {
   const {title, descriptionHtml} = product;
   const [showDescription, setShowDescription] = React.useState(true);
 
+  const showPoweredBy = React.useMemo(() => {
+    try {
+      const handles =
+        product?.collections?.nodes?.map((n: any) =>
+          (n?.handle || '').toLowerCase(),
+        ) || [];
+      return handles.includes('sobremesas');
+    } catch {
+      return false;
+    }
+  }, [product]);
+
   // Calcular o índice da variante selecionada com proteção
   const selectedVariantIndex = React.useMemo(() => {
     try {
@@ -297,6 +310,9 @@ export default function Product() {
           />
           <div className="flex flex-col gap-8 max-w-[400px]">
             <div className="flex flex-col gap-4">
+              {showPoweredBy && (
+                <PoweredBy brand="TrustFuel" variants={["TrustFuel"]} />
+              )}
               <h3 className="text-text-sub-600 text-title-h3">{title}</h3>
               <ProductPrice
                 price={selectedVariant?.price}

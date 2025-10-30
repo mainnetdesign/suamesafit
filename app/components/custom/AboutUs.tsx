@@ -5,7 +5,7 @@ import {Link} from '@remix-run/react';
 import pratoImage from '~/assets/about-us/1-NASUAMARMITA-THIAGOFARIAS-43.png';
 import {useCursorColor} from '~/components/shad-cn/ui/CursorContext';
 import * as Button from '~/components/align-ui/ui/button';
-import equipeImage from '~/assets/home/equipe.png';
+import equipeImage from '~/assets/home/jana.jpeg';
 
 export function AboutUs() {
   const {setColor, setBorderColor} = useCursorColor();
@@ -111,8 +111,7 @@ export function AboutUs() {
         </div>
       </div>
       <p className="w-[296px] text-paragraph-lg text-center justify-start text-text-sub-600">
-        Janaina e Erika são duas profissionais apaixonadas que se uniram em um
-        projeto incrível: a criação de marmitas fitness saudáveis e saborosas
+        Janaina decidiu abandonar seu emprego e se dedicar a criar marmitas fitness saudáveis e saborosas para seus clientes.
       </p>
     </section>
   );

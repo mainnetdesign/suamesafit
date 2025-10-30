@@ -1,11 +1,8 @@
 import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
 import {useLoaderData, Link, type MetaFunction} from '@remix-run/react';
-import { useEffect, useState} from 'react';
-import {Image } from '@shopify/hydrogen';
-import type {
-  FeaturedCollectionFragment,
-
-} from 'storefrontapi.generated';
+import {useEffect, useState} from 'react';
+import {Image} from '@shopify/hydrogen';
+import type {FeaturedCollectionFragment} from 'storefrontapi.generated';
 
 import {InteractiveHoverButton} from '~/components/magic-ui/ui/button';
 
@@ -96,16 +93,18 @@ const COLLECTION_PRODUCTS_QUERY = `#graphql
 // ============================================================================
 // CONFIGURAÇÃO CUSTOMIZÁVEL - PRODUTOS EM DESTAQUE NA HOMEPAGE
 // ============================================================================
-// Para alterar a coleção mostrada na seção "pratos em destaque", 
+// Para alterar a coleção mostrada na seção "pratos em destaque",
 // simplesmente altere o valor abaixo com o handle da coleção desejada:
 // Exemplos:
 // - 'carne-bovina' para mostrar produtos de carne bovina
 // - 'vegetariano' para mostrar produtos vegetarianos
 // - 'low-carb' para mostrar produtos low-carb
 // - 'fitness' para mostrar produtos fitness
+// - 'kits' para mostrar kits de marmitas
 // ============================================================================
 
 const HOMEPAGE_FEATURED_COLLECTION = 'carne-bovina'; // 👈 ALTERE AQUI PARA CUSTOMIZAR
+const KITS_COLLECTION = 'kits'; // 👈 Coleção específica para kits
 
 // ============================================================================
 // CONFIGURAÇÃO AVANÇADA (OPCIONAL)
@@ -117,24 +116,72 @@ const HOMEPAGE_FEATURED_COLLECTION = 'carne-bovina'; // 👈 ALTERE AQUI PARA CU
 const COLLECTION_OPTIONS = {
   'carne-bovina': {
     handle: 'carne-bovina',
-    fallbackTitle: 'Carne Bovina em Destaque'
+    fallbackTitle: 'Carne Bovina em Destaque',
   },
-  'vegetariano': {
-    handle: 'vegetariano', 
-    fallbackTitle: 'Pratos Vegetarianos'
+  vegetariano: {
+    handle: 'vegetariano',
+    fallbackTitle: 'Pratos Vegetarianos',
   },
   'low-carb': {
     handle: 'low-carb',
-    fallbackTitle: 'Opções Low-Carb'
+    fallbackTitle: 'Opções Low-Carb',
   },
-  'fitness': {
+  fitness: {
     handle: 'fitness',
-    fallbackTitle: 'Refeições Fitness'
-  }
+    fallbackTitle: 'Refeições Fitness',
+  },
 };
 
 // Para usar a configuração avançada, descomente a linha abaixo e comente a linha acima:
 // const HOMEPAGE_FEATURED_COLLECTION = COLLECTION_OPTIONS['carne-bovina'].handle;
+
+// Query para buscar produtos por tag "destaque"
+const FEATURED_PRODUCTS_BY_TAG_QUERY = `#graphql
+  fragment HomeMoneyItem on MoneyV2 {
+    amount
+    currencyCode
+  }
+  fragment HomeProductListItem on Product {
+    id
+    handle
+    title
+    tags
+    featuredImage {
+      id
+      altText
+      url
+      width
+      height
+    }
+    variants(first: 1) {
+      nodes {
+        id
+        availableForSale
+      }
+    }
+    priceRange {
+      minVariantPrice {
+        ...HomeMoneyItem
+      }
+    }
+  }
+  query FeaturedProductsByTag(
+    $query: String!
+    $first: Int
+    $country: CountryCode
+    $language: LanguageCode
+  ) @inContext(country: $country, language: $language) {
+    products(
+      first: $first,
+      query: $query,
+      sortKey: RELEVANCE
+    ) {
+      nodes {
+        ...HomeProductListItem
+      }
+    }
+  }
+` as const;
 
 const HOMEPAGE_PRODUCTS_QUERY = `#graphql
   fragment HomeMoneyItem on MoneyV2 {
@@ -196,10 +243,21 @@ export async function loader(args: LoaderFunctionArgs) {
     variables: {handle: 'summer-collection', first: 4},
   });
 
-  // Buscar produtos da coleção em destaque
-  const homepageProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
+  // Buscar produtos com a tag "destaque"
+  const homepageProducts = await storefront.query(
+    FEATURED_PRODUCTS_BY_TAG_QUERY,
+    {
+      variables: {
+        query: 'tag:destaque',
+        first: 8,
+      },
+    },
+  );
+
+  // Buscar produtos da coleção kits
+  const kitsProducts = await storefront.query(HOMEPAGE_PRODUCTS_QUERY, {
     variables: {
-      handle: HOMEPAGE_FEATURED_COLLECTION,
+      handle: KITS_COLLECTION,
       first: 8,
     },
   });
@@ -215,8 +273,10 @@ export async function loader(args: LoaderFunctionArgs) {
     ...criticalData,
     testimonials,
     summerProducts: summerCollection.collection?.products?.nodes ?? [],
-    homepageProducts: homepageProducts.collection?.products?.nodes ?? [],
-    homepageCollectionTitle: homepageProducts.collection?.title ?? '',
+    homepageProducts: homepageProducts.products?.nodes ?? [],
+    homepageCollectionTitle: 'Pratos em Destaque', // Título fixo já que não vem de uma coleção
+    kitsProducts: kitsProducts.collection?.products?.nodes ?? [],
+    kitsCollectionTitle: kitsProducts.collection?.title ?? '',
   };
 }
 
@@ -304,6 +364,27 @@ export default function Homepage() {
             <ProductsCarousel products={data.homepageProducts} />
           </div>
         </div>
+        <div className="w-full visible flex flex-col justify-center items-center">
+          <div className="max-w-[1200px] pl-4 visible w-full flex flex-col gap-8 justify-center items-center">
+            <div className="w-full pr-4 flex justify-between items-center gap-4">
+              <div className="flex flex-col items-center gap-4">
+                <h3 className="text-title-h4  text-text-sub-600">
+                  kits de marmitas
+                </h3>
+              </div>
+              <Button.Root
+                variant="primary"
+                mode="filled"
+                size="medium"
+                onClick={() => (window.location.href = '/collections/all')}
+              >
+                abrir kits
+              </Button.Root>
+            </div>
+
+            <ProductsCarousel products={data.kitsProducts} />
+          </div>
+        </div>
 
         <FeaturedCollections
           collections={data.featuredCollections}
@@ -369,9 +450,9 @@ export default function Homepage() {
                   </Accordion.Trigger>
                   <Accordion.Content className="pl-[30px]">
                     Sim! Você pode personalizar sua marmita escolhendo entre
-                    diferentes opções de proteínas, acompanhamentos e guarnições.
-                    Também oferecemos a possibilidade de montar seu próprio
-                    cardápio semanal.
+                    diferentes opções de proteínas, acompanhamentos e
+                    guarnições. Também oferecemos a possibilidade de montar seu
+                    próprio cardápio semanal.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="frescas">
@@ -380,9 +461,9 @@ export default function Homepage() {
                     As marmitas chegam frescas ou congeladas?
                   </Accordion.Trigger>
                   <Accordion.Content className="pl-[30px]">
-                    Nossas marmitas são entregues frescas, preparadas no mesmo dia
-                    da entrega. Elas são embaladas em recipientes térmicos para
-                    manter a temperatura ideal até chegarem em você.
+                    Nossas marmitas são entregues ultracongeladas, preservando
+                    textura, sabor e nutrientes e sem formação de cristais de
+                    gelo
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="durabilidade">
@@ -391,9 +472,9 @@ export default function Homepage() {
                     Quanto tempo as marmitas duram no freezer?
                   </Accordion.Trigger>
                   <Accordion.Content className="pl-[30px]">
-                    Nossas marmitas podem ser conservadas no freezer por até 30
-                    dias, mantendo todo o sabor e qualidade. Recomendamos consumir
-                    em até 3 dias quando mantidas na geladeira.
+                    Nossas marmitas podem ser conservadas no freezer por até 90
+                    dias, mantendo todo o sabor e qualidade. Recomendamos
+                    consumir em até 3 dias quando mantidas na geladeira.
                   </Accordion.Content>
                 </Accordion.Item>
                 <Accordion.Item value="conservantes">
@@ -413,9 +494,9 @@ export default function Homepage() {
                     Para quais regiões vocês entregam?
                   </Accordion.Trigger>
                   <Accordion.Content className="pl-[30px]">
-                    Atualmente atendemos toda a região metropolitana de São Paulo,
-                    incluindo Zona Sul, Zona Norte, Zona Leste, Zona Oeste e
-                    Grande São Paulo. Entre em contato para verificar a
+                    Atualmente atendemos toda a região metropolitana de São
+                    Paulo, incluindo Zona Sul, Zona Norte, Zona Leste, Zona
+                    Oeste e Grande São Paulo. Entre em contato para verificar a
                     disponibilidade na sua região.
                   </Accordion.Content>
                 </Accordion.Item>
@@ -671,51 +752,52 @@ const SHIPPING_VARIANT_IDS = [
 // Função para verificar se um produto é de frete
 function isShippingProduct(product: any): boolean {
   // Verifica se o título do produto é "Frete São Paulo"
-  if (product.title === "Frete São Paulo") {
+  if (product.title === 'Frete São Paulo') {
     return true;
   }
-  
+
   // Verifica se o produto tem a tag "frete"
   if (product.tags && Array.isArray(product.tags)) {
-    return product.tags.some((tag: string) => tag.toLowerCase() === "frete");
+    return product.tags.some((tag: string) => tag.toLowerCase() === 'frete');
   }
-  
+
   return false;
 }
 
 function ProductsCarousel({products}: {products: any[]}) {
   // Filtra produtos de frete
-  const filteredProducts = products?.filter(product => !isShippingProduct(product)) || [];
-  
+  const filteredProducts =
+    products?.filter((product) => !isShippingProduct(product)) || [];
+
   // Remove duplicatas por ID e título similar
   const uniqueProductsMap = new Map();
   const seenTitles = new Set();
-  
+
   filteredProducts.forEach((product: any) => {
     const productId = product.id;
     const productTitle = product.title?.toLowerCase().trim();
-    
+
     // Se já vimos este ID, pular
     if (uniqueProductsMap.has(productId)) {
       return;
     }
-    
+
     // Se já vimos um título muito similar, pular
     if (productTitle && seenTitles.has(productTitle)) {
       return;
     }
-    
+
     // Adicionar produto único
     uniqueProductsMap.set(productId, product);
     if (productTitle) {
       seenTitles.add(productTitle);
     }
   });
-  
+
   const uniqueProducts = Array.from(uniqueProductsMap.values()) as any[];
-  
+
   if (!uniqueProducts.length) return null;
-  
+
   return (
     <div className="visible w-full">
       <Carousel

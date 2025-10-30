@@ -185,7 +185,7 @@ export function Teaser({launchDate, overlay = false}: TeaserProps) {
           variant="neutral"
           mode="stroke"
           size="medium"
-          onClick={() => window.open('https://wa.me/5511941174242', '_blank')}
+          onClick={() => window.open('https://wa.me/5527998469639', '_blank')}
         >
           <RiWhatsappFill />
           pedir no WhatsApp

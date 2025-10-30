@@ -33,6 +33,9 @@ export interface DeliveryDistanceRange {
  * Faixas de distância ordenadas do menor para o maior.
  * IMPORTANTE: Os IDs devem estar na ordem exata das variantes no produto Shopify.
  */
+/**
+ * Faixas de distância para frete padrão (produto "Frete São Paulo")
+ */
 export const DELIVERY_DISTANCE_RANGES: DeliveryDistanceRange[] = [
   {
     maxDistanceKm: 5,
@@ -87,6 +90,62 @@ export const DELIVERY_DISTANCE_RANGES: DeliveryDistanceRange[] = [
 ];
 
 /**
+ * Faixas de distância para pagamento na entrega (produto "Frete (Pag na Entrega)")
+ */
+export const DELIVERY_PAYMENT_ON_DELIVERY_RANGES: DeliveryDistanceRange[] = [
+  {
+    maxDistanceKm: 5,
+    label: '+5km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380058693',
+  },
+  {
+    maxDistanceKm: 10,
+    label: '+10km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380091461',
+  },
+  {
+    maxDistanceKm: 15,
+    label: '+15km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380124229',
+  },
+  {
+    maxDistanceKm: 20,
+    label: '+20km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380156997',
+  },
+  {
+    maxDistanceKm: 25,
+    label: '+25km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380189765',
+  },
+  {
+    maxDistanceKm: 30,
+    label: '+30km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380222533',
+  },
+  {
+    maxDistanceKm: 35,
+    label: '+35km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380255301',
+  },
+  {
+    maxDistanceKm: 40,
+    label: '+40km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380288069',
+  },
+  {
+    maxDistanceKm: 45,
+    label: '+45km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380320837',
+  },
+  {
+    maxDistanceKm: 50,
+    label: '+50km',
+    shippingVariantId: 'gid://shopify/ProductVariant/43258380353605',
+  },
+];
+
+/**
  * Very naive CEP validator.
  *  – Accepts only 8-digit CEPs (with or without hyphen)
  *  – Returns digits-only string or null.
@@ -98,13 +157,17 @@ export function sanitizeCep(raw: string): string | null {
 }
 
 /**
- * Encontra a variante de frete baseada na distância calculada.
+ * Encontra a variante de frete baseada na distância calculada e método de pagamento.
  * @param distanceKm Distância em quilômetros
+ * @param paymentOnDelivery Se true, usa variantes do "Frete (Pag na Entrega)", senão usa "Frete São Paulo"
  * @returns ID da variante de frete ou null se fora da área de entrega
  */
-export function getShippingVariantByDistance(distanceKm: number): string | null {
+export function getShippingVariantByDistance(distanceKm: number, paymentOnDelivery = false): string | null {
+  // Escolhe o array de faixas baseado no método de pagamento
+  const ranges = paymentOnDelivery ? DELIVERY_PAYMENT_ON_DELIVERY_RANGES : DELIVERY_DISTANCE_RANGES;
+  
   // Encontra a primeira faixa que comporta a distância
-  const range = DELIVERY_DISTANCE_RANGES.find(
+  const range = ranges.find(
     range => distanceKm <= range.maxDistanceKm
   );
   

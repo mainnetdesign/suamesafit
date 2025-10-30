@@ -13,6 +13,16 @@ export function BlogCard({
   loading = 'lazy',
   size = 'default',
 }: BlogCardProps) {
+  const categoryValue =
+    (article as any)?.category?.value?.toLowerCase?.() || 'blog';
+  const categoryBg: Record<string, string> = {
+    blog: '#FFC977',
+    novidades: '#FF7070',
+    receitas: '#2BA84A',
+    dicas: '#1E57A4',
+    'nutrição': '#FFA34D',
+  };
+  const badgeBg = categoryBg[categoryValue] || categoryBg['blog'];
   const publishedAt = new Intl.DateTimeFormat('pt-BR', {
     year: 'numeric',
     month: 'long',
@@ -51,6 +61,13 @@ export function BlogCard({
               }
               className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
             />
+            {/* Categoria (badge) */}
+            <div
+              className="absolute top-3 left-3 px-3 py-1 rounded-full text-label-sm text-text-sub-600"
+              style={{backgroundColor: badgeBg}}
+            >
+              {categoryValue}
+            </div>
           </div>
         )}
         <div
@@ -60,9 +77,6 @@ export function BlogCard({
         >
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="text-label-lg text-text-sub-600 bg-yellow-500 px-3 py-1 rounded-full">
-                blog
-              </span>
               {article.author?.name && (
                 <span className="text-label-sm text-text-sub-600 opacity-60">
                   por {article.author.name}

@@ -125,8 +125,24 @@ export default function Article() {
           {title}
         </h1>
 
-        <div className="flex items-center gap-4 text-label-md text-text-sub-600 opacity-60">
-          <time dateTime={article.publishedAt}>{publishedDate}</time>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-4 text-label-md text-text-sub-600 opacity-60">
+            <time dateTime={article.publishedAt}>{publishedDate}</time>
+          </div>
+          {/* Chips de tags */}
+          {Array.isArray(article.tags) && article.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {article.tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="px-4 py-2 rounded-2xl text-label-sm"
+                  style={{backgroundColor: '#F4F1E8', color: 'var(--text-sub-600)'}}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -200,6 +216,10 @@ const ARTICLE_QUERY = `#graphql
           title
           handle
         }
+        tags
+        category: metafield(namespace: "custom", key: "category") {
+          value
+        }
       }
     }
   }
@@ -245,6 +265,10 @@ const BLOG_ARTICLES_QUERY = `#graphql
     title
     blog {
       handle
+    }
+    tags
+    category: metafield(namespace: "custom", key: "category") {
+      value
     }
   }
 ` as const;

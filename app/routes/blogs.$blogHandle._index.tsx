@@ -115,13 +115,16 @@ export default function Blog() {
           connection={articles}
           resourcesClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {({node: article, index}) => (
-            <BlogCard
-              key={article.id}
-              article={article}
-              loading={index < 3 ? 'eager' : 'lazy'}
-            />
-          )}
+          {({node, index}) => {
+            const a = node as any;
+            return (
+              <BlogCard
+                key={a.id}
+                article={a}
+                loading={index < 3 ? 'eager' : 'lazy'}
+              />
+            );
+          }}
         </PaginatedResourceSection>
       </div>
     </div>
@@ -182,6 +185,10 @@ const BLOG_QUERY = `#graphql
     title
     blog {
       handle
+    }
+    tags
+    category: metafield(namespace: "custom", key: "category") {
+      value
     }
   }
 ` as const;

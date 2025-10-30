@@ -121,7 +121,7 @@ export default function Article() {
           )}
         </div>
         
-        <h1 className="text-title-h1 text-text-sub-600 leading-tight">
+        <h1 className="text-title-h3 md:text-title-h1 text-text-sub-600 leading-tight">
           {title}
         </h1>
 

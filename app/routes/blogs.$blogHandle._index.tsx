@@ -87,11 +87,11 @@ export default function Blog() {
               loading="eager"
             />
 
-            <div className="items-center z-10 self-stretch h-[361px] p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 flex flex-col justify-end">
+            <div className="items-center z-10 self-stretch h-[280px] sm:h-[361px] p-6 sm:p-8 bg-gradient-to-b from-[#3D724A]/0 to-[#3D724A]/100 flex flex-col justify-end">
               <div className="text-label-lg text-text-white-0 bg-yellow-500 px-4 py-1 rounded-full mb-4">
                 blog
               </div>
-              <h1 className="lowercase w-full text-text-white-0 text-center text-title-h2">
+              <h1 className="lowercase w-full text-text-white-0 text-center text-title-h3 sm:text-title-h2">
                 {blog.title}
               </h1>
               {blog.seo?.description && (

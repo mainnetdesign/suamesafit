@@ -45,8 +45,8 @@ export function BlogCard({
           <div
             className={`relative overflow-hidden ${
               isLarge
-                ? 'md:w-1/2 h-64 md:h-auto'
-                : 'w-full h-64'
+                ? 'md:w-1/2 h-56 sm:h-64 md:h-auto'
+                : 'w-full h-48 sm:h-64'
             }`}
           >
             <Image
@@ -85,7 +85,9 @@ export function BlogCard({
             </div>
             <h3
               className={`text-text-sub-600 mb-3 group-hover:text-green-700 transition-colors break-words ${
-                isLarge ? 'text-title-h3 leading-[3rem]' : 'text-title-h4 leading-[2.5rem]'
+                isLarge
+                  ? 'text-title-h4 sm:text-title-h3 leading-[2.25rem] sm:leading-[3rem]'
+                  : 'text-title-h5 sm:text-title-h4 leading-[2rem] sm:leading-[2.5rem]'
               }`}
               style={{ wordBreak: 'normal', hyphens: 'none' }}
             >

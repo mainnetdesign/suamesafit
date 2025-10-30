@@ -7125,3 +7125,165 @@ aside.left-aside{
   animation-delay: 0.5s;
   opacity: 0;
 }
+
+/* ========== Blog Article Content Styles ========== */
+.article-content {
+  @apply max-w-none;
+}
+
+/* Headings */
+.article-content h1 {
+  @apply text-title-h2 text-text-sub-600 font-medium mt-12 mb-6 first:mt-0;
+}
+
+.article-content h2 {
+  @apply text-title-h3 text-text-sub-600 font-medium mt-10 mb-5;
+}
+
+.article-content h3 {
+  @apply text-title-h4 text-text-sub-600 font-medium mt-8 mb-4;
+}
+
+.article-content h4 {
+  @apply text-title-h5 text-text-sub-600 font-medium mt-6 mb-3;
+}
+
+.article-content h5 {
+  @apply text-title-h6 text-text-sub-600 font-medium mt-6 mb-3;
+}
+
+.article-content h6 {
+  @apply text-label-xl text-text-sub-600 font-medium mt-4 mb-2;
+}
+
+/* Paragraphs */
+.article-content p {
+  @apply text-paragraph-lg text-text-sub-600 mb-6 leading-relaxed;
+}
+
+/* Links */
+.article-content a {
+  @apply text-green-700 font-medium no-underline hover:underline transition-all;
+}
+
+/* Strong/Bold */
+.article-content strong,
+.article-content b {
+  @apply text-text-strong-950 font-semibold;
+}
+
+/* Emphasis/Italic */
+.article-content em,
+.article-content i {
+  @apply italic;
+}
+
+/* Lists */
+.article-content ul,
+.article-content ol {
+  @apply text-paragraph-lg text-text-sub-600 my-6 pl-6;
+}
+
+.article-content ul {
+  @apply list-disc;
+}
+
+.article-content ol {
+  @apply list-decimal;
+}
+
+.article-content li {
+  @apply mb-3 leading-relaxed;
+}
+
+.article-content li > p {
+  @apply mb-3;
+}
+
+/* Nested lists */
+.article-content ul ul,
+.article-content ol ul,
+.article-content ul ol,
+.article-content ol ol {
+  @apply my-3;
+}
+
+/* Blockquotes */
+.article-content blockquote {
+  @apply border-l-4 border-green-700 pl-6 py-3 my-8 italic text-paragraph-lg text-text-sub-600 bg-bg-weak-50 rounded-r-xl;
+}
+
+.article-content blockquote p {
+  @apply mb-2 last:mb-0;
+}
+
+/* Code */
+.article-content code {
+  @apply bg-bg-soft-200 text-text-sub-600 px-2 py-1 rounded text-paragraph-md;
+}
+
+.article-content pre {
+  @apply bg-bg-sub-300 p-6 rounded-2xl my-8 overflow-x-auto;
+}
+
+.article-content pre code {
+  @apply bg-transparent p-0 text-paragraph-md;
+}
+
+/* Images */
+.article-content img {
+  @apply rounded-2xl my-8 w-full h-auto;
+}
+
+/* Tables */
+.article-content table {
+  @apply w-full my-8 border-collapse;
+}
+
+.article-content th {
+  @apply text-label-md text-text-sub-600 font-semibold bg-bg-soft-200 p-4 text-left border-b-2 border-stroke-soft-200;
+}
+
+.article-content td {
+  @apply text-paragraph-md text-text-sub-600 p-4 border-b border-stroke-soft-200;
+}
+
+.article-content tr:last-child td {
+  @apply border-b-0;
+}
+
+/* Horizontal Rule */
+.article-content hr {
+  @apply my-12 border-0 h-px bg-stroke-soft-200;
+}
+
+/* Figures and captions */
+.article-content figure {
+  @apply my-8;
+}
+
+.article-content figcaption {
+  @apply text-paragraph-sm text-text-soft-400 text-center mt-3 italic;
+}
+
+/* Mark/Highlight */
+.article-content mark {
+  @apply bg-yellow-200 text-text-sub-600 px-1;
+}
+
+/* Subscript and Superscript */
+.article-content sub,
+.article-content sup {
+  @apply text-paragraph-sm;
+}
+
+/* Video embeds and iframes */
+.article-content iframe {
+  @apply w-full rounded-2xl my-8;
+  aspect-ratio: 16 / 9;
+}
+
+/* First paragraph special styling (opcional - para um drop cap ou destaque) */
+.article-content > p:first-of-type {
+  @apply text-paragraph-xl text-text-sub-600;
+}

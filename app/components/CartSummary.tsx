@@ -91,11 +91,9 @@ function CartSummaryPage({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
-  // ========== CHECKBOX PAGAMENTO NA ENTREGA - DESATIVADO ==========
-  // Para reativar: descomente a linha abaixo e as seções marcadas com "CHECKBOX PAGAMENTO NA ENTREGA"
-  // const [paymentOnDelivery, setPaymentOnDelivery] = useState<boolean>(false);
-  const [paymentOnDelivery] = useState<boolean>(false); // Sempre false quando desativado
-  // =================================================================
+  // ========== CHECKBOX PAGAMENTO NA ENTREGA - ATIVADO ==========
+  const [paymentOnDelivery, setPaymentOnDelivery] = useState<boolean>(false);
+  // =============================================================
   const fetcher = useFetcher<{variantId?: string; distanceKm?: number; error?: string}>();
   
   // Fetcher único para todas as operações do checkout
@@ -208,7 +206,7 @@ Distância: ${fetcher.data?.distanceKm ? `${fetcher.data.distanceKm.toFixed(1)} 
 Horário: ${selectedTimeSlot === 'manha' ? 'Manhã (9h às 13h)' : selectedTimeSlot === 'tarde' ? 'Tarde (15h às 18h)' : selectedTimeSlot === 'noite' ? 'Noite (18h às 21h)' : 'N/A'}
 Local: ${selectedDeliveryLocation === 'porta' ? 'Na porta' : selectedDeliveryLocation === 'recepcao' ? 'Na recepção' : 'N/A'}
 Data: ${selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : 'N/A'}
-${/* CHECKBOX PAGAMENTO NA ENTREGA - DESATIVADO */ ''}${/* paymentOnDelivery ? '💳 PAGAMENTO NA ENTREGA (VR/VA/Cartão)' : '' */ ''}
+${paymentOnDelivery ? '💳 PAGAMENTO NA ENTREGA (VR/VA/Cartão)' : ''}
 ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEITA CONGELADOS' : ''}`;
 
     console.log('📝 NOTA PREPARADA:');
@@ -239,7 +237,7 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
         'attributes[Horário de Entrega]': selectedTimeSlot,
         'attributes[Local de Entrega]': selectedDeliveryLocation,
         'attributes[Data de Entrega]': selectedDate ? format(selectedDate, "dd/MM/yyyy", {locale: ptBR}) : '',
-        // CHECKBOX PAGAMENTO NA ENTREGA - DESATIVADO: 'attributes[Método de Pagamento]': paymentOnDelivery ? 'Pagamento na Entrega' : 'Online',
+        'attributes[Método de Pagamento]': paymentOnDelivery ? 'Pagamento na Entrega' : 'Online',
         redirectTo: fixCheckoutDomain(cart?.checkoutUrl) || '#',
       },
       {method: 'post', action: '/cart'}
@@ -425,9 +423,8 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
           </div>
         )}
 
-        {/* ========== CHECKBOX PAGAMENTO NA ENTREGA - DESATIVADO ========== */}
-        {/* Para reativar: descomente o bloco abaixo */}
-        {/* {selectedDeliveryLocation && (
+        {/* ========== CHECKBOX PAGAMENTO NA ENTREGA - ATIVADO ========== */}
+        {selectedDeliveryLocation && (
           <div className="w-full mt-4">
             <div className="flex items-start gap-3">
               <Checkbox.Root
@@ -440,8 +437,8 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
               </label>
             </div>
           </div>
-        )} */}
-        {/* ================================================================= */}
+        )}
+        {/* ============================================================== */}
         
         {fetcher.data?.error && (
           <p className="text-red-600 text-label-sm mt-2">

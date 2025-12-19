@@ -5,7 +5,7 @@ import foto3 from '../assets/about-us/foto-3.jpg';
 import foto4 from '../assets/about-us/foto-4.jpg';
 import foto5 from '../assets/about-us/foto-5.jpg';
 import erikaImage from '../assets/about-us/erika.jpg';
-import janainaImage from '../assets/about-us/fotonova2025.jpg';
+import janainaImage from '../assets/about-us/janaina.jpg';
 
 export default function About() {
   const [activeId, setActiveId] = useState('saude');

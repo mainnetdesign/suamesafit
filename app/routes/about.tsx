@@ -5,7 +5,7 @@ import foto3 from '../assets/about-us/foto-3.jpg';
 import foto4 from '../assets/about-us/foto-4.jpg';
 import foto5 from '../assets/about-us/foto-5.jpg';
 import erikaImage from '../assets/about-us/erika.jpg';
-import janainaImage from '../assets/about-us/janaina.jpg';
+import janainaImage from '../assets/about-us/fotonova2025.jpeg';
 
 export default function About() {
   const [activeId, setActiveId] = useState('saude');
@@ -71,11 +71,11 @@ export default function About() {
           <div className="flex justify-center">
              {/* 1nd Person */}
             <div className="flex flex-col items-center max-w-[600px]">
-              <div className="w-full h-[300px] rounded-lg overflow-hidden mb-6">
+              <div className="w-full h-[600px] rounded-lg overflow-hidden mb-6">
                 <Image
                   src={janainaImage}
                   alt="Janaína Cipriano - Co-fundadora e Diretora de Operações"
-                  className="w-full object-top"
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               <h4 className="w-full text-title-h5 text-center font-semibold text-text-sub-600 mb-4">

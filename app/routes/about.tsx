@@ -5,7 +5,7 @@ import foto3 from '../assets/about-us/foto-3.jpg';
 import foto4 from '../assets/about-us/foto-4.jpg';
 import foto5 from '../assets/about-us/foto-5.jpg';
 import erikaImage from '../assets/about-us/erika.jpg';
-import janainaImage from '../assets/about-us/janaina.jpg';
+import janainaImage from '../assets/about-us/fotonova2025.jpg';
 
 export default function About() {
   const [activeId, setActiveId] = useState('saude');
@@ -91,6 +91,26 @@ export default function About() {
         </div>
       </div>
 
+      {/* Quem Somos */}
+      <div className="p-8 bg-cream">
+        <div className="container max-w-[1200px] mx-auto">
+          <h2 className="text-title-h2 text-center text-text-sub-600 mb-12">
+            Quem Somos
+          </h2>
+          <div className="max-w-[800px] mx-auto">
+            <p className="text-text-sub-600 text-paragraph-lg mb-6">
+              A Sua Mesa Fit é uma empresa de alimentação saudável e ultracongelada que nasceu para resolver um problema real: como oferecer comida de alta qualidade, com sabor verdadeiro, técnica de cozinha e praticidade, de forma consistente, escalável e confiável.
+            </p>
+            <p className="text-text-sub-600 text-paragraph-lg mb-6">
+              Nosso compromisso é entregar soluções alimentares que facilitem a rotina das pessoas, preservando saúde, sabor e experiência gastronômica. Trabalhamos com ingredientes selecionados, processos padronizados, ultracongelamento de alta performance e uma cadeia de produção estruturada para garantir segurança, constância e excelência.
+            </p>
+            <p className="text-text-sub-600 text-paragraph-lg">
+              Somos uma empresa guiada por dados, inovação, eficiência operacional e, acima de tudo, por pessoas. Acreditamos que alimentação saudável precisa ser acessível, possível e prazerosa.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* valores / toc + conteúdo */}
       <div className="py-20">
         <div className="container max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-[400px_minmax(0,1fr)] items-start gap-4">
@@ -101,18 +121,18 @@ export default function About() {
                 {[
                   {
                     id: 'saude',
-                    title: 'Saúde em Primeiro Lugar',
-                    desc: 'Marmitas feitas por nutricionistas, com ingredientes frescos e naturais.',
+                    title: 'Nossa Cultura',
+                    desc: 'A cultura da Sua Mesa Fit orienta tudo o que fazemos e define o padrão da nossa entrega.',
                   },
                   {
                     id: 'praticidade',
-                    title: 'Praticidade com Sabor',
-                    desc: 'Refeições equilibradas, prontas e deliciosas para facilitar seu dia a dia.',
+                    title: 'O Que Entregamos',
+                    desc: 'Refeições e soluções pensadas para oferecer qualidade, praticidade e equilíbrio no dia a dia.',
                   },
                   {
                     id: 'transparencia',
-                    title: 'Transparência e Confiança',
-                    desc: 'Ingredientes e informações nutricionais claras para escolhas seguras.',
+                    title: 'Nossa Essência',
+                    desc: 'Mais do que refeições, entregamos cuidado, propósito e bem estar para a vida real.',
                   },
                 ].map((item) => (
                   <li key={item.id}>
@@ -146,13 +166,17 @@ export default function About() {
               </div>
               <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <h3 className="text-title-h3 text-text-sub-600">
-                  Saúde em Primeiro Lugar
+                  Nossa Cultura
                 </h3>
-                <p className="text-text-sub-500">
-                  Na sua marmitafit, acreditamos que uma alimentação saudável
-                  transforma vidas. Nossos pratos são desenvolvidos por
-                  nutricionistas e preparados com ingredientes frescos e
-                  naturais, sem conservantes ou aditivos artificiais.
+                <p className="text-text-sub-600">
+                  <strong>Excelência Operacional</strong><br />
+                  Processos claros, controle de qualidade rigoroso e compromisso com a segurança alimentar.<br /><br />
+                  <strong>Nutrição com Técnica</strong><br />
+                  Receitas equilibradas, ingredientes selecionados e preparo profissional, sem atalhos e sem industrializados.<br /><br />
+                  <strong>Relacionamento e Proximidade</strong><br />
+                  Valorizamos relações humanas reais. Escutamos, acolhemos e construímos confiança diariamente.<br /><br />
+                  <strong>Inovação e Crescimento Sustentável</strong><br />
+                  Evoluímos continuamente: novos produtos, embalagens mais eficientes, tecnologia aplicada e formatos modernos de distribuição.
                 </p>
               </div>
             </section>
@@ -167,12 +191,15 @@ export default function About() {
               </div>
               <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <h3 className="text-title-h3 text-text-sub-600">
-                  Praticidade com Sabor
+                  O Que Entregamos
                 </h3>
-                <p className="text-text-sub-500">
-                  Queremos facilitar o seu dia a dia sem abrir mão do sabor.
-                  Nossas marmitas são práticas, equilibradas e deliciosas,
-                  ideais para uma rotina mais leve e nutritiva.
+                <p className="text-text-sub-600">
+                  • Refeições ultracongeladas com alto padrão de qualidade<br />
+                  • Cardápio fixo com diversas opções balanceadas<br />
+                  • Personalização nutricional para diferentes objetivos<br />
+                  • Catering saudável para eventos corporativos e sociais<br />
+                  • Desenvolvimento contínuo de produtos funcionais<br /><br />
+                  Nosso compromisso é entregar qualidade, tempo e saúde, permitindo que nossos clientes cuidem de si com praticidade e equilíbrio.
                 </p>
               </div>
             </section>
@@ -187,12 +214,32 @@ export default function About() {
               </div>
               <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <h3 className="text-title-h3 text-text-sub-600">
-                  Transparência e Confiança
+                  Nossa Essência
                 </h3>
-                <p className="text-text-sub-500">
-                  Valorizamos a confiança: informamos ingredientes e valores
-                  nutricionais de cada prato para escolhas conscientes e
-                  seguras.
+                <p className="text-text-sub-600">
+                  A Sua Mesa Fit é mais do que uma fornecedora de refeições.<br />
+                  É uma empresa movida por propósito, técnica e visão, dedicada a oferecer soluções que facilitem a rotina, promovam bem-estar e acompanhem a vida real.<br /><br />
+                  Agradecemos por caminhar conosco e por permitir que a nossa marca faça parte dos seus hábitos diários.<br /><br />
+                  <strong>Sua Mesa Fit.</strong><br />
+                  Sua refeição saudável, pronta em minutos.
+                </p>
+              </div>
+            </section>
+
+            <section id="carta-ao-cliente" className="scroll-mt-28">
+              <div className="grid md:grid-cols-2 gap-6 mt-6">
+                <h3 className="text-title-h3 text-text-sub-600">
+                  Carta ao Cliente
+                </h3>
+                <p className="text-text-sub-600">
+                  A Sua Mesa Fit acredita que uma boa alimentação precisa ser prática, acessível e tecnicamente bem executada. É por isso que cada etapa do nosso trabalho foi estruturada para entregar ao cliente uma experiência que una sabor, nutrição e constância, três pilares fundamentais para quem busca qualidade de vida.<br /><br />
+                  A marca foi idealizada por Janaina Cipriano, publicitária e especialista em comunicação e comportamento do consumidor. Após anos atuando no mercado de comunicação e branding, Jana identificou uma lacuna clara: muitas pessoas desejavam adotar hábitos mais saudáveis, mas encontravam poucas soluções realmente consistentes, seguras e adequadas ao ritmo da vida moderna.<br /><br />
+                  Com essa visão, nasceu a Sua Mesa Fit, uma empresa construída sobre fundamentos sólidos:<br /><br />
+                  • clareza de propósito e posicionamento<br />
+                  • processos bem definidos e replicáveis<br />
+                  • imersão profunda na experiência do cliente<br />
+                  • constância e responsabilidade em cada entrega<br /><br />
+                  Hoje, a liderança da empresa segue guiada por esses princípios, unindo inovação, melhoria contínua e foco absoluto no consumidor.
                 </p>
               </div>
             </section>

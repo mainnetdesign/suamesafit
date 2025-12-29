@@ -16,7 +16,7 @@ export const FALLBACK_TESTIMONIALS: TestimonialData[] = [
   {
     id: '2',
     rating: 5,
-    text: 'Eu como nutricionista sempre recomendo pros meus pacientes a comer as marmitas da Erike e Jana. São deliciosas e saudáveis!',
+    text: 'Eu como nutricionista sempre recomendo pros meus pacientes a comer as marmitas da Jana. São deliciosas e saudáveis!',
     authorName: 'Rafael Polonis',
     image: testimonial2,
     socialLink: 'https://www.instagram.com/nutricionistaraphaelpolonis/',
@@ -24,7 +24,7 @@ export const FALLBACK_TESTIMONIALS: TestimonialData[] = [
   {
     id: '3',
     rating: 5,
-    text: 'Vivia de iFood e não tinha como fazer uma dieta saudável. Agora com as marmitas da Erike e Jana, posso comer bem e continuar com a dieta de forma fácil!',
+    text: 'Vivia de iFood e não tinha como fazer uma dieta saudável. Agora com as marmitas da Jana, posso comer bem e continuar com a dieta de forma fácil!',
     authorName: 'Rafael Reis',
     image: testimonial3,
     socialLink: 'https://www.linkedin.com/in/reisrafael/',

@@ -13,16 +13,20 @@ export function BlogCard({
   loading = 'lazy',
   size = 'default',
 }: BlogCardProps) {
-  const categoryValue =
-    (article as any)?.category?.value?.toLowerCase?.() || 'blog';
-  const categoryBg: Record<string, string> = {
-    blog: '#FFC977',
-    novidades: '#FF7070',
-    receitas: '#2BA84A',
-    dicas: '#1E57A4',
-    'nutrição': '#FFA34D',
+  // Usar o handle do blog (dicas ou novidades) como categoria
+  const categoryValue = article.blog.handle?.toLowerCase?.() || 'blog';
+  
+  // Todas as categorias com fundo amarelo por enquanto
+  const badgeBg = '#FFC977';
+  
+  // Formatar o nome da categoria para exibição
+  const categoryLabel: Record<string, string> = {
+    dicas: 'dicas',
+    novidades: 'novidades',
+    receitas: 'receitas',
+    nutrição: 'nutrição',
   };
-  const badgeBg = categoryBg[categoryValue] || categoryBg['blog'];
+  const categoryDisplay = categoryLabel[categoryValue] || categoryValue;
   const publishedAt = new Intl.DateTimeFormat('pt-BR', {
     year: 'numeric',
     month: 'long',
@@ -66,7 +70,7 @@ export function BlogCard({
               className="absolute top-3 left-3 px-3 py-1 rounded-full text-label-sm text-text-sub-600"
               style={{backgroundColor: badgeBg}}
             >
-              {categoryValue}
+              {categoryDisplay}
             </div>
           </div>
         )}

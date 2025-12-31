@@ -16,6 +16,7 @@ export type CartMainProps = {
   cart: CartApiQueryFragment | null;
   layout: CartLayout;
   relatedProducts?: any[];
+  blockedIntervals?: string[];
 };
 
 /**
@@ -26,6 +27,7 @@ export function CartMain({
   layout,
   cart: originalCart,
   relatedProducts,
+  blockedIntervals = [],
 }: CartMainProps) {
   // The useOptimisticCart hook applies pending actions to the cart
   // so the user immediately sees feedback when they modify the cart.
@@ -125,10 +127,10 @@ export function CartMain({
           )}
           {layout === 'page' && (
             <div className="w-full max-w-[400px]">
-              <CartSummary cart={cart} layout={layout} />
+              <CartSummary cart={cart} layout={layout} blockedIntervals={blockedIntervals} />
             </div>
           )}
-          {layout === 'aside' && <CartSummary cart={cart} layout={layout} />}
+          {layout === 'aside' && <CartSummary cart={cart} layout={layout} blockedIntervals={blockedIntervals} />}
         </div>
       )}
       {/* Sessão de produtos relacionados */}

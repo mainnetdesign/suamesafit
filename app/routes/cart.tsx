@@ -280,17 +280,65 @@ export async function loader({context}: LoaderFunctionArgs) {
   );
   const relatedProducts = result.collection?.products?.nodes || [];
 
-  return { cart: cartData, relatedProducts };
+  // Buscar intervalos bloqueados do metaobjeto
+  const blockedIntervals: string[] = [];
+  
+  try {
+    const blockedDatesResult = await storefront.query(
+      `#graphql
+        query BlockedDatesMetaobject {
+          metaobjects(type: "intervalos_bloqueados", first: 10) {
+            nodes {
+              id
+              handle
+              fields {
+                key
+                value
+              }
+            }
+          }
+        }
+      `,
+    );
+
+    // Processar todos os metaobjetos encontrados
+    if (blockedDatesResult.metaobjects?.nodes) {
+      for (const metaobject of blockedDatesResult.metaobjects.nodes) {
+        console.log('📦 Metaobjeto encontrado:', {
+          id: metaobject.id,
+          handle: metaobject.handle,
+          fields: metaobject.fields
+        });
+        
+        // Extrair os campos de intervalo (Intervalo 1, 2, 3)
+        for (const field of metaobject.fields) {
+          if (field.key.toLowerCase().includes('intervalo') && field.value) {
+            const interval = field.value.trim();
+            if (interval && !blockedIntervals.includes(interval)) {
+              blockedIntervals.push(interval);
+              console.log(`✅ Intervalo bloqueado encontrado: ${interval}`);
+            }
+          }
+        }
+      }
+    }
+    
+    console.log(`📋 Total de ${blockedIntervals.length} intervalos bloqueados carregados`);
+  } catch (error) {
+    console.error('❌ Erro ao buscar intervalos bloqueados:', error);
+  }
+
+  return { cart: cartData, relatedProducts, blockedIntervals };
 }
 
 export default function Cart() {
-  const { cart, relatedProducts } = useLoaderData<typeof loader>();
+  const { cart, relatedProducts, blockedIntervals } = useLoaderData<typeof loader>();
 
   return (
     <div className="cart w-full flex flex-col justify-center items-center py-[100px]">
       <div className="max-w-[1200px] w-full flex flex-col gap-8 p-8 justify-center items-center">
         <h1 className="text-text-sub-600 text-title-h3">seu carrinho</h1>
-        <CartMain layout="page" cart={cart} relatedProducts={relatedProducts} />
+        <CartMain layout="page" cart={cart} relatedProducts={relatedProducts} blockedIntervals={blockedIntervals} />
       </div>
     </div>
   );

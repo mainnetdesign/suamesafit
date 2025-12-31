@@ -138,20 +138,30 @@ const HeaderNew = ({ cartCount, shopId }: { cartCount?: number, shopId: string }
               </div>
             ) : (
               <div className="flex justify-start items-center gap-4">
+                <a href="/">
+                  <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
+                    home
+                  </div>
+                </a>
                 <a href="/collections/all">
                   <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
                     cardápio
                   </div>
                 </a>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
+                <a href="/about">
+                  <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
+                    sobre
+                  </div>
+                </a>
+
+                {/* <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
                   parcerias
-                </div>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
+                </div> */}
+                <a href="/blogs">
+                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight ">
                   blog
                 </div>
-                <div className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight opacity-40">
-                  sobre
-                </div>
+                </a>
                 {/* <Link to="/about" className="justify-start text-text-sub-600 text-sm font-semibold font-sans leading-tight">
                   sobre
                 </Link> */}

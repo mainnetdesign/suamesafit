@@ -1,7 +1,7 @@
 import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
-import {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useRef, useMemo} from 'react';
 import {useFetcher, Link} from '@remix-run/react';
 import {FetcherWithComponents} from '@remix-run/react';
 import * as Button from '~/components/align-ui/ui/button';
@@ -11,7 +11,7 @@ import * as Popover from '~/components/align-ui/ui/popover';
 import * as Checkbox from '~/components/align-ui/ui/checkbox';
 import {Calendar as AlignCalendar} from '~/components/align-ui/ui/datepicker';
 import {Calendar as ShadCalendar} from '~/components/shad-cn/ui/calendar';
-import {format, addDays, isWeekend, isBefore, startOfToday} from 'date-fns';
+import {format, addDays, isWeekend, isBefore, isAfter, startOfToday, addYears, startOfDay, isWithinInterval, parse} from 'date-fns';
 import {ptBR} from 'date-fns/locale';
 import type {AttributeInput} from '@shopify/hydrogen/storefront-api-types';
 import {useAside} from '~/components/Aside';
@@ -20,13 +20,14 @@ import {getShippingVariantByDistance, DELIVERY_DISTANCE_RANGES, DELIVERY_PAYMENT
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
   layout: CartLayout;
+  blockedIntervals?: string[];
 };
 
-export function CartSummary({cart, layout}: CartSummaryProps) {
+export function CartSummary({cart, layout, blockedIntervals = []}: CartSummaryProps) {
   if (layout === 'aside') {
     return <CartSummaryAside cart={cart} />;
   }
-  return <CartSummaryPage cart={cart} />;
+  return <CartSummaryPage cart={cart} blockedIntervals={blockedIntervals} />;
 }
 
 function CartSummaryAside({
@@ -65,8 +66,10 @@ function CartSummaryAside({
 
 function CartSummaryPage({
   cart,
+  blockedIntervals = [],
 }: {
   cart: OptimisticCart<CartApiQueryFragment | null>;
+  blockedIntervals?: string[];
 }) {
   /* 
    * ========================================================================
@@ -89,6 +92,7 @@ function CartSummaryPage({
   const [cep, setCep] = useState('');
   const [shippingVariantId, setShippingVariantId] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [calendarMonth, setCalendarMonth] = useState<Date | undefined>(undefined);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
   const [selectedDeliveryLocation, setSelectedDeliveryLocation] = useState<string>('');
   // ========== CHECKBOX PAGAMENTO NA ENTREGA - ATIVADO ==========
@@ -99,15 +103,74 @@ function CartSummaryPage({
   // Fetcher único para todas as operações do checkout
   const checkoutFetcher = useFetcher();
 
+  // Parse dos intervalos bloqueados (formato: DD/MM/YYYY - DD/MM/YYYY)
+  // Usando useMemo para calcular apenas uma vez
+  const parsedBlockedIntervals = useMemo(() => {
+    const intervals: Array<{start: Date; end: Date}> = [];
+    
+    console.log('🚫 Processando intervalos bloqueados:', blockedIntervals);
+    
+    for (const intervalStr of blockedIntervals) {
+      if (!intervalStr || typeof intervalStr !== 'string') continue;
+      
+      // Formato esperado: "01/01/2026 - 05/01/2026"
+      const parts = intervalStr.split('-').map(p => p.trim());
+      if (parts.length !== 2) continue;
+      
+      try {
+        const startDate = parse(parts[0], 'dd/MM/yyyy', new Date());
+        const endDate = parse(parts[1], 'dd/MM/yyyy', new Date());
+        
+        // Validar se as datas são válidas
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+          intervals.push({
+            start: startOfDay(startDate),
+            end: startOfDay(endDate)
+          });
+          console.log(`✅ Intervalo bloqueado adicionado: ${format(startDate, 'dd/MM/yyyy')} - ${format(endDate, 'dd/MM/yyyy')}`);
+        }
+      } catch (error) {
+        console.error('❌ Erro ao fazer parse do intervalo bloqueado:', intervalStr, error);
+      }
+    }
+    
+    console.log(`📋 Total de ${intervals.length} intervalos bloqueados processados`);
+    return intervals;
+  }, [blockedIntervals]);
+
+  // Função para verificar se uma data está em um intervalo bloqueado
+  const isDateBlocked = (date: Date): boolean => {
+    const normalizedDate = startOfDay(date);
+    
+    for (const interval of parsedBlockedIntervals) {
+      try {
+        if (isWithinInterval(normalizedDate, { start: interval.start, end: interval.end })) {
+          console.log(`🚫 Data ${format(normalizedDate, 'dd/MM/yyyy')} está bloqueada (intervalo: ${format(interval.start, 'dd/MM/yyyy')} - ${format(interval.end, 'dd/MM/yyyy')})`);
+          return true;
+        }
+      } catch (error) {
+        // Ignorar erros de intervalo inválido
+        continue;
+      }
+    }
+    
+    return false;
+  };
+
   useEffect(() => {
     if (fetcher.data?.distanceKm !== undefined) {
       // eslint-disable-next-line no-console
       console.log(`Distância calculada: ${fetcher.data.distanceKm.toFixed(2)} km`);
+      // Inicializar o mês do calendário na primeira data disponível
+      if (!calendarMonth) {
+        setCalendarMonth(calculateMinDeliveryDate());
+      }
     }
     if (fetcher.data?.error) {
       // eslint-disable-next-line no-console
       console.error('Erro no cálculo de frete:', fetcher.data.error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetcher.data]);
 
   const handleCepSearch = () => {
@@ -259,10 +322,34 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
     return date;
   };
 
+  // Função para calcular a data máxima (1 ano a partir de hoje)
+  const calculateMaxDeliveryDate = () => {
+    return addYears(startOfToday(), 1);
+  };
+
   // Função para verificar se uma data deve ser desabilitada
   const disableDate = (date: Date) => {
-    const minDate = calculateMinDeliveryDate();
-    return isBefore(date, minDate) || isWeekend(date);
+    // Normalizar todas as datas para início do dia (00:00:00)
+    const dateNormalized = startOfDay(date);
+    const minDate = startOfDay(calculateMinDeliveryDate());
+    const maxDate = startOfDay(calculateMaxDeliveryDate());
+    
+    // Desabilita datas antes do mínimo, depois do máximo, ou fins de semana
+    if (isBefore(dateNormalized, minDate) || isAfter(dateNormalized, maxDate)) {
+      return true;
+    }
+    
+    // Desabilita fins de semana
+    if (isWeekend(dateNormalized)) {
+      return true;
+    }
+    
+    // Desabilita datas em intervalos bloqueados
+    if (isDateBlocked(dateNormalized)) {
+      return true;
+    }
+    
+    return false;
   };
 
   return (
@@ -358,6 +445,10 @@ ${selectedDeliveryLocation === 'recepcao' ? '⚠️ CONFIRMAR SE RECEPÇÃO ACEI
                   captionLayout="dropdown"
                   locale={ptBR}
                   disabled={disableDate}
+                  month={calendarMonth || calculateMinDeliveryDate()}
+                  onMonthChange={setCalendarMonth}
+                  fromMonth={calculateMinDeliveryDate()}
+                  toMonth={calculateMaxDeliveryDate()}
                   formatters={{
                     formatDay: (date: Date) => {
                       return date.getDate().toString();

@@ -41,6 +41,15 @@ export function Product({product}: ProductProps) {
         to={`/products/${product.handle}`}
       >
         <div className="relative aspect-[4/3] md:aspect-square overflow-hidden">
+          {/* Placeholder quando não há imagem */}
+          {!product.featuredImage && (
+            <div className="w-full h-full bg-[#f5f5f5] flex items-center justify-center">
+              <div className="text-text-sub-400 text-label-md text-center px-4">
+                Sem imagem
+              </div>
+            </div>
+          )}
+
           {/* Imagem principal */}
           {product.featuredImage && (
             <Image

@@ -187,9 +187,8 @@ function MobileMenuAside({
             <Link onClick={() => { close(); }} to="/" className="text-title-h3 text-text-sub-600">home</Link>
             <Link onClick={() => close()} to="/collections/all" className="text-title-h3 text-text-sub-600">cardápio</Link>
             <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">parcerias</span>
-            <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">blog</span>
-            <span className="text-title-h3 text-text-sub-600 opacity-40 cursor-not-allowed">sobre</span>
-            {/* <Link onClick={() => close()} to="/about" className="text-title-h3 text-text-sub-600">sobre</Link> */}
+            <Link onClick={() => close()} to="/blogs" className="text-title-h3 text-text-sub-600">blog</Link>
+            <Link onClick={() => close()} to="/about" className="text-title-h3 text-text-sub-600">sobre</Link>
           </div>
 
           <div className="border-t border-gray-300 my-4" />
